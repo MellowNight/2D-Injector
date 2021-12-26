@@ -5,6 +5,7 @@
 namespace utils
 {
 	PVOID	GetVaFromPfn(ULONG64 pfn);
+
 	typedef int (*PageTableOperation)(PT_ENTRY_64*);
 	PT_ENTRY_64* GetPte(PVOID VirtualAddress, ULONG64 Pml4BasePa, PageTableOperation Operation);
 
@@ -61,7 +62,7 @@ namespace utils
 		PVOID lpFuncAddress
 	);
 
-	PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation);
+	PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation, int size = PAGE_SIZE);
 
 	NTSTATUS UnlockPages(PMDL mdl);
 

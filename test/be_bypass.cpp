@@ -18,15 +18,40 @@ LONG BypassBEBreakpoint(
     {
         if (*(BYTE*)ExceptionInfo->ContextRecord->Rip == 0xCC)
         {
-            utils::log("breakpoint hit! RIP = %p\n", ExceptionInfo->ContextRecord->Rip);
+            UNICODE_STRING mod_name;
 
-            auto rip_page = PAGE_ALIGN(ExceptionInfo->ContextRecord->Rip);
-            DWORD size = 1;
-            ULONG old_protect, old_protect2;
+            //auto module_base = (IMAGE_DOS_HEADER*)utils::ModuleFromAddress(ExceptionInfo->ContextRecord->Rip, &mod_name);
+            //auto file_patch_offset = RVA_TO_OFFSET(module_base, (uintptr_t)ExceptionInfo->ContextRecord->Rip - module_base);
 
-            auto status = ZwProtectVirtualMemory((HANDLE)-1, (PVOID*)&rip_page, &size, PAGE_EXECUTE_READWRITE, &old_protect);
-            *(BYTE*)ExceptionInfo->ContextRecord->Rip = 0xC3;
-            ZwProtectVirtualMemory((HANDLE)-1, (PVOID*)&rip_page, &size, old_protect, &old_protect2);
+            //utils::log("breakpoint hit! RIP = %p\n", ExceptionInfo->ContextRecord->Rip);
+
+            //auto file_handle = CreateFileW(
+            //    mod_name.Buffer, GENERIC_ALL, 0, NULL,
+            //    OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL
+            //);
+
+            //SetFilePointer(
+            //    file_handle,
+            //    file_patch_offset,
+            //    NULL,
+            //    FILE_BEGIN
+            //);
+
+            //auto rip_page = PAGE_ALIGN(ExceptionInfo->ContextRecord->Rip);
+            //DWORD size = 1;
+            //ULONG old_protect, old_protect2;
+
+            //auto status = ZwProtectVirtualMemory((HANDLE)-1, (PVOID*)&rip_page, &size, PAGE_EXECUTE_READWRITE, &old_protect);
+
+            //DWORD bytes_read;
+
+            //BOOL ReadFile(
+            //    file_handle,
+            //    ExceptionInfo->ContextRecord->Rip, /* quick thinking  */
+            //    1, &bytes_read, NULL
+            //);
+
+            //ZwProtectVirtualMemory((HANDLE)-1, (PVOID*)&rip_page, &size, old_protect, &old_protect2);
         }
 
         return EXCEPTION_CONTINUE_EXECUTION;

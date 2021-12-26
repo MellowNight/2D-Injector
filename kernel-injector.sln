@@ -11,6 +11,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test_bypass_BE_dll", "test\
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "test-anticheat", "test-anticheat\test-anticheat.vcxproj", "{7FA1B33E-A84C-4467-9455-68CC9AECE314}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "injector-client-dll", "injector-client-dll\injector-client-dll.vcxproj", "{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|ARM = Debug|ARM
@@ -83,6 +85,18 @@ Global
 		{7FA1B33E-A84C-4467-9455-68CC9AECE314}.Release|x64.Build.0 = Release|x64
 		{7FA1B33E-A84C-4467-9455-68CC9AECE314}.Release|x86.ActiveCfg = Release|Win32
 		{7FA1B33E-A84C-4467-9455-68CC9AECE314}.Release|x86.Build.0 = Release|Win32
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Debug|ARM.ActiveCfg = Debug|Win32
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Debug|ARM64.ActiveCfg = Debug|Win32
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Debug|x64.ActiveCfg = Debug|x64
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Debug|x64.Build.0 = Debug|x64
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Debug|x86.ActiveCfg = Debug|Win32
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Debug|x86.Build.0 = Debug|Win32
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Release|ARM.ActiveCfg = Release|Win32
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Release|ARM64.ActiveCfg = Release|Win32
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Release|x64.ActiveCfg = Release|x64
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Release|x64.Build.0 = Release|x64
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Release|x86.ActiveCfg = Release|Win32
+		{3C14DC90-2D04-4D6D-A697-E5F782FAE79A}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

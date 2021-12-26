@@ -37,7 +37,9 @@ namespace Interface
 	struct StartThreadMsg : Msg
 	{
 		int proc_id;
+		uintptr_t map_base;
 		uintptr_t address;
+		uintptr_t image_size;
 	};
 
 	struct GetModuleMsg : Msg

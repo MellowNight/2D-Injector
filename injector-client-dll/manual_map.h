@@ -119,7 +119,29 @@ VOID ResolveRelocations(BYTE* base, PBYTE mapped)
 	}
 }
 
-BOOLEAN ResolveImports(int target_pid, PBYTE base)
+bool ResolveExports(BYTE* base)
+{
+	auto pe_header = PeHeader(base);
+
+	auto export_dir = (IMAGE_EXPORT_DIRECTORY*)(base + pe_header->OptionalHeader.DataDirectory->VirtualAddress);
+
+	auto export_functions = (uint32_t*)(base + export_dir->AddressOfFunctions);
+	auto export_names = (uint32_t*)(base + export_dir->AddressOfNames);
+	auto export_ordinals = (uint16_t*)(base + export_dir->AddressOfNameOrdinals);
+
+	for (auto i = 0u; i < export_dir->NumberOfNames; i++)
+	{
+		const auto export_name = reinterpret_cast<const char*>(base + export_names[i]);
+
+	/*	if (strcmp(export_name, "desired_export"))
+			continue;
+
+		return reinterpret_cast<void*>(module_address + export_functions[export_ordinals[i]]);
+		*/
+	}
+}
+
+bool ResolveImports(int target_pid, BYTE* base)
 {
 	auto nt = PeHeader(base);
 
@@ -167,26 +189,19 @@ BOOLEAN ResolveImports(int target_pid, PBYTE base)
 	return TRUE;
 }
 
-IMAGE_DOS_HEADER* PrepareImage(HANDLE h_dll, int size, ULONG64 map_base, int target_pid)
+IMAGE_DOS_HEADER* MapImage(BYTE* dll_bytes, int file_size, ULONG64 map_base, int target_pid)
 {
-	SetFilePointer(h_dll, 0, 0, 0);
+	auto pe_hdr = PeHeader(dll_bytes);
+	auto real_size = pe_hdr->OptionalHeader.SizeOfImage;
 
-	auto imagebuf1 = new BYTE[size];	// mapped to file offset
-	
-	DWORD bytes;
-	ReadFile(h_dll, imagebuf1, size, &bytes, NULL);
-	auto PeHdr = PeHeader(imagebuf1);
-	auto size2 = PeHdr->OptionalHeader.SizeOfImage;
-	
-	auto imagebuf2 = new BYTE[size2];	// mapped to RVA
+	auto mapped_image = new BYTE[real_size];	// mapped to RVA
 
-	CopyHeaders((IMAGE_DOS_HEADER*)imagebuf1, imagebuf2);
-	CopySections((IMAGE_DOS_HEADER*)imagebuf1, imagebuf2);
+	CopyHeaders((IMAGE_DOS_HEADER*)dll_bytes, mapped_image);
+	CopySections((IMAGE_DOS_HEADER*)dll_bytes, mapped_image);
 
-	delete imagebuf1;
+	ResolveRelocations(mapped_image, (BYTE*)map_base);
+	ResolveImports(target_pid, mapped_image);
 
-	ResolveRelocations(imagebuf2, (BYTE*)map_base);
-	ResolveImports(target_pid, imagebuf2);
 
-	return (IMAGE_DOS_HEADER*)imagebuf2;
+	return (IMAGE_DOS_HEADER*)mapped_image;
 }

@@ -2,7 +2,15 @@
 #include "util.h"
 #include "offsets.h"
 
-bool SetR6PresentHook(uintptr_t base, PVOID hook_handler, PVOID* o_present)
+struct InjectInfo
+{
+	int   header = 0x1234;
+	void*** swapchain_ptr;
+	void** o_swapchain_vmt;
+	uintptr_t section_size;
+};
+
+bool SetR6PresentHook(uintptr_t base, PVOID hook_handler, InjectInfo* info)
 {
 	uintptr_t camera_manager;
 	utils::BBScan(".text", R6::camera_manager_sig, 0x00, 15, &camera_manager, (PVOID)base);
@@ -15,27 +23,29 @@ bool SetR6PresentHook(uintptr_t base, PVOID hook_handler, PVOID* o_present)
 
 	// Get Present's address out of game's swapchain vmt
 	auto vmt = *(uintptr_t**)swapchain;
-	*o_present = decltype(o_present)(vmt[R6::VMT_PRESENT_IDX]);
-
-	DWORD old_protect;
-	DWORD old_protect2;
 
 	// shadow VMT
 
-	auto size = 512 * sizeof(PVOID);
-	PVOID* new_vmt = NULL;
+	void** new_vmt = (void**)0;
+	SIZE_T size = 512;
 
-	auto status = NtAllocateVirtualMemory(
-		(HANDLE)-1, (PVOID*)&new_vmt, NULL, &size,
+	auto status = ZwAllocateVirtualMemory(NtCurrentProcess(),
+		(void**)&new_vmt,
+		0,
+		&size,
 		MEM_COMMIT | MEM_RESERVE,
-		PAGE_EXECUTE_READWRITE
+		PAGE_READWRITE
 	);
 
-	memcpy(new_vmt, vmt, 0x1000 * sizeof(PVOID));
+	memcpy(new_vmt, vmt, 0x1000);
 
 	new_vmt[R6::VMT_PRESENT_IDX] = hook_handler;
 
 	*(PVOID**)swapchain = new_vmt;
+
+	info->header = 0x1234;
+	info->o_swapchain_vmt = (void**)vmt;
+	info->swapchain_ptr = (void***)swapchain;
 
 	return true;
 }

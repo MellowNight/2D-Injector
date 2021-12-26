@@ -33,14 +33,18 @@ void CommandHandler(PVOID context)
 
 			NTSTATUS status;
 
-			if (strcmp(PsGetProcessImageFileName(process), "rainbowsix.exe") == NULL)
+			if (strstr(PsGetProcessImageFileName(process), "RainbowSix.exe"))
 			{
+				DbgPrint("RainbowSix process injection \n");
 				UNICODE_STRING module_name = RTL_CONSTANT_STRING(L"RainbowSix.exe");
 
-				auto module = utils::GetUserModule(process, &module_name);
+				auto r6_base = utils::GetUserModule(process, &module_name);
 
-				PVOID o_present;
-				SetR6PresentHook((uintptr_t)module, (PVOID)msg->address, &o_present);
+				auto dll_info = (InjectInfo*)msg->map_base;
+
+				dll_info->section_size = msg->image_size;
+
+				SetR6PresentHook((uintptr_t)r6_base, (PVOID)msg->address, dll_info);
 			}
 			else
 			{
@@ -77,16 +81,19 @@ void CommandHandler(PVOID context)
 			RtlInitUnicodeString(&uniName, L"\\BaseNamedObjects\\r6iinternal");
 			InitializeObjectAttributes(&attrs, &uniName, OBJ_CASE_INSENSITIVE, NULL, NULL);
 			
-			status = ZwOpenSection(&section_handle , FILE_SHARE_READ, &attrs);
+			status = ZwOpenSection(&section_handle, SECTION_MAP_READ | SECTION_MAP_WRITE, &attrs);
 
 			SIZE_T map_size = msg->size;
 			PVOID mapped_base = NULL;
-			LARGE_INTEGER section_offset ;
+			LARGE_INTEGER section_offset;
 
 			status = ZwMapViewOfSection(section_handle, NtCurrentProcess(), &mapped_base, 0,
-				map_size, NULL, &map_size, ViewShare, 0, PAGE_EXECUTE_READWRITE | PAGE_NOCACHE);
+				map_size, NULL, &map_size, ViewShare, 0, PAGE_READWRITE | PAGE_NOCACHE
+			);
 
-			DbgPrint("ZwMapViewOfSection status %p mapped_base valid: %i \n", status, MmIsAddressValid(mapped_base));
+			DbgPrint("ZwMapViewOfSection status %p mapped_base: %p \n", status, mapped_base);
+
+			utils::FindVadNode((uintptr_t)mapped_base, process)->u.VadFlags.VadType = VadImageMap;
 
 			CR3 cr3;
 			cr3.Flags = __readcr3();
@@ -95,7 +102,7 @@ void CommandHandler(PVOID context)
 				page < (uintptr_t)mapped_base + map_size;
 				page += 0x1000)
 			{
-				/*	We need to do this because the PTE changes
+				/*	We need to lock because the PTE changes
 					are only applied when the pages are mapped in
 				*/
 

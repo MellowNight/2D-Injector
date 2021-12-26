@@ -172,9 +172,9 @@ namespace utils
         }
     }
 
-    PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation)
+    PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation, int size)
     {
-        PMDL mdl = IoAllocateMdl(VirtualAddress, PAGE_SIZE, FALSE, FALSE, nullptr);
+        PMDL mdl = IoAllocateMdl(VirtualAddress, size, FALSE, FALSE, nullptr);
 
         MmProbeAndLockPages(mdl, KernelMode, operation);
 

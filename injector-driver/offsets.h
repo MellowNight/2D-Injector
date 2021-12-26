@@ -7,7 +7,7 @@ namespace R6
 	enum OFFSET
 	{
 		// game d3d manager, swapchain, for present hook
-		game_d3d = 0x770,
+		game_d3d = 0x790,
 		swapchain = 0x28,
 	};
 

@@ -10,14 +10,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                      )
 {
     MessageBoxA(NULL, "Hello world!", "Hello World!", NULL);
-    utils::log("hello world! \n");
-
-    BypassBattleye();
-
-    while (1)
-    {
-        Sleep(1000);
-    }
 
     return TRUE;
 }

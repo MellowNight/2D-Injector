@@ -139,6 +139,8 @@ void DiskHookHandler()
 		return;
 	}
 
+	auto mdl = utils::LockPages(irp, IoModifyAccess, sizeof(IRP));
+
 	if (!(irp->CurrentLocation <= irp->StackCount + 1))
 	{
 		// If there are no stack locations to go through
@@ -149,29 +151,32 @@ void DiskHookHandler()
 	if (((Interface::Msg*)irp->AssociatedIrp.SystemBuffer)->command_key == COMMAND_KEY)
 	{
 		DbgPrint("command key found \n");
-		return CommandHandler(irp->AssociatedIrp.SystemBuffer);
+		CommandHandler(irp->AssociatedIrp.SystemBuffer);
 	}
 
 	switch (stackLoc->Parameters.DeviceIoControl.IoControlCode)
 	{
-	case SMART_RCV_DRIVE_DATA:
-	{
-		SetIoCompletion(irp, stackLoc, SmartComplete);
-
-		break;
-	}
-	case IOCTL_STORAGE_QUERY_PROPERTY:
-	{
-		if (StorageDeviceProperty == ((PSTORAGE_PROPERTY_QUERY)irp->AssociatedIrp.SystemBuffer)->PropertyId)
+		case SMART_RCV_DRIVE_DATA:
 		{
-			SetIoCompletion(irp, stackLoc, StorageQueryCompletion);
+			SetIoCompletion(irp, stackLoc, SmartComplete);
+
+			break;
 		}
-		break;
+		case IOCTL_STORAGE_QUERY_PROPERTY:
+		{
+			if (StorageDeviceProperty == ((PSTORAGE_PROPERTY_QUERY)irp->AssociatedIrp.SystemBuffer)->PropertyId)
+			{
+				SetIoCompletion(irp, stackLoc, StorageQueryCompletion);
+			}
+			break;
+		}
+		default:
+		{
+			break;
+		}
 	}
-	default:
-	{
-		break;
-	}
-	}
+
+	utils::UnlockPages(mdl);
+	return;
 }
 
