@@ -172,15 +172,6 @@ namespace utils
         }
     }
 
-    PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation, int size)
-    {
-        PMDL mdl = IoAllocateMdl(VirtualAddress, size, FALSE, FALSE, nullptr);
-
-        MmProbeAndLockPages(mdl, KernelMode, operation);
-
-        return mdl;
-    }
-
     NTSTATUS    UnlockPages(PMDL mdl)
     {
         MmUnlockPages(mdl);

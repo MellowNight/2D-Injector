@@ -167,6 +167,35 @@ BOOLEAN ResolveImports(int target_pid, PBYTE base)
 	return TRUE;
 }
 
+void* GetExport(uintptr_t base, char* export_name)
+{
+	PIMAGE_NT_HEADERS nt_header = PeHeader(base);
+
+	IMAGE_DATA_DIRECTORY data_dir =
+		nt_header->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+
+	auto export_dir = (IMAGE_EXPORT_DIRECTORY*)(data_dir.VirtualAddress + base);
+
+	auto function_array = (int*)(export_dir->AddressOfFunctions + base);
+	auto name_array = (int*)(export_dir->AddressOfNames + base);
+	auto ordinal_array = (int16_t*)(export_dir->AddressOfNameOrdinals + base);
+
+	for (int i = 0; i < export_dir->NumberOfFunctions; ++i)
+	{
+		char* name = (char*)(name_array[i] + base);
+
+		std::cout << "name " << name << " export_name " << export_name << std::endl;
+
+		if (!strcmp(export_name, name))
+		{
+			int ordinal = ordinal_array[i];
+			return (void*)function_array[ordinal];
+		}
+	}
+
+	return NULL;
+}
+
 IMAGE_DOS_HEADER* PrepareImage(HANDLE h_dll, int size, ULONG64 map_base, int target_pid)
 {
 	SetFilePointer(h_dll, 0, 0, 0);

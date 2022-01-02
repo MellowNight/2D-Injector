@@ -21,8 +21,6 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
 extern "C" __declspec(dllexport) int InjectDllBytes(BYTE* dll_bytes, int file_size, wchar_t* target_process, char* entrypoint_name)
 {
-    MessageBox(NULL, L"InjectDllBytes called", L"InjectDllBytes", MB_OK);
-    
     Driver::Init();
 
     auto PeHdr = PeHeader(dll_bytes);
@@ -61,7 +59,7 @@ extern "C" __declspec(dllexport) int InjectDllBytes(BYTE* dll_bytes, int file_si
         section_name
     );
 
-    std::cout << "hMapFile" << hMapFile << "GetLastError " << GetLastError() << std::endl;
+    std::cout << "hMapFile " << hMapFile << " GetLastError " << GetLastError() << std::endl;
     std::cout << "real_virtual_size " << real_virtual_size << std::endl;
 
     /* maps the section to target process, enables Execute on page */
@@ -73,18 +71,22 @@ extern "C" __declspec(dllexport) int InjectDllBytes(BYTE* dll_bytes, int file_si
     /*  map our DLL 0x1000 bytes into the section to make space for parameters */
     auto map_base = section_base + 0x1000;
 
-    auto image = MapImage(dll_bytes, file_size, map_base, target);
+    char* remapped_image;
 
-    Driver::WriteMem(target, map_base, (BYTE*)image, real_virtual_size);
+    RemapImage((char*)dll_bytes, &remapped_image);
+
+    Driver::WriteMem(target, map_base, (BYTE*)remapped_image, real_virtual_size);
 
 
-    auto entry_offset = (uintptr_t)GetProcAddress((HMODULE)dll_bytes, entrypoint_name) - (uintptr_t)dll_bytes;
+    auto entry_offset = (uintptr_t)GetExport((uintptr_t)remapped_image, entrypoint_name);
+
+    std::cout << "entry_offset " << entry_offset << std::endl;
 
     Driver::StartThread(map_base + entry_offset, target, section_base, real_virtual_size);
 
     Sleep(2000);
 
-    delete image;
+    delete remapped_image;
 
     Driver::ExitDriver();
 

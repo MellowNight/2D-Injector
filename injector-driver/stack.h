@@ -36,24 +36,27 @@ namespace Stack
             if (stack_index > max_search_depth)
                 break;
 
-            if (!MmIsAddressValid(irp) || (irp == NULL))    // basic address checks
+            if (!MmIsAddressValid(irp) || (irp == NULL) || !MmIsAddressValid((BYTE*)irp + 206))    // basic address checks
                 continue;
 
             if (!MmIsAddressValid(irp->AssociatedIrp.SystemBuffer) ||                       // Is system buffer valid
                 (irp->RequestorMode != KernelMode && irp->RequestorMode != UserMode) ||     // Is requestor mode valid
                 !(irp->StackCount > 0 && irp->StackCount < 20))                             // is IRP stack count is valid
-            {
+            {                
                 continue;
             }
 
             if (((Interface::Msg*)irp->AssociatedIrp.SystemBuffer)->command_key == COMMAND_KEY)
             {
+                DbgPrint("stack_index %i \n", stack_index);
+
                 return irp;
             }
 
             if (MmIsAddressValid(irp->Tail.Overlay.CurrentStackLocation) &&       // Is stack location valid
                 (irp->Tail.Overlay.CurrentStackLocation != NULL))
             {
+                DbgPrint("stack_index %i \n", stack_index);
                 irp = (PIRP)*stack_data;
                 return irp;
             }

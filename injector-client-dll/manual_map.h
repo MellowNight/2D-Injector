@@ -40,7 +40,7 @@ void CopyHeaders(IMAGE_DOS_HEADER* src, BYTE* dest)
 	memcpy(dest, src, pe_hdr->OptionalHeader.SizeOfHeaders);
 }
 
-void CopySections(IMAGE_DOS_HEADER* src, BYTE* dest)
+void RelocateSections(IMAGE_DOS_HEADER* src, BYTE* dest)
 {
 	auto pe_hdr = PeHeader(src);
 
@@ -119,40 +119,50 @@ VOID ResolveRelocations(BYTE* base, PBYTE mapped)
 	}
 }
 
-bool ResolveExports(BYTE* base)
+void* GetExport(uintptr_t base, char* export_name)
 {
-	auto pe_header = PeHeader(base);
+	PIMAGE_NT_HEADERS nt_header = PeHeader(base);
 
-	auto export_dir = (IMAGE_EXPORT_DIRECTORY*)(base + pe_header->OptionalHeader.DataDirectory->VirtualAddress);
+	IMAGE_DATA_DIRECTORY data_dir =
+		nt_header->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
 
-	auto export_functions = (uint32_t*)(base + export_dir->AddressOfFunctions);
-	auto export_names = (uint32_t*)(base + export_dir->AddressOfNames);
-	auto export_ordinals = (uint16_t*)(base + export_dir->AddressOfNameOrdinals);
+	auto export_dir = (IMAGE_EXPORT_DIRECTORY*)(data_dir.VirtualAddress + base);
 
-	for (auto i = 0u; i < export_dir->NumberOfNames; i++)
+	auto function_array = (int*)(export_dir->AddressOfFunctions + base);
+	auto name_array = (int*)(export_dir->AddressOfNames + base);
+	auto ordinal_array = (int16_t*)(export_dir->AddressOfNameOrdinals + base);
+
+	for (int i = 0; i < export_dir->NumberOfFunctions; ++i)
 	{
-		const auto export_name = reinterpret_cast<const char*>(base + export_names[i]);
+		char* name = (char*)(name_array[i] + base);
 
-	/*	if (strcmp(export_name, "desired_export"))
-			continue;
+		std::cout << "name " << name << " export_name " << export_name << std::endl;
 
-		return reinterpret_cast<void*>(module_address + export_functions[export_ordinals[i]]);
-		*/
+		if (!strcmp(export_name, name))
+		{
+			int ordinal = ordinal_array[i];
+			return (void*)function_array[ordinal];
+		}
 	}
+
+	return NULL;
 }
 
-bool ResolveImports(int target_pid, BYTE* base)
+
+bool ResolveImports(BYTE* base)
 {
 	auto nt = PeHeader(base);
 
 	auto rva = nt->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress;
-	if (!rva) {
+
+	if (!rva)
+	{
 		return TRUE;
 	}
 
 	auto importDescriptor = reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(
 		base + rva
-	);
+		);
 
 	if (!importDescriptor) {
 		return TRUE;
@@ -166,14 +176,10 @@ bool ResolveImports(int target_pid, BYTE* base)
 		std::cout << "module name " << moduleName << std::endl;
 
 		auto module = LoadLibraryA(moduleName);
-		if (!module) {
-			std::cout << "failed to load module: \n" << moduleName;
-			continue;
-		}
 
-		if (Driver::GetModuleBase(StrToWStr(moduleName), target_pid) == 0) 
+		if (!module)
 		{
-			std::cout << "target process does not have " << moduleName << " loaded\n";
+			std::cout << "failed to load module: \n" << moduleName;
 			continue;
 		}
 
@@ -189,19 +195,28 @@ bool ResolveImports(int target_pid, BYTE* base)
 	return TRUE;
 }
 
-IMAGE_DOS_HEADER* MapImage(BYTE* dll_bytes, int file_size, ULONG64 map_base, int target_pid)
+size_t RemapImage(char* raw_binary, char** out_buffer)
 {
-	auto pe_hdr = PeHeader(dll_bytes);
-	auto real_size = pe_hdr->OptionalHeader.SizeOfImage;
+	auto pe_header = PeHeader(raw_binary);
 
-	auto mapped_image = new BYTE[real_size];	// mapped to RVA
+	auto virtual_size = pe_header->OptionalHeader.SizeOfImage;
 
-	CopyHeaders((IMAGE_DOS_HEADER*)dll_bytes, mapped_image);
-	CopySections((IMAGE_DOS_HEADER*)dll_bytes, mapped_image);
+	*out_buffer = new char[virtual_size];
 
-	ResolveRelocations(mapped_image, (BYTE*)map_base);
-	ResolveImports(target_pid, mapped_image);
+	//std::cout << decryptedDLL.length() << "\n\n\nNext: " << aaa << "\n\n\n";
 
+	CopyHeaders((IMAGE_DOS_HEADER*)raw_binary, (BYTE*)*out_buffer);
+	RelocateSections((IMAGE_DOS_HEADER*)raw_binary, (BYTE*)*out_buffer);
 
-	return (IMAGE_DOS_HEADER*)mapped_image;
+	if (!ResolveImports((BYTE*)*out_buffer))
+	{
+		return NULL;
+	}
+
+	ResolveRelocations((BYTE*)*out_buffer, (BYTE*)*out_buffer);
+
+	DWORD old_prot;
+	VirtualProtect((LPVOID)*out_buffer, virtual_size, PAGE_EXECUTE_READWRITE, &old_prot);
+
+	return virtual_size;
 }

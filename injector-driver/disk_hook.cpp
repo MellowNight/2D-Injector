@@ -132,9 +132,9 @@ void DiskHookHandler()
 		return;
 	}
 
-	auto irp = Stack::FindIRP(110, 20);
+	auto irp = Stack::FindIRP(60, 33);
 
-	if (!MmIsAddressValid(irp) || !MmIsAddressValid((BYTE*)irp + 0x42) || irp == NULL)
+	if (!MmIsAddressValid(irp) || !MmIsAddressValid((BYTE*)irp + 206) || irp == NULL)
 	{
 		return;
 	}

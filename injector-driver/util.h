@@ -62,7 +62,14 @@ namespace utils
 		PVOID lpFuncAddress
 	);
 
-	PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation, int size = PAGE_SIZE);
+	inline PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation, int size = PAGE_SIZE)
+	{
+		PMDL mdl = IoAllocateMdl(VirtualAddress, size, FALSE, FALSE, nullptr);
+
+		MmProbeAndLockPages(mdl, KernelMode, operation);
+
+		return mdl;
+	}
 
 	NTSTATUS UnlockPages(PMDL mdl);
 

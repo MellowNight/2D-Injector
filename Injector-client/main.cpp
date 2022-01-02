@@ -1,7 +1,7 @@
 #include "communicate.h"
 #include "manual_map.h"
 
-#define CHEAT_DLL_NAME "r6-internal.dll"
+#define CHEAT_DLL_NAME "C:\\Users\\lolxd\\source\\repos\\r6-internal\\x64\\Release\\r6-internal.dll"
 #define TARGET L"RainbowSix.exe"
 #define ENTRYPOINT_NAME "PresentHookEntry"
 
@@ -61,9 +61,6 @@ extern "C" int main()
 		section_name
 	); 
 
-	std::cout << "hMapFile" << hMapFile << "GetLastError " << GetLastError() << std::endl;
-	std::cout << "real_virtual_size " << real_virtual_size << std::endl;
-
 	/* maps the section to target process, enables Execute on page */
 
 	auto section_base = Driver::MapMem(
@@ -77,22 +74,15 @@ extern "C" int main()
 
 	CloseHandle(file_handle);
 
-	std::cout << "Writing image... map base " << std::hex << map_base << std::endl;
-
 	Driver::WriteMem(target, map_base, (BYTE*)image, real_virtual_size);
 
-	std::cout << "Telling the driver to start bypass thread... \n";
-	
-	auto loaded_module = (uintptr_t)LoadLibraryA(CHEAT_DLL_NAME);		// get address of custom entry point
-	auto entry_offset = (uintptr_t)GetProcAddress((HMODULE)loaded_module, ENTRYPOINT_NAME) - loaded_module;
+	auto entry_offset = (uintptr_t)GetExport((uintptr_t)image, (char*)ENTRYPOINT_NAME);
  
 	std::cout << "entry_offset " << entry_offset << "\n";
 
 	Driver::StartThread(map_base + entry_offset, target, section_base, real_virtual_size);
 
 	Sleep(5000);
-
-	FreeLibrary((HMODULE)loaded_module);
 
 	delete image;
 

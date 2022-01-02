@@ -43,7 +43,6 @@ bool SetR6PresentHook(uintptr_t base, PVOID hook_handler, InjectInfo* info)
 
 	*(PVOID**)swapchain = new_vmt;
 
-	info->header = 0x1234;
 	info->o_swapchain_vmt = (void**)vmt;
 	info->swapchain_ptr = (void***)swapchain;
 

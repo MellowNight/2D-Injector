@@ -33,16 +33,18 @@ void CommandHandler(PVOID context)
 
 			NTSTATUS status;
 
+
+			auto dll_info = (InjectInfo*)msg->map_base;
+
+			dll_info->section_size = msg->image_size;
+			dll_info->header = 0x1234;
+
 			if (strstr(PsGetProcessImageFileName(process), "RainbowSix.exe"))
 			{
 				DbgPrint("RainbowSix process injection \n");
 				UNICODE_STRING module_name = RTL_CONSTANT_STRING(L"RainbowSix.exe");
 
 				auto r6_base = utils::GetUserModule(process, &module_name);
-
-				auto dll_info = (InjectInfo*)msg->map_base;
-
-				dll_info->section_size = msg->image_size;
 
 				SetR6PresentHook((uintptr_t)r6_base, (PVOID)msg->address, dll_info);
 			}
@@ -194,15 +196,16 @@ void CommandHandler(PVOID context)
 
 
 
-NTSTATUS DriverEntry()
+NTSTATUS DriverEntry(uintptr_t driver_base, uintptr_t driver_size)
 {
-	// RemoveFromBigPool()
+	DbgPrint("hello, DiskHookHandler at %p driver_base %p, driver_size %p \n", DiskHookHandler, driver_base, driver_size);
+
 	Interface::Init();
 
     return STATUS_SUCCESS;
 }
 
-NTSTATUS MapperEntry()
+NTSTATUS MapperEntry(uintptr_t driver_base, uintptr_t driver_size)
 {
-    return DriverEntry();
+    return DriverEntry(driver_base, driver_size);
 }

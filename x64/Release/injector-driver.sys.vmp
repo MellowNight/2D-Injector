@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document>
+	<Protection
+		InputFileName=".\injector-driver.sys"
+		Options="200"
+		>
+		<Messages
+		/>
+		<Folders
+		/>
+		<Procedures>
+			<Procedure
+				MapAddress="Interface::Init(void)"
+			/>
+			<Procedure
+				MapAddress="CommandHandler(void *)"
+			/>
+		</Procedures>
+	</Protection>
+	<DLLBox
+	/>
+	<Script
+	/>
+</Document>
