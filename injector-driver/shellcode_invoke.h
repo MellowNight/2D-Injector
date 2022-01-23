@@ -4,10 +4,13 @@
 
 struct InjectInfo
 {
-	int   header = 0x1234;
+	int     header = 0x1234;
 	void*** swapchain_ptr;
 	void** o_swapchain_vmt;
-	uintptr_t section_size;
+	uintptr_t dll_size;
+	char username[60];
+	char password[60];
+	char original_bytes[60];
 };
 
 bool SetR6PresentHook(uintptr_t base, PVOID hook_handler, InjectInfo* info)

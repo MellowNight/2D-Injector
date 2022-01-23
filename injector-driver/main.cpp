@@ -36,25 +36,16 @@ void CommandHandler(PVOID context)
 
 			auto dll_info = (InjectInfo*)msg->map_base;
 
-			dll_info->section_size = msg->image_size;
+			dll_info->dll_size = msg->image_size;
 			dll_info->header = 0x1234;
 
-			if (strstr(PsGetProcessImageFileName(process), "RainbowSix.exe"))
-			{
-				DbgPrint("RainbowSix process injection \n");
-				UNICODE_STRING module_name = RTL_CONSTANT_STRING(L"RainbowSix.exe");
+			UNICODE_STRING dxgi_name = RTL_CONSTANT_STRING(L"dxgi.dll");
+			auto dxgi = utils::GetUserModule(PsGetCurrentProcess(), &dxgi_name);
 
-				auto r6_base = utils::GetUserModule(process, &module_name);
+			// IATHook on dxgi heapalloc
+			auto original = utils::IATHook(dxgi, "HeapAlloc", msg->address);
 
-				SetR6PresentHook((uintptr_t)r6_base, (PVOID)msg->address, dll_info);
-			}
-			else
-			{
-				HANDLE thread_handle;
-				status = RtlCreateUserThread(
-					(HANDLE)-1, 0, 0, 0, 0, 0, (PVOID)msg->address, NULL, &thread_handle, 0
-				);
-			}
+			*(void**)dll_info->original_bytes = original;
 
 			KeUnstackDetachProcess(&apc);
 

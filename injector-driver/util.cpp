@@ -1,5 +1,9 @@
 #include "util.h"
 #include "offsets.h"
+#include <winnt.h>
+
+#define PeHeader(image) ((IMAGE_NT_HEADERS64*)((uintptr_t)image + ((IMAGE_DOS_HEADER*)image)->e_lfanew))
+
 
 namespace utils
 {
@@ -10,6 +14,49 @@ namespace utils
 
         return MmGetVirtualForPhysical(pa);
     }
+
+    PVOID IATHook(unsigned char* image_base, char* lpcStrImport, void* lpFuncAddress)
+    {
+        auto nt_header = PeHeader(image_base);
+
+        auto import_dir =
+            nt_header->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
+
+        auto import_desc = (IMAGE_IMPORT_DESCRIPTOR*)(import_dir.VirtualAddress + image_base);
+
+        PVOID result = NULL;
+        PIMAGE_IMPORT_BY_NAME func_name = NULL;
+
+        if (!import_desc)
+            return NULL;
+
+        while (import_desc->Name != NULL)
+        {
+            IMAGE_THUNK_DATA* o_first_thunk = NULL, * first_thunk = NULL;
+
+            o_first_thunk = (IMAGE_THUNK_DATA*)(image_base + import_desc->OriginalFirstThunk);
+
+            first_thunk = (IMAGE_THUNK_DATA*)(image_base + import_desc->FirstThunk);
+
+            while (o_first_thunk->u1.AddressOfData != NULL)
+            {
+                func_name = (IMAGE_IMPORT_BY_NAME*)(image_base + o_first_thunk->u1.AddressOfData);
+
+                if (strcmp(func_name->Name, lpcStrImport) == 0)
+                {
+                    result = (void*)first_thunk->u1.Function;
+                    first_thunk->u1.Function = reinterpret_cast<ULONG64>(lpFuncAddress);
+
+                    return result;
+                }
+                o_first_thunk += 1;
+                first_thunk += 1;
+            }
+            import_desc += 1;
+        }
+        return NULL;
+    }
+
 
     PT_ENTRY_64* GetPte(PVOID VirtualAddress, ULONG64 Pml4BasePa, PageTableOperation Operation)
     {
