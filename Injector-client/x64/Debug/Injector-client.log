@@ -1,1 +1,5 @@
-﻿
+﻿  main.cpp
+C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.h(185,20): warning C4018: '<': signed/unsigned mismatch
+C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.h(194,41): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+C:\Users\lolxd\source\repos\BE-injector\Injector-client\main.cpp(69,10): warning C4101: 'pBuf': unreferenced local variable
+  Injector-client.vcxproj -> C:\Users\lolxd\source\repos\BE-injector\x64\Debug\Injector-client.exe

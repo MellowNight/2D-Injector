@@ -33,9 +33,6 @@
     <ClInclude Include="disasm.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="shellcode_invoke.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="stack.h">
       <Filter>Source Files</Filter>
     </ClInclude>

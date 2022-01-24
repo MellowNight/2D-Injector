@@ -67,6 +67,7 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
+    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
@@ -153,7 +154,11 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Link>
       <GenerateMapFile>true</GenerateMapFile>
+      <EntryPointSymbol>MapperEntry</EntryPointSymbol>
     </Link>
+    <ClCompile>
+      <TreatWarningAsError>false</TreatWarningAsError>
+    </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
     <Inf Include="injector-driver.inf" />
@@ -168,7 +173,6 @@
     <ClInclude Include="ia32_define.h" />
     <ClInclude Include="offsets.h" />
     <ClInclude Include="pe_header.h" />
-    <ClInclude Include="shellcode_invoke.h" />
     <ClInclude Include="mapper_traces.h" />
     <ClInclude Include="stack.h" />
     <ClInclude Include="undocumented.h" />

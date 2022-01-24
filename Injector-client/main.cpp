@@ -1,16 +1,32 @@
 #include "communicate.h"
 #include "manual_map.h"
 
-#define CHEAT_DLL_NAME "C:\\Users\\lolxd\\source\\repos\\r6-internal\\x64\\Release\\r6-internal.dll"
-#define TARGET L"RainbowSix.exe"
-#define ENTRYPOINT_NAME "PresentHookEntry"
+#define TARGET L"VALORANT-Win64-Shipping.exe"
+#define ENTRYPOINT_NAME "HookEntryPoint"
+
+struct InjectInfo
+{
+	int     header = 0x1234;
+	void*** swapchain_ptr;
+	void** o_swapchain_vmt;
+	uintptr_t dll_size;
+	char username[60];
+	char password[60];
+	char original_bytes[60];
+};
+
+
 
 extern "C" int main()
 {
+	std::string CHEAT_DLL_NAME;
+	std::cout << "Enter the name of the DLL to inject: " << std::endl;
+	std::cin >> CHEAT_DLL_NAME;
+
 	Driver::Init();
 
 	auto file_handle = CreateFileA(
-		CHEAT_DLL_NAME, GENERIC_ALL, 0, NULL,
+		CHEAT_DLL_NAME.c_str(), GENERIC_ALL, 0, NULL,
 		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL
 	);
 
@@ -81,8 +97,6 @@ extern "C" int main()
 	std::cout << "entry_offset " << entry_offset << "\n";
 
 	Driver::StartThread(map_base + entry_offset, target, section_base, real_virtual_size);
-
-	Sleep(5000);
 
 	delete image;
 

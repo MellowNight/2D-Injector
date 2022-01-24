@@ -1,6 +1,16 @@
 #include "communicate.h"
-#include "shellcode_invoke.h"
 #include "undocumented_exports.h"
+
+struct InjectInfo
+{
+	int     header = 0x1234;
+	void*** swapchain_ptr;
+	void** o_swapchain_vmt;
+	uintptr_t dll_size;
+	char username[60];
+	char password[60];
+	char original_bytes[60];
+};
 
 using namespace Interface;
 
@@ -39,17 +49,15 @@ void CommandHandler(PVOID context)
 			dll_info->dll_size = msg->image_size;
 			dll_info->header = 0x1234;
 
-			UNICODE_STRING dxgi_name = RTL_CONSTANT_STRING(L"dxgi.dll");
-			auto dxgi = utils::GetUserModule(PsGetCurrentProcess(), &dxgi_name);
+			UNICODE_STRING d3d11_name = RTL_CONSTANT_STRING(L"d3d11.dll");
+			auto d3d11 = utils::GetUserModule(PsGetCurrentProcess(), &d3d11_name);
 
 			// IATHook on dxgi heapalloc
-			auto original = utils::IATHook(dxgi, "HeapAlloc", msg->address);
+			auto original = utils::IATHook((UCHAR*)d3d11, "HeapAlloc", (void*)msg->address);
 
 			*(void**)dll_info->original_bytes = original;
 
 			KeUnstackDetachProcess(&apc);
-
-			DbgPrint("RtlCreateUserThread status %p address %p \n", status, msg->address);
 
 			break;
 		}

@@ -160,6 +160,12 @@ struct IMAGE_EXPORT_DIRECTORY {
     DWORD   AddressOfNames;         // RVA from base of image
     DWORD   AddressOfNameOrdinals;  // RVA from base of image
 };
-
-typedef IMAGE_THUNK_DATA64* PIMAGE_THUNK_DATA64;
-typedef PIMAGE_THUNK_DATA64     PIMAGE_THUNK_DATA;
+struct IMAGE_THUNK_DATA
+{
+    union {
+        ULONGLONG ForwarderString; // PBYTE
+        ULONGLONG Function; // PDWORD 
+        ULONGLONG Ordinal;
+        ULONGLONG AddressOfData; // PIMAGE_IMPORT_BY_NAME 
+    } u1;
+};

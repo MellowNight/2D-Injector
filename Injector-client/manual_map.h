@@ -151,7 +151,9 @@ BOOLEAN ResolveImports(int target_pid, PBYTE base)
 
 		if (Driver::GetModuleBase(StrToWStr(moduleName), target_pid) == 0) 
 		{
-			std::cout << "target process does not have " << moduleName << " loaded\n";
+			std::cout << "target process does not have " << moduleName
+				<< " loaded because this DLL isn't supposed to be globally mapped \n";
+
 			continue;
 		}
 

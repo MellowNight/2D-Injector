@@ -1,6 +1,6 @@
 #include "util.h"
 #include "offsets.h"
-#include <winnt.h>
+#include "pe_header.h"
 
 #define PeHeader(image) ((IMAGE_NT_HEADERS64*)((uintptr_t)image + ((IMAGE_DOS_HEADER*)image)->e_lfanew))
 
@@ -45,6 +45,17 @@ namespace utils
                 if (strcmp(func_name->Name, lpcStrImport) == 0)
                 {
                     result = (void*)first_thunk->u1.Function;
+
+                    CR3 cr3;
+                    cr3.Flags = __readcr3();
+
+                    utils::GetPte((PVOID)PAGE_ALIGN(&first_thunk->u1.Function), cr3.AddressOfPageDirectory << PAGE_SHIFT,
+                        [](PT_ENTRY_64* pte) -> int {
+                            pte->Write = 1;
+                            return 0;
+                        }
+                    );
+
                     first_thunk->u1.Function = reinterpret_cast<ULONG64>(lpFuncAddress);
 
                     return result;
@@ -329,71 +340,6 @@ namespace utils
         KeLowerIrql(tempirql);
     }
 
-    PVOID IATHook(PVOID lpBaseAddress, CHAR* lpcStrImport, PVOID lpFuncAddress)
-    {
-        if (!lpBaseAddress || !lpcStrImport || !lpFuncAddress)
-            return NULL;
-
-        PIMAGE_DOS_HEADER dosHeaders =
-            reinterpret_cast<PIMAGE_DOS_HEADER>(lpBaseAddress);
-
-        PIMAGE_NT_HEADERS ntHeaders =
-            reinterpret_cast<PIMAGE_NT_HEADERS>(
-                reinterpret_cast<DWORD_PTR>(lpBaseAddress) + dosHeaders->e_lfanew);
-
-        IMAGE_DATA_DIRECTORY importsDirectory =
-            ntHeaders->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
-
-        PIMAGE_IMPORT_DESCRIPTOR importDescriptor =
-            reinterpret_cast<PIMAGE_IMPORT_DESCRIPTOR>(importsDirectory.VirtualAddress + (DWORD_PTR)lpBaseAddress);
-
-        LPCSTR libraryName = NULL;
-        PVOID result = NULL;
-        PIMAGE_IMPORT_BY_NAME functionName = NULL;
-
-        if (!importDescriptor)
-            return NULL;
-
-        while (importDescriptor->Name != NULL)
-        {
-            libraryName = (LPCSTR)importDescriptor->Name + (DWORD_PTR)lpBaseAddress;
-
-            ANSI_STRING LibName;
-            UNICODE_STRING LibNameW;
-
-            RtlInitAnsiString(&LibName, libraryName);
-            RtlAnsiStringToUnicodeString(&LibNameW, &LibName, TRUE);
-
-            if (utils::GetKernelModule(0, LibNameW))
-            {
-                PIMAGE_THUNK_DATA originalFirstThunk = NULL, firstThunk = NULL;
-                originalFirstThunk = (PIMAGE_THUNK_DATA)((DWORD_PTR)lpBaseAddress + importDescriptor->OriginalFirstThunk);
-                firstThunk = (PIMAGE_THUNK_DATA)((DWORD_PTR)lpBaseAddress + importDescriptor->FirstThunk);
-                while (originalFirstThunk->u1.AddressOfData != NULL)
-                {
-                    functionName = (PIMAGE_IMPORT_BY_NAME)((DWORD_PTR)lpBaseAddress + originalFirstThunk->u1.AddressOfData);
-                    if (strcmp(functionName->Name, lpcStrImport) == 0)
-                    {
-                        // save old function pointer
-                        result = reinterpret_cast<PVOID>(firstThunk->u1.Function);
-                        auto irql = utils::DisableWP();
-                        // swap address
-                        firstThunk->u1.Function = reinterpret_cast<ULONG64>(lpFuncAddress);
-                        utils::EnableWP(irql);
-                        return result;
-                    }
-                    ++originalFirstThunk;
-                    ++firstThunk;
-                }
-            }
-
-            RtlFreeUnicodeString(&LibNameW);
-
-            importDescriptor++;
-        }
-        return NULL;
-    }
-
     NTSTATUS BBSearchPattern(IN PCUCHAR pattern, IN UCHAR wildcard, IN ULONG_PTR len, IN const VOID* base, IN ULONG_PTR size, OUT PVOID* ppFound)
     {
         ASSERT(ppFound != NULL && pattern != NULL && base != NULL);
@@ -526,72 +472,30 @@ namespace utils
 
     PVOID GetUserModule(IN PEPROCESS pProcess, IN PUNICODE_STRING ModuleName)
     {
-        LARGE_INTEGER time = { 0 };
-        time.QuadPart = -250ll * 10 * 1000;     // 250 msec.
-        BOOLEAN	 IsWow64 = (PsGetProcessWow64Process(pProcess) != NULL) ? TRUE : FALSE;
-        // Wow64 process
-        if (IsWow64)
+        PPEB pPeb = PsGetProcessPeb(pProcess);
+        if (!pPeb)
         {
-            PPEB32 pPeb32 = (PPEB32)PsGetProcessWow64Process(pProcess);
-            if (pPeb32 == NULL)
-            {
-                return NULL;
-            }
-
-            // Wait for loader a bit
-            for (INT i = 0; !pPeb32->Ldr && i < 10; i++)
-            {
-                KeDelayExecutionThread(KernelMode, TRUE, &time);
-            }
-
-            // Still no loader
-            if (!pPeb32->Ldr)
-            {
-                return NULL;
-            }
-
-            // Search in InLoadOrderModuleList
-            for (PLIST_ENTRY32 pListEntry = (PLIST_ENTRY32)((PPEB_LDR_DATA32)pPeb32->Ldr)->InLoadOrderModuleList.Flink;
-                pListEntry != &((PPEB_LDR_DATA32)pPeb32->Ldr)->InLoadOrderModuleList;
-                pListEntry = (PLIST_ENTRY32)pListEntry->Flink)
-            {
-                UNICODE_STRING ustr;
-                PLDR_DATA_TABLE_ENTRY32 pEntry = CONTAINING_RECORD(pListEntry, LDR_DATA_TABLE_ENTRY32, InLoadOrderLinks);
-
-                RtlUnicodeStringInit(&ustr, (PWCH)pEntry->BaseDllName.Buffer);
-
-                if (RtlCompareUnicodeString(&ustr, ModuleName, TRUE) == 0)
-                    return (PVOID)pEntry->DllBase;
-            }
+            return NULL;
         }
-        else
+
+        // Still no loader
+        if (!pPeb->Ldr)
         {
-            PPEB pPeb = PsGetProcessPeb(pProcess);
-            if (!pPeb)
-            {
-                return NULL;
-            }
+            return NULL;
+        }
 
-            // Wait for loader a bit
-            for (INT i = 0; !pPeb->Ldr && i < 10; i++)
-            {
-                KeDelayExecutionThread(KernelMode, TRUE, &time);
-            }
+        // Search in InLoadOrderModuleList
+        for (PLIST_ENTRY pListEntry = pPeb->Ldr->InLoadOrderModuleList.Flink;
+            pListEntry != &pPeb->Ldr->InLoadOrderModuleList;
+            pListEntry = pListEntry->Flink)
+        {
+            PLDR_DATA_TABLE_ENTRY pEntry = CONTAINING_RECORD(pListEntry, LDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
 
-            // Still no loader
-            if (!pPeb->Ldr)
-            {
-                return NULL;
-            }
+            DbgPrint("process module name %wZ \n", &pEntry->BaseDllName);
 
-            // Search in InLoadOrderModuleList
-            for (PLIST_ENTRY pListEntry = pPeb->Ldr->InLoadOrderModuleList.Flink;
-                pListEntry != &pPeb->Ldr->InLoadOrderModuleList;
-                pListEntry = pListEntry->Flink)
+            if (RtlCompareUnicodeString(&pEntry->BaseDllName, ModuleName, TRUE) == 0)
             {
-                PLDR_DATA_TABLE_ENTRY pEntry = CONTAINING_RECORD(pListEntry, LDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
-                if (RtlCompareUnicodeString(&pEntry->BaseDllName, ModuleName, TRUE) == 0)
-                    return pEntry->DllBase;
+                return pEntry->DllBase;
             }
         }
         

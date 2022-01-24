@@ -56,11 +56,8 @@ namespace utils
 		const wchar_t* path, 
 		bool fixPe
 	);
-	PVOID IATHook(
-		PVOID lpBaseAddress, 
-		CHAR* lpcStrImport, 
-		PVOID lpFuncAddress
-	);
+	PVOID IATHook(unsigned char* image_base, char* lpcStrImport, void* lpFuncAddress);
+
 
 	inline PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation, int size = PAGE_SIZE)
 	{
