@@ -1,42 +1,42 @@
-//#pragma once
-//#include "Zydis/Zydis.h"
-//#include "Zycore/Zycore.h"
-//#include "Zydis/Decoder.h"
-//
-//ZydisDecoder zy_decoder;
-//
-//ZydisDecodedInstruction	disasm(ULONG64 address)
-//{
-//    ZydisDecodedInstruction insn;
-//    ZydisDecoderDecodeBuffer(&zy_decoder, (void*)address, 20,
-//        &insn);
-//
-//    return insn;
-//}
-//
-//int GetInsnLen(BYTE* Instruction)
-//{
-//    ZydisDecodedInstruction insn;
-//    ZydisDecoderDecodeBuffer(&zy_decoder, Instruction, 20,
-//        &insn);
-//
-//    return insn.length;
-//}
-//
-///*	Gets total instructions length closest to BytesLength	*/
-//int	LengthOfInsns(PVOID	address, int BytesLength)
-//{
-//    int InstructionLen = 0;
-//    for (InstructionLen = 0; InstructionLen < BytesLength;)
-//    {
-//        int CurInstructionLen = GetInsnLen((BYTE*)address + InstructionLen);
-//        InstructionLen += CurInstructionLen;
-//    }
-//
-//    return InstructionLen;
-//}
-//
-//void InitZydis()
-//{
-//    ZydisDecoderInit(&zy_decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_ADDRESS_WIDTH_64);
-//}
+#pragma once
+#include "includes.h"
+
+namespace Disasm
+{
+	static ZydisDecoder zydis_decoder;
+
+	ZydisDecodedInstruction Disassemble(uint8_t* instruction)
+	{
+		ZydisDecodedInstruction zydis_insn;
+		ZydisDecodedOperand operands[ZYDIS_MAX_OPERAND_COUNT_VISIBLE];
+		
+		ZydisDecoderDecodeFull(
+			&zydis_decoder, 
+			instruction, 16, 
+			&zydis_insn,
+			operands, 
+			ZYDIS_MAX_OPERAND_COUNT_VISIBLE, 
+			ZYDIS_DFLAG_VISIBLE_OPERANDS_ONLY
+		);
+
+		return zydis_insn;
+	}
+
+	/*	Gets total instructions length closest to byte_length	*/
+	int	LengthOfInstructions(void* address, int byte_length)
+	{
+		int insns_len = 0;
+		for (insns_len = 0; insns_len < byte_length;)
+		{
+			int cur_insn_len = Disassemble((uint8_t*)address + insns_len).length;
+			insns_len += cur_insn_len;
+		}
+
+		return insns_len;
+	}
+
+	int Init()
+	{
+		return ZydisDecoderInit(&zydis_decoder, ZYDIS_MACHINE_MODE_LONG_64, ZYDIS_STACK_WIDTH_64);
+	}
+};

@@ -29,10 +29,8 @@ LONG BreakpointRemoverVEH(_EXCEPTION_POINTERS* ExceptionInfo)
             );
 
             SetFilePointer(
-                file_handle,
-                file_patch_offset,
-                NULL,
-                FILE_BEGIN
+                file_handle, file_patch_offset,
+                NULL, FILE_BEGIN
             );
 
             auto rip_page = PAGE_ALIGN(ExceptionInfo->ContextRecord);

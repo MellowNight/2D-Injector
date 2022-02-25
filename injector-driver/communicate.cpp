@@ -7,8 +7,8 @@ namespace Interface
 
 	bool Init()
 	{
-		NTSTATUS	status = STATUS_SUCCESS;
-		ULONG		disk_size;
+		NTSTATUS status = STATUS_SUCCESS;
+		ULONG disk_size;
 
 		auto	disk_base = (uintptr_t)utils::GetKernelModule(&disk_size, RTL_CONSTANT_STRING(L"disk.sys"));
 		auto	nt_base = (PVOID)utils::GetKernelModule(NULL, RTL_CONSTANT_STRING(L"ntoskrnl.exe"));
