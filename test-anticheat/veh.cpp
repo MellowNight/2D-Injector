@@ -22,8 +22,10 @@ LONG WINAPI veh::be_handler(struct _EXCEPTION_POINTERS* ExceptionInfo) {
 
 				MEMORY_BASIC_INFORMATION mbi{ 0 };
 				size_t return_length{ 0 };
+		        
+				UNICODE_STRING mod_name;
 
-				if (
+				if (!utils::ModuleFromAddress(ExceptionInfo->ContextRecord->Rip, &mod_name);
 					(VirtualQuery((PVOID)return_address, &mbi, sizeof(mbi)) < 0) ||
 					mbi.State != MEM_COMMIT ||
 					mbi.Type != MEM_IMAGE && mbi.RegionSize > 0x2000 ||
