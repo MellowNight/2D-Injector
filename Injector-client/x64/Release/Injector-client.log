@@ -1,9 +1,0 @@
-﻿  main.cpp
-C:\Users\lolxd\source\repos\kernel-injector\Injector-client\manual_map.h(183,20): warning C4018: '<': signed/unsigned mismatch
-C:\Users\lolxd\source\repos\kernel-injector\Injector-client\manual_map.h(192,41): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
-C:\Users\lolxd\source\repos\kernel-injector\Injector-client\main.cpp(53,10): warning C4101: 'pBuf': unreferenced local variable
-  Generating code
-  Previous IPDB not found, fall back to full compilation.
-  All 109 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-  Injector-client.vcxproj -> C:\Users\lolxd\source\repos\kernel-injector\x64\Release\Injector-client.exe

@@ -10,9 +10,7 @@
 
 PVOID my_vector_handle = NULL;
 
-LONG BypassBEBreakpoint(
-    _EXCEPTION_POINTERS* ExceptionInfo
-)
+LONG BreakpointRemoverVEH(_EXCEPTION_POINTERS* ExceptionInfo)
 {
     if (ExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_BREAKPOINT)
     {
@@ -82,6 +80,13 @@ void BypassBattleye()
         unsigned int a3
     ) = (decltype(RtlpAddVectoredHandler))GetProcAddress(ntdll, "RtlAddVectoredExceptionHandler");
 
-    char* original_bytes;
-    PlaceJmpRipHook(RtlpAddVectoredHandler, RtlAddVectoredExceptionHandler_hook, original_bytes);  
+    uint8_t* original_bytes = NULL;
+    uint8_t* output_bytes = NULL;
+
+    CreateJmpRipCode(
+        RtlpAddVectoredHandler, 
+        RtlAddVectoredExceptionHandler_hook, 
+        &output_bytes, 
+        &original_bytes
+    );  
 }
