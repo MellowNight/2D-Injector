@@ -1,3 +1,4 @@
+#pragma once
 #include "includes.h"
 
 namespace Disasm
@@ -8,20 +9,20 @@ namespace Disasm
 	{
 		ZydisDecodedInstruction zydis_insn;
 		ZydisDecodedOperand operands[ZYDIS_MAX_OPERAND_COUNT_VISIBLE];
-		
+
 		ZydisDecoderDecodeFull(
-			&zydis_decoder, 
-			instruction, 16, 
+			&zydis_decoder,
+			instruction, 16,
 			&zydis_insn,
-			operands, 
-			ZYDIS_MAX_OPERAND_COUNT_VISIBLE, 
+			operands,
+			ZYDIS_MAX_OPERAND_COUNT_VISIBLE,
 			ZYDIS_DFLAG_VISIBLE_OPERANDS_ONLY
 		);
 
 		return zydis_insn;
 	}
 
-	/*	Gets the aligned length of instructions closest to byte_length	*/
+	/*	Gets total instructions length closest to byte_length	*/
 	int	LengthOfInstructions(void* address, int byte_length)
 	{
 		int insns_len = 0;

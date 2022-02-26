@@ -1,0 +1,8 @@
+﻿  test-anticheat.cpp
+  utils.cpp
+  veh.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 117 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  test-anticheat.vcxproj -> C:\Users\lolxd\source\repos\kernel-injector\x64\Release\test-anticheat.exe

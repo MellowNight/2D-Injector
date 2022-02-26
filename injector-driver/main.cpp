@@ -50,10 +50,10 @@ void CommandHandler(PVOID context)
 			dll_info->header = 0x1234;
 
 			UNICODE_STRING d3d11_name = RTL_CONSTANT_STRING(L"d3d11.dll");
-			auto d3d11 = utils::GetUserModule(PsGetCurrentProcess(), &d3d11_name);
+			auto d3d11 = Utils::GetUserModule(PsGetCurrentProcess(), &d3d11_name);
 
 			// IATHook on dxgi heapalloc
-			auto original = utils::IATHook((UCHAR*)d3d11, "HeapAlloc", (void*)msg->address);
+			auto original = Utils::IATHook((UCHAR*)d3d11, "HeapAlloc", (void*)msg->address);
 
 			*(void**)dll_info->original_bytes = original;
 
@@ -94,7 +94,7 @@ void CommandHandler(PVOID context)
 
 			DbgPrint("ZwMapViewOfSection status %p mapped_base: %p \n", status, mapped_base);
 
-			utils::FindVadNode((uintptr_t)mapped_base, process)->u.VadFlags.VadType = VadImageMap;
+			Utils::FindVadNode((uintptr_t)mapped_base, process)->u.VadFlags.VadType = VadImageMap;
 
 			CR3 cr3;
 			cr3.Flags = __readcr3();
@@ -107,11 +107,11 @@ void CommandHandler(PVOID context)
 					are only applied when the pages are mapped in
 				*/
 
-				utils::LockPages((void*)page, IoModifyAccess);
+				Utils::LockPages((void*)page, IoModifyAccess);
 
 				/*	set every PTE, PML4E, PDPTE, and PDE for our memory to enable execute	*/
 
-				utils::GetPte((PVOID)page, cr3.AddressOfPageDirectory << PAGE_SHIFT,
+				Utils::GetPte((PVOID)page, cr3.AddressOfPageDirectory << PAGE_SHIFT,
 					[](PT_ENTRY_64* pte) -> int {
 						pte->ExecuteDisable = 0;
 						return 0;
@@ -148,7 +148,7 @@ void CommandHandler(PVOID context)
 			UNICODE_STRING mod_name;
 			RtlInitUnicodeString(&mod_name, msg->module);
 				
-			auto mod_base = utils::GetUserModule(process, &mod_name);
+			auto mod_base = Utils::GetUserModule(process, &mod_name);
 
 			KeUnstackDetachProcess(&apc);
 

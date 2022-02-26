@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <winternl.h>
 
-namespace utils
+namespace Utils
 {
     PVOID ModuleFromAddress(uintptr_t address, PUNICODE_STRING out_name)
     {

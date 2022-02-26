@@ -2,7 +2,7 @@
 #include "undocumented.h"
 #include "ia32_define.h"
 
-namespace utils
+namespace Utils
 {
 	PVOID	GetVaFromPfn(ULONG64 pfn);
 

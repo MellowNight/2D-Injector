@@ -16,7 +16,7 @@ LONG WINAPI veh::be_handler(struct _EXCEPTION_POINTERS* ExceptionInfo) {
 				*(BYTE*)ExceptionInfo->ContextRecord->Rip = 0xC3;
 				VirtualProtect((LPVOID)ExceptionInfo->ContextRecord->Rip, 0x1, old, &old);
 
-				utils::log("[ANTICHEAT] breakpoint hit! RIP %p, byte %p \n", ExceptionInfo->ContextRecord->Rip, *(BYTE*)ExceptionInfo->ContextRecord->Rip);
+				Utils::log("[ANTICHEAT] breakpoint hit! RIP %p, byte %p \n", ExceptionInfo->ContextRecord->Rip, *(BYTE*)ExceptionInfo->ContextRecord->Rip);
 
 				uintptr_t return_address = *(uintptr_t*)ExceptionInfo->ContextRecord->Rsp;
 
@@ -25,7 +25,7 @@ LONG WINAPI veh::be_handler(struct _EXCEPTION_POINTERS* ExceptionInfo) {
 		        
 				UNICODE_STRING mod_name;
 
-				if (!utils::ModuleFromAddress(ExceptionInfo->ContextRecord->Rip, &mod_name);
+				if (!Utils::ModuleFromAddress(ExceptionInfo->ContextRecord->Rip, &mod_name) ||
 					(VirtualQuery((PVOID)return_address, &mbi, sizeof(mbi)) < 0) ||
 					mbi.State != MEM_COMMIT ||
 					mbi.Type != MEM_IMAGE && mbi.RegionSize > 0x2000 ||
@@ -36,7 +36,7 @@ LONG WINAPI veh::be_handler(struct _EXCEPTION_POINTERS* ExceptionInfo) {
 					*(WORD*)return_address == 0xE3FF
 					) {
 
-					utils::log("cheater return address! %p \n", return_address);
+					Utils::log("cheater return address! %p \n", return_address);
 				}
 			}
 		}
@@ -69,14 +69,14 @@ void veh::set_veh(uintptr_t func)
 		return;
 	}
 	
-	utils::log("[Anticheat] func at %p \n", func);
+	Utils::log("[Anticheat] func at %p \n", func);
 
 	while (*(BYTE*)func != 0xC3)
 	{
 		func += 1;
 	}
 
-	utils::log("[Anticheat] func at %p \n", func);
+	Utils::log("[Anticheat] func at %p \n", func);
 
 	std::tuple<uintptr_t, BYTE> newcheck{ func, *(BYTE*)func };
 	checks.push_back(newcheck);

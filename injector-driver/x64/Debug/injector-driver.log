@@ -1,0 +1,153 @@
+﻿  Building 'injector-driver' with toolset 'WindowsKernelModeDriver10.0' and the 'Universal' target platform.
+  Stamping x64\Debug\injector-driver.inf
+  Stamping [Version] section with DriverVer=01/24/2022,9.32.35.742
+  communicate.cpp
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\vad.h(104,10): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(204,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(258,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(562,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(594,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(675,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(866,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(889,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1061,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1085,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1114,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1136,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1162,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1186,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1375,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1583,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1785,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1853,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(2241,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\communicate.cpp(10,12): warning C4189: 'status': local variable is initialized but not referenced
+  disk_hook.cpp
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\vad.h(104,10): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(204,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(258,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(562,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(594,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(675,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(866,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(889,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1061,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1085,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1114,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1136,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1162,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1186,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1375,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1583,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1785,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1853,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(2241,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\stack.h(34,24): warning C4456: declaration of 'irp' hides previous local declaration
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\stack.h(30,17): message : see declaration of 'irp'
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\stack.h(30,17): warning C4189: 'irp': local variable is initialized but not referenced
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\disk_hook.cpp(31,53): warning C4996: 'ExAllocatePool': was declared deprecated
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\disk_hook.cpp(76,24): warning C4018: '<': signed/unsigned mismatch
+  main.cpp
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\vad.h(104,10): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(204,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(258,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(562,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(594,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(675,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(866,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(889,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1061,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1085,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1114,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1136,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1162,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1186,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1375,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1583,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1785,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1853,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(2241,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\main.cpp(44,13): warning C4101: 'status': unreferenced local variable
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\main.cpp(89,18): warning C4101: 'section_offset': unreferenced local variable
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\main.cpp(159,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\main.cpp(172,15): warning C4101: 'apc': unreferenced local variable
+  mapper_traces.cpp
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\vad.h(104,10): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(204,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(258,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(562,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(594,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(675,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(866,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(889,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1061,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1085,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1114,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1136,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1162,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1186,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1375,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1583,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1785,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1853,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(2241,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\mapper_traces.cpp(10,145): warning C4245: 'argument': conversion from 'char' to 'UCHAR', signed/unsigned mismatch
+  util.cpp
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\vad.h(104,10): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(204,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(258,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(562,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(594,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(675,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(866,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(889,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1061,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1085,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1114,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1136,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1162,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1186,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1375,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1583,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1785,6): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(1853,4): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\ia32_define.h(2241,7): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(75,22): warning C4101: 'finalEntry': unreferenced local variable
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(164,103): warning C4293: '<<': shift count negative or too big, undefined behavior
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(165,97): warning C4293: '<<': shift count negative or too big, undefined behavior
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(217,27): warning C4018: '<': signed/unsigned mismatch
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(291,25): warning C4101: 'DrvName': unreferenced local variable
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(422,15): warning C4189: 'ptr': local variable is initialized but not referenced
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(457,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(457,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(467,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(523,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(523,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(535,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(559,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(559,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(571,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(571,14): warning C4189: 'status2': local variable is initialized but not referenced
+  Generating Code...
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(231): warning C4715: 'utils::GetExport': not all control paths return a value
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(285): warning C4715: 'utils::GetProcessId': not all control paths return a value
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\stack.h(66): warning C4715: 'Stack::FindIRP': not all control paths return a value
+  injector-driver.vcxproj -> C:\Users\lolxd\source\repos\BE-injector\x64\Debug\injector-driver.sys
+  Done Adding Additional Store
+  Successfully signed: C:\Users\lolxd\source\repos\BE-injector\x64\Debug\injector-driver.sys
+  
+  Driver is 'Universal'.
+  ........................
+  Signability test complete.
+  
+  Errors:
+  None
+  
+  Warnings:
+  None
+  
+  Catalog generation complete.
+  C:\Users\lolxd\source\repos\BE-injector\x64\Debug\injector-driver\injector-driver.cat
+  Done Adding Additional Store
+  Successfully signed: C:\Users\lolxd\source\repos\BE-injector\x64\Debug\injector-driver\injector-driver.cat
+  

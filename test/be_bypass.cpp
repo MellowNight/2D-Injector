@@ -2,9 +2,6 @@
 #include "be_bypass.h"
 #include "utils.h"
 #include "hooks.h"
-#include "hv_api.h"
-#include <stdio.h>
-#include <stdlib.h>
 
 #define BATTLEYE_NAME L"test-anticheat.exe"
 
@@ -16,10 +13,10 @@ LONG BreakpointRemoverVEH(_EXCEPTION_POINTERS* ExceptionInfo)
         {
             UNICODE_STRING mod_name;
 
-            auto module_base = (IMAGE_DOS_HEADER*)utils::ModuleFromAddress(ExceptionInfo->ContextRecord->Rip, &mod_name);
-            auto file_patch_offset = RVA_TO_OFFSET(module_base, (uintptr_t)ExceptionInfo->ContextRecord->Rip - module_base);
+            auto module_base = (uintptr_t)Utils::ModuleFromAddress(ExceptionInfo->ContextRecord->Rip, &mod_name);
+            auto file_patch_offset = Utils::RvaToOffset((void*)module_base, (uintptr_t)ExceptionInfo->ContextRecord->Rip - module_base);
 
-            utils::log("breakpoint hit! RIP = %p\n", ExceptionInfo->ContextRecord->Rip);
+            Utils::log("breakpoint hit! RIP = %p\n", ExceptionInfo->ContextRecord->Rip);
 
             auto file_handle = CreateFileW(
                 mod_name.Buffer, GENERIC_ALL, 0, NULL,
@@ -41,7 +38,7 @@ LONG BreakpointRemoverVEH(_EXCEPTION_POINTERS* ExceptionInfo)
 
             ReadFile(
                 file_handle,
-                ExceptionInfo->ContextRecord->Rip, /* quick thinking  */
+                (void*)ExceptionInfo->ContextRecord->Rip, /* quick thinking  */
                 1, &bytes_read, NULL
             );
 
@@ -58,44 +55,50 @@ LONG BreakpointRemoverVEH(_EXCEPTION_POINTERS* ExceptionInfo)
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
-JmpRipCode* addveh_hook = NULL;
+Hooks::JmpRipCode* addveh_hook = NULL;
+uint64_t (__fastcall* RtlpAddVectoredHandler)(
+    int a1,
+    __int64 a2,
+    unsigned int a3
+) = NULL;
 
-uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr)
+uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr, unsigned int a3)
 {            
     UNICODE_STRING mod_name;
-    auto module_base = utils::ModuleFromAddress(*(uintptr_t*)_AddressOfReturnAddress, &mod_name);
+    auto module_base = Utils::ModuleFromAddress(*(uintptr_t*)_AddressOfReturnAddress(), &mod_name);
 
     if (!module_base || !wcscmp(mod_name.Buffer, BATTLEYE_NAME))
     {
-        (decltype(RtlAddVectoredExceptionHandler_hook))(addveh_hook->original_bytes)(
+        static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
             first, 
-            BreakpointRemoverVEH
+            (uint64_t)BreakpointRemoverVEH,
+            a3
         );
 
         return (uint64_t)BreakpointRemoverVEH;
     }
     else
     {
-        return (decltype(RtlAddVectoredExceptionHandler_hook))(addveh_hook->original_bytes)(
-            first, 
-            handler_addr
+        return static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
+            first,
+            (uint64_t)handler_addr,
+            a3
         );
     }
 }
 
 void BypassBattleye()
 {
+    Disasm::Init();
+
     /*  we are going to register our own exception handler to replace their VEH    */
 
     auto ntdll = GetModuleHandle(L"ntdll.dll");
     
-    uint64_t*(__fastcall* RtlpAddVectoredHandler)(
-        int a1, 
-        __int64 a2, 
-        unsigned int a3
-    ) = (decltype(RtlpAddVectoredHandler))GetProcAddress(ntdll, "RtlAddVectoredExceptionHandler");
+    RtlpAddVectoredHandler = (decltype(RtlpAddVectoredHandler))GetProcAddress(ntdll, "RtlAddVectoredExceptionHandler");
+    RtlpAddVectoredHandler = (decltype(RtlpAddVectoredHandler))RELATIVE_ADDR((uint8_t*)RtlpAddVectoredHandler + 3, 1, 5);
 
-    addveh_hook = new JmpRipCode{ RtlpAddVectoredHandler, RtlAddVectoredExceptionHandler_hook };
+    addveh_hook = new Hooks::JmpRipCode{ (uintptr_t)RtlpAddVectoredHandler, (uintptr_t)RtlAddVectoredExceptionHandler_hook };
 
-    MatrixVisor::SetMpkHook(RtlpAddVectoredHandler, addveh_hook->hook_code, hook_size);
+    ForteVisor::SetMpkHook(RtlpAddVectoredHandler, addveh_hook->hook_code, addveh_hook->hook_size);
 }

@@ -1,9 +1,29 @@
 #include "pch.h"
 #include "utils.h"
-#include <stdio.h>
+#include "includes.h"
 
-namespace utils
+#define PeHeader(image) ((IMAGE_NT_HEADERS64*)((uint64_t)image + ((IMAGE_DOS_HEADER*)image)->e_lfanew))
+
+namespace Utils
 {
+    uintptr_t RvaToOffset(void* base, uintptr_t rva)
+    {
+        auto Pe = PeHeader(base);
+
+        IMAGE_SECTION_HEADER* pSection = (IMAGE_SECTION_HEADER*)(Pe + 1);
+
+        for (int i = 0; i < Pe->FileHeader.NumberOfSections; ++i)
+        {
+            if (rva >= pSection[i].VirtualAddress && rva < (pSection[i].VirtualAddress + pSection[i].SizeOfRawData))
+            {
+                rva -= pSection[i].VirtualAddress;
+                rva += pSection[i].PointerToRawData;
+            }
+        }
+
+        return rva;
+    }
+
     PVOID ModuleFromAddress(uintptr_t address, PUNICODE_STRING out_name)
     {
         auto peb = (PPEB)__readgsqword(0x60);

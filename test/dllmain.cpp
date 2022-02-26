@@ -9,6 +9,7 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                        LPVOID lpReserved
                      )
 {
+    BypassBattleye();
     MessageBoxA(NULL, "Hello world!", "Hello World!", NULL);
 
     return TRUE;

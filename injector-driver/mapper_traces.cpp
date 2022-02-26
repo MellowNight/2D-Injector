@@ -3,11 +3,11 @@
 
 bool FindPoolTable(PVOID* pPoolBigPageTable, PVOID* pPoolBigPageTableSize)
 {
-	PVOID	ntos_base = utils::GetKernelModule(0, RTL_CONSTANT_STRING(L"ntoskrnl.exe"));
+	PVOID	ntos_base = Utils::GetKernelModule(0, RTL_CONSTANT_STRING(L"ntoskrnl.exe"));
 
 
 	PVOID ExProtectPoolExCallInstructionsAddress;
-	utils::BBScan(".text", (PCUCHAR)"\xE8\xCC\xCC\xCC\xCC\x83\x67\x0C\x00", '\xCC', 9, (ULONG64*)&ExProtectPoolExCallInstructionsAddress, ntos_base);
+	Utils::BBScan(".text", (PCUCHAR)"\xE8\xCC\xCC\xCC\xCC\x83\x67\x0C\x00", '\xCC', 9, (ULONG64*)&ExProtectPoolExCallInstructionsAddress, ntos_base);
 
 
 	if (!ExProtectPoolExCallInstructionsAddress)

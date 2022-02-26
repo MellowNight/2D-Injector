@@ -5,7 +5,7 @@
 #define PeHeader(image) ((IMAGE_NT_HEADERS64*)((uintptr_t)image + ((IMAGE_DOS_HEADER*)image)->e_lfanew))
 
 
-namespace utils
+namespace Utils
 {
     PVOID	GetVaFromPfn(ULONG64 pfn)
     {
@@ -49,7 +49,7 @@ namespace utils
                     CR3 cr3;
                     cr3.Flags = __readcr3();
 
-                    utils::GetPte((PVOID)PAGE_ALIGN(&first_thunk->u1.Function), cr3.AddressOfPageDirectory << PAGE_SHIFT,
+                    Utils::GetPte((PVOID)PAGE_ALIGN(&first_thunk->u1.Function), cr3.AddressOfPageDirectory << PAGE_SHIFT,
                         [](PT_ENTRY_64* pte) -> int {
                             pte->Write = 1;
                             return 0;
