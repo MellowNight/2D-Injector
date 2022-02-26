@@ -38,10 +38,13 @@ void CommandHandler(PVOID context)
 			UNICODE_STRING user32_name = RTL_CONSTANT_STRING(L"user32.dll");
 			auto user32 = Utils::GetUserModule(PsGetCurrentProcess(), &user32_name);
 
-			// NPT hook on PeekMessageW
-			auto original =
+			auto peekmessage = GetExport(user32, "PeekMessageW");
+			auto peekmessage_hk = Hooks::JmpRipCode{ (uintptr_t)peekmessage, (uintptr_t)msg->address };
 
-			*(void**)dll_info->original_bytes = original;
+			// NPT hook on PeekMessageW
+			auto original = ForteVisor::SetNptHook(peekmessage, peekmessage_hk.hook_code, peekmessage_hk.hook_size);
+
+			memcpy(dll_info->original_bytes, peekmessage_hk.original_bytes);
 
 			KeUnstackDetachProcess(&apc);
 
@@ -95,10 +98,7 @@ void CommandHandler(PVOID context)
 
 			DbgPrint("mod_base %p \n", mod_base);
 
-			SIZE_T copied;
-
-			auto status = MmCopyVirtualMemory(PsGetCurrentProcess(), &mod_base, client,
-				(void*)msg->out_buf, sizeof(uintptr_t), KernelMode, &copied);
+			Utils::WriteMem(msg->proc_id, msg->out_buf,  &mod_base, sizeof(uintptr_t));
 
 			break;
 		}

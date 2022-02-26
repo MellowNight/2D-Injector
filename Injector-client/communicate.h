@@ -3,6 +3,7 @@
 #include <string>
 #include <Windows.h>
 #include <TlHelp32.h>
+#include <cstdint>
 
 #define COMMAND_KEY 0xDEADBEEF
 
@@ -23,7 +24,7 @@ namespace Driver
 
 	struct Msg
 	{
-		__int64 command_key;
+		int64_t command_key;
 		int message_id;
 	};
 
@@ -47,7 +48,6 @@ namespace Driver
 	{
 		DWORD proc_id;
 		wchar_t module[50];
-		uintptr_t* out_buf;
 	};
 
 	struct WriteMsg : Msg
@@ -78,8 +78,7 @@ namespace Driver
 
 		DWORD bytes;
 
-		DeviceIoControl(driver_handle, 0, &msg,
-			sizeof(msg), 0, 0, &bytes, 0);
+		DeviceIoControl(driver_handle, 0, &msg, sizeof(msg), 0, 0, &bytes, 0);
 
 		return mapped_base;
 	}
@@ -97,8 +96,7 @@ namespace Driver
 
 		DWORD bytes;
 
-		return DeviceIoControl(driver_handle, 0, &msg,
-			sizeof(msg), 0, 0, &bytes, 0);
+		return DeviceIoControl(driver_handle, 0, &msg, sizeof(msg), 0, 0, &bytes, 0);
 	}
 
 	BOOL WriteMem(int process_id, ULONG64 address, BYTE* buffer, int size)
@@ -120,14 +118,7 @@ namespace Driver
 
 	void ExitDriver()
 	{
-
 		auto msg = EXIT_CLEANUP;
-		//memcpy(Driver::buffer, &msg, sizeof(msg));
-		//while (*(int*)Driver::buffer != 0)
-		//{
-		//	// for some reason the driver misses commands if i don't add this
-		//	Sleep(3);
-		//}
 	}
 
 	uint64_t GetModuleBase(std::wstring module, int pid)
@@ -140,11 +131,10 @@ namespace Driver
 		msg.message_id = MODULE_BASE;
 		wcscpy(msg.module, module.c_str());
 		msg.proc_id = pid;
-		msg.out_buf = &result;
 
 		DWORD bytes;
 
-		DeviceIoControl(driver_handle, 0, &msg, sizeof(msg), 0, 0, &bytes, 0);
+		DeviceIoControl(driver_handle, 0, &msg, sizeof(msg), &result, 8, &bytes, 0);
 
 		return result;
 	}
