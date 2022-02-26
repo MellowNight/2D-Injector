@@ -2,20 +2,33 @@
 #include "undocumented.h"
 #include "ia32_define.h"
 
+#define	RELATIVE_ADDR(insn, operand_offset, size) (ULONG64)(*(int*)((BYTE*)insn + operand_offset) + (BYTE*)insn + (int)size)
+
 namespace Utils
 {
-	PVOID	GetVaFromPfn(ULONG64 pfn);
+	NTSTATUS WriteMem(
+		int32_t target_pid, 
+		uintptr_t address, 
+		void* buffer, 
+		size_t size
+	);
 
-	typedef int (*PageTableOperation)(PT_ENTRY_64*);
-	PT_ENTRY_64* GetPte(PVOID VirtualAddress, ULONG64 Pml4BasePa, PageTableOperation Operation);
+	NTSTATUS ReadMem(
+		int32_t target_pid, 
+		uintptr_t address,
+		void* buffer, 
+		size_t size
+	);
 
-	_MMVAD_SHORT* FindVadNode(UINT_PTR virtual_page, PEPROCESS process);
+	HANDLE GetProcessId(
+		PCWSTR processName
+	);
 
-	ULONG64 GetSection(ULONG64  base, IN PCCHAR section, int* size);
-
-	HANDLE  GetProcessId(PCWSTR     processName);
-
-	PVOID WriteFile(PVOID buffer, const wchar_t* FileName, ULONG64 size);
+	PVOID WriteFile(
+		PVOID buffer, 
+		const wchar_t* FileName, 
+		ULONG64 size
+	);
 
 	PVOID GetKernelModule(
 		OUT PULONG pSize, 
@@ -26,38 +39,24 @@ namespace Utils
 		PVOID buffer, 
 		const wchar_t* FileName, ULONG64 size
 	);
-	PVOID GetUserModule(IN PEPROCESS pProcess, IN PUNICODE_STRING ModuleName);
-	PVOID ReadFile(PVOID buffer, const wchar_t* FileName, ULONG64 size, HANDLE* hFile);
+
+	PVOID GetUserModule(
+		IN PEPROCESS pProcess, 
+		IN PUNICODE_STRING ModuleName
+	);
+
+	PVOID ReadFile(
+		PVOID buffer, 
+		const wchar_t* FileName, 
+		ULONG64 size, HANDLE* 
+		hFile
+	);
 
 	KIRQL DisableWP();
 
-	void EnableWP(KIRQL tempirql);
-
-	NTSTATUS BBSearchPattern(
-		IN PCUCHAR pattern, 
-		IN UCHAR wildcard, 
-		IN ULONG_PTR len,
-		IN const VOID* base, 
-		IN ULONG_PTR size,
-		OUT PVOID* ppFound
+	void EnableWP(
+		KIRQL tempirql
 	);
-
-	NTSTATUS BBScan(
-		IN PCCHAR section,
-		IN PCUCHAR pattern, 
-		IN UCHAR wildcard,
-		IN ULONG_PTR len, 
-		OUT ULONG64* ppFound, 
-		PVOID base
-	);
-
-	void dump_driver(
-		PVOID baseAddress, 
-		const wchar_t* path, 
-		bool fixPe
-	);
-	PVOID IATHook(unsigned char* image_base, char* lpcStrImport, void* lpFuncAddress);
-
 
 	inline PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation, int size = PAGE_SIZE)
 	{

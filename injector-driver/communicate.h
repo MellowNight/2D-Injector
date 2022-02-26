@@ -2,8 +2,6 @@
 #include "util.h"
 #include "disk_hook.h"
 
-#define    RELATIVE_ADDR(insn, operand_offset, size) (ULONG64)(*(int*)((BYTE*)insn + operand_offset) + (BYTE*)insn + (int)size)
-
 #define COMMAND_KEY 0xDEADBEEF
 
 namespace Interface

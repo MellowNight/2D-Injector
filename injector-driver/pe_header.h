@@ -6,6 +6,8 @@
 #include    <windef.h>
 #include    <wdm.h>
 
+#define	PeHeader(image) ((IMAGE_NT_HEADERS64*)((uintptr_t)image + ((IMAGE_DOS_HEADER*)image)->e_lfanew))
+
 #define IMAGE_SCN_CNT_INITIALIZED_DATA  0x00000040
 #define IMAGE_SCN_CNT_UNINITIALIZED_DATA    0x00000080
 #define IMAGE_SCN_CNT_CODE  0x00000020

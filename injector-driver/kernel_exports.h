@@ -82,6 +82,19 @@ extern "C"
         PCLIENT_ID ClientId OPTIONAL
     );
 
+    NTSTATUS NtDeviceIoControlFile(
+        HANDLE           FileHandle,
+        HANDLE           Event,
+        PIO_APC_ROUTINE  ApcRoutine,
+        PVOID            ApcContext,
+        PIO_STATUS_BLOCK IoStatusBlock,
+        ULONG            IoControlCode,
+        PVOID            InputBuffer,
+        ULONG            InputBufferLength,
+        PVOID            OutputBuffer,
+        ULONG            OutputBufferLength
+    );
+
     const char* PsGetProcessImageFileName(PEPROCESS Process);
 
     NTKERNELAPI PVOID PsGetCurrentThreadStackBase();
