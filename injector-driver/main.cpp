@@ -42,9 +42,9 @@ void CommandHandler(PVOID context)
 			auto peekmessage_hk = Hooks::JmpRipCode{ (uintptr_t)peekmessage, (uintptr_t)msg->address };
 
 			// NPT hook on PeekMessageW
-			auto original = ForteVisor::SetNptHook(peekmessage, peekmessage_hk.hook_code, peekmessage_hk.hook_size);
+			ForteVisor::SetNptHook(peekmessage, peekmessage_hk.hook_code, peekmessage_hk.hook_size);
 
-			memcpy(dll_info->original_bytes, peekmessage_hk.original_bytes);
+			memcpy(dll_info->original_bytes, peekmessage_hk.original_bytes, peekmessage_hk.orig_bytes_size);
 
 			KeUnstackDetachProcess(&apc);
 
