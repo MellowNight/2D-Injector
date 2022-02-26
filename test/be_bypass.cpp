@@ -63,9 +63,9 @@ JmpRipCode* addveh_hook = NULL;
 uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr)
 {            
     UNICODE_STRING mod_name;
-    auto module_base = utils::ModuleFromAddress(ExceptionInfo->ContextRecord->Rip, &mod_name);
+    auto module_base = utils::ModuleFromAddress(*(uintptr_t*)_AddressOfReturnAddress, &mod_name);
 
-    if (!module_base || wcscmp(mod_name.Buffer, BATTLEYE_NAME))
+    if (!module_base || !wcscmp(mod_name.Buffer, BATTLEYE_NAME))
     {
         (decltype(RtlAddVectoredExceptionHandler_hook))(addveh_hook->original_bytes)(
             first, 
@@ -85,7 +85,7 @@ uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr)
 
 void BypassBattleye()
 {
-    /*  we are going to register our own exception handler, then  hook RtlAddVectoredExceptionHandler to block their VEH    */
+    /*  we are going to register our own exception handler to replace their VEH    */
 
     auto ntdll = GetModuleHandle(L"ntdll.dll");
     
@@ -95,7 +95,7 @@ void BypassBattleye()
         unsigned int a3
     ) = (decltype(RtlpAddVectoredHandler))GetProcAddress(ntdll, "RtlAddVectoredExceptionHandler");
 
-    addveh_hook = new JmpRipCode{RtlpAddVectoredHandler, RtlAddVectoredExceptionHandler_hook};
+    addveh_hook = new JmpRipCode{ RtlpAddVectoredHandler, RtlAddVectoredExceptionHandler_hook };
 
-    MatrixVisor::
+    MatrixVisor::SetMpkHook(RtlpAddVectoredHandler, addveh_hook->hook_code, hook_size);
 }

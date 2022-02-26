@@ -4,13 +4,14 @@ namespace Hooks
 {
     struct JmpRipCode 
     {
+        size_t hook_size;
         uint8_t* original_bytes;
         uint8_t* hook_code;
 
         JmpRipCode(uintptr_t hook_address, uintptr_t jmp_target)
         {
-            auto hook_size = Disasm::LengthOfInstructions((void*)address, 14);
-            auto orig_bytes_size = hook_size + 14;
+            hook_size = Disasm::LengthOfInstructions((void*)address, 14);
+            auto orig_bytes_size = hook_size + 14;      /*  because orig_bytes includes jmp back code   */
 
             char jmp_rip[14] = "\xFF\x25\x00\x00\x00\x00\xCC\xCC\xCC\xCC\xCC\xCC\xCC";
 
