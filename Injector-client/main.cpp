@@ -7,6 +7,9 @@
 
 extern "C" int main()
 {
+	system("kdmapper AMD-hypervisor.sys");
+	system("kdmapper injector-driver.sys");
+	
 	std::string cheat_dll_name;
 
 	std::cout << "Enter the name of the DLL to inject: " << std::endl;

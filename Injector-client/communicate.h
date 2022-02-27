@@ -133,4 +133,13 @@ namespace Driver
 
 		return result;
 	}
+	
+	void Init()
+	{
+		driver_handle = CreateFileW(
+			L"\\\\.\\PhysicalDrive0",
+			GENERIC_READ | GENERIC_WRITE, 
+			0, OPEN_EXISTING, NULL
+		);
+	}
 }

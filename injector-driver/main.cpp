@@ -13,7 +13,7 @@ struct InjectInfo
 
 using namespace Interface;
 
-void CommandHandler(PVOID context)
+void CommandHandler(void* system_buffer)
 {
 	auto request = (Msg*)context;
 
