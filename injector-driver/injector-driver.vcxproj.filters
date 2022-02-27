@@ -30,13 +30,7 @@
     </Inf>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="disasm.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="stack.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="disk_hook.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="communicate.h">
@@ -48,30 +42,27 @@
     <ClInclude Include="offsets.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="undocumented.h">
-      <Filter>Source Files\undocumented</Filter>
-    </ClInclude>
-    <ClInclude Include="vad.h">
-      <Filter>Source Files\undocumented</Filter>
-    </ClInclude>
     <ClInclude Include="util.h">
       <Filter>Source Files\util</Filter>
     </ClInclude>
     <ClInclude Include="pe_header.h">
       <Filter>Source Files\undocumented</Filter>
     </ClInclude>
-    <ClInclude Include="undocumented_exports.h">
-      <Filter>Source Files\undocumented</Filter>
+    <ClInclude Include="includes.h">
+      <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="ia32_define.h">
+    <ClInclude Include="ia32.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="kernel_structs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="disassembly.h">
       <Filter>Source Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="disk_hook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="communicate.cpp">
@@ -82,6 +73,9 @@
     </ClCompile>
     <ClCompile Include="util.cpp">
       <Filter>Source Files\util</Filter>
+    </ClCompile>
+    <ClCompile Include="disassembly.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -1,11 +1,19 @@
 #pragma once
-#include "undocumented.h"
-#include "ia32_define.h"
+#include "includes.h"
+#include "kernel_structs.h"
 
 #define	RELATIVE_ADDR(insn, operand_offset, size) (ULONG64)(*(int*)((BYTE*)insn + operand_offset) + (BYTE*)insn + (int)size)
 
 namespace Utils
 {
+	uintptr_t FindPattern(
+		uintptr_t region_base,
+		size_t region_size,
+		const char* pattern,
+		size_t pattern_size,
+		char wildcard
+	);
+	
 	NTSTATUS WriteMem(
 		int32_t target_pid, 
 		uintptr_t address, 
@@ -21,8 +29,9 @@ namespace Utils
 	);
 
 	HANDLE GetProcessId(
-		PCWSTR processName
+		const char* process_name
 	);
+
 
 	PVOID WriteFile(
 		PVOID buffer, 

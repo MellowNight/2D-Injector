@@ -3,17 +3,15 @@
 
 bool FindPoolTable(PVOID* pPoolBigPageTable, PVOID* pPoolBigPageTableSize)
 {
-	PVOID	ntos_base = Utils::GetKernelModule(0, RTL_CONSTANT_STRING(L"ntoskrnl.exe"));
+	ULONG nt_size = 0;
+	auto ntos_base = (uintptr_t)Utils::GetKernelModule(&nt_size, RTL_CONSTANT_STRING(L"ntoskrnl.exe"));
 
+	auto ex_protect_pool_call = Utils::FindPattern(ntos_base, nt_size, "\xE8\xCC\xCC\xCC\xCC\x83\x67\x0C\x00", 9, '\xCC');
 
-	PVOID ExProtectPoolExCallInstructionsAddress;
-	Utils::BBScan(".text", (PCUCHAR)"\xE8\xCC\xCC\xCC\xCC\x83\x67\x0C\x00", '\xCC', 9, (ULONG64*)&ExProtectPoolExCallInstructionsAddress, ntos_base);
-
-
-	if (!ExProtectPoolExCallInstructionsAddress)
+	if (!ex_protect_pool_call)
 		return false;
 
-	auto ExProtectPoolExAddress = RELATIVE_ADDR(ExProtectPoolExCallInstructionsAddress, 1, 5);
+	auto ExProtectPoolExAddress = RELATIVE_ADDR(ex_protect_pool_call, 1, 5);
 
 	if (!ExProtectPoolExAddress)
 		return false;
@@ -37,7 +35,6 @@ bool RemoveFromBigPool(PVOID Address)
 		PPOOL_TRACKER_BIG_PAGES PoolBigPageTable = *(PPOOL_TRACKER_BIG_PAGES*)pPoolBigPageTable;
 
 		SIZE_T PoolBigPageTableSize = *(__int64*)pPoolBigPageTableSize;
-
 
 		for (int i = 0; i < PoolBigPageTableSize; i++)
 		{

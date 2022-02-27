@@ -1,0 +1,9 @@
+﻿  Assembling bypass_be.asm...
+  pch.cpp
+  be_bypass.cpp
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(35,30): warning C4244: 'argument': conversion from 'uintptr_t' to 'LONG', possible loss of data
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(103,5): error C2653: 'ForteVisor': is not a class or namespace name
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(103,17): error C3861: 'SetMpkHook': identifier not found
+  dllmain.cpp
+  utils.cpp
+  Generating Code...

@@ -1,10 +1,5 @@
 #pragma once
-#include    <ntifs.h>
-#include    <Ntstrsafe.h>
-#include    <intrin.h>
-#include    <ntdef.h>
-#include    <windef.h>
-#include    <wdm.h>
+#include "includes.h"
 
 extern "C"
 {
@@ -36,9 +31,9 @@ extern "C"
 
     NTSTATUS WINAPI ZwQuerySystemInformation(
         _In_      int SystemInformationClass,
-        _Inout_   PVOID                    SystemInformation,
-        _In_      ULONG                    SystemInformationLength,
-        _Out_opt_ PULONG                   ReturnLength
+        _Inout_   PVOID SystemInformation,
+        _In_      ULONG SystemInformationLength,
+        _Out_opt_ PULONG    ReturnLength
     );
 
     NTSTATUS
@@ -57,8 +52,7 @@ extern "C"
 
     NTSYSAPI PIMAGE_NT_HEADERS NTAPI RtlImageNtHeader(IN PVOID   ModuleAddress);
 
-    NTSYSAPI
-        NTSTATUS
+    NTSYSAPI NTSTATUS
         NTAPI
         ZwQueryInformationThread(
             IN HANDLE ThreadHandle,

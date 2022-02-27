@@ -3,7 +3,34 @@
 #include "pe_header.h"
 
 namespace Utils
-{	
+{
+    uintptr_t FindPattern(uintptr_t region_base, size_t region_size, const char* pattern, size_t pattern_size, char wildcard)
+    {
+        for (auto byte = (char*)region_base;
+            byte < (char*)region_base + region_size;
+            ++byte)
+        {
+            bool found = true;
+
+            for (char* pattern_byte = (char*)pattern, *begin = byte;
+                pattern_byte < pattern + pattern_size;
+                ++pattern_byte, ++begin)
+            {
+                if (*pattern_byte != *begin && *pattern_byte != wildcard)
+                {
+                    found = false;
+                }
+            }
+
+            if (found)
+            {
+                return (uintptr_t)byte;
+            }
+        }
+
+        return 0;
+    }
+
     NTSTATUS WriteMem(int32_t target_pid, uintptr_t address, void* buffer, size_t size)
 	{
 		PEPROCESS target;
@@ -32,50 +59,23 @@ namespace Utils
 		return status;
 	}
     
-    HANDLE GetProcessId(PCWSTR processName)
+    HANDLE GetProcessId(const char* process_name)
     {
-        NTSTATUS status = STATUS_SUCCESS;
-        PVOID buffer;
+        auto list_entry = (LIST_ENTRY*)(((uintptr_t)PsInitialSystemProcess) + OFFSET::ProcessLinksOffset);
 
+        auto current_entry = list_entry->Flink;
 
-        buffer = ExAllocatePoolWithTag(NonPagedPool, 1024 * 1024, 'enoN');
-
-        if (!buffer) 
+        while (current_entry != list_entry && current_entry != NULL)
         {
-            DbgPrint("couldn't allocate memory \n");
-            return 0;
-        }
+            auto process = (PEPROCESS)((uintptr_t)current_entry - OFFSET::ProcessLinksOffset);
 
-        DbgPrintEx(0, 0, "Process list allocated at address %#x\n", buffer);
-
-        PSYSTEM_PROCESS_INFORMATION pInfo = (PSYSTEM_PROCESS_INFORMATION)buffer;
-
-        status = ZwQuerySystemInformation(SystemProcessInformation, pInfo, 1024 * 1024, NULL);
-        if (!NT_SUCCESS(status)) {
-            DbgPrintEx(0, 0, "ZwQuerySystemInformation Failed : STATUS CODE : %p\n", status);
-            ExFreePoolWithTag(buffer, 'Enon');
-            return 0;
-        }
-
-        UNICODE_STRING WantedImageName;
-
-        RtlInitUnicodeString(&WantedImageName, processName);
-
-        if (NT_SUCCESS(status)) {
-            for (;;) {
-                DbgPrintEx(0, 0, "\nProcess name: %ws | Process ID: %d\n", pInfo->ImageName.Buffer, pInfo->ProcessId); // Display process information.
-                if (RtlEqualUnicodeString(&pInfo->ImageName, &WantedImageName, TRUE)) {
-                    return pInfo->ProcessId;
-                    break;
-                }
-                else if (pInfo->NextEntryOffset)
-                    pInfo = (PSYSTEM_PROCESS_INFORMATION)((PUCHAR)pInfo + pInfo->NextEntryOffset);
-                else
-                    break;
+            if (!strcmp(PsGetProcessImageFileName(process), process_name))
+            {
+                return process;
             }
-        }
 
-        ExFreePoolWithTag(buffer, 'enoN');
+            current_entry = current_entry->Flink;
+        }
     }
 
     void* GetExport(uintptr_t base, char* export_name)
@@ -204,6 +204,7 @@ namespace Utils
     PVOID GetUserModule(IN PEPROCESS pProcess, IN PUNICODE_STRING ModuleName)
     {
         PPEB pPeb = PsGetProcessPeb(pProcess);
+
         if (!pPeb)
         {
             return NULL;
@@ -220,7 +221,7 @@ namespace Utils
             pListEntry != &pPeb->Ldr->InLoadOrderModuleList;
             pListEntry = pListEntry->Flink)
         {
-            PLDR_DATA_TABLE_ENTRY pEntry = CONTAINING_RECORD(pListEntry, LDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
+            LDR_DATA_TABLE_ENTRY* pEntry = CONTAINING_RECORD(pListEntry, LDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
 
             DbgPrint("process module name %wZ \n", &pEntry->BaseDllName);
 

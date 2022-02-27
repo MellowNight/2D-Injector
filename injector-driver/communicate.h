@@ -1,6 +1,5 @@
 #pragma once
 #include "util.h"
-#include "disk_hook.h"
 
 #define COMMAND_KEY 0xDEADBEEF
 
@@ -16,23 +15,23 @@ namespace Interface
 		WRITE_MEM,
 		MODULE_BASE,
 		EXIT_CLEANUP,
-		INIT_COMM
 	};
+
 	struct Msg
 	{
 		__int64 command_key;
 		int message_id;
 	};
 
-	struct AllocMemMsg : Msg
+	struct AllocMemCmd : Msg
 	{
-		DWORD proc_id;
-		DWORD size;
+		int32_t proc_id;
+		size_t size;
 		uintptr_t* result;
 		wchar_t	section_name[60];
 	};
 
-	struct StartThreadMsg : Msg
+	struct InvokeRemoteFunctionCmd : Msg
 	{
 		int proc_id;
 		uintptr_t map_base;
@@ -47,17 +46,12 @@ namespace Interface
 		uintptr_t* out_buf;
 	};
 
-	struct WriteMsg : Msg
+	struct WriteCmd : Msg
 	{
 		int proc_id;
 		uintptr_t address;
 		BYTE* buffer;
 		int size;
-	};
-
-	struct InitMsg : Msg
-	{
-		int proc_id;
 	};
 
 	bool Init();

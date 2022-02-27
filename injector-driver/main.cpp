@@ -1,5 +1,15 @@
 #include "communicate.h"
-#include "undocumented_exports.h"
+#include "disassembly.h"
+#include "kernel_structs.h"
+#include "hooking.h"
+#include "forte_api_kernel.h"
+
+struct InjectInfo
+{
+	uint32_t header;
+	size_t dll_size;
+	uint8_t original_bytes[20];
+};
 
 using namespace Interface;
 
@@ -20,7 +30,7 @@ void CommandHandler(PVOID context)
 		}
 		case Interface::START_THREAD:
 		{
-			auto msg = (StartThreadMsg*)request;
+			auto msg = (InvokeRemoteFunctionCmd*)request;
 
 			DbgPrint("receieved request %i start thread ProcessID %i\n", msg_id, msg->proc_id);
 
@@ -36,9 +46,9 @@ void CommandHandler(PVOID context)
 			dll_info->header = 0x1234;
 
 			UNICODE_STRING user32_name = RTL_CONSTANT_STRING(L"user32.dll");
-			auto user32 = Utils::GetUserModule(PsGetCurrentProcess(), &user32_name);
+			auto user32 = (uintptr_t)Utils::GetUserModule(PsGetCurrentProcess(), &user32_name);
 
-			auto peekmessage = GetExport(user32, "PeekMessageW");
+			auto peekmessage = (uintptr_t)Utils::GetExport(user32, "PeekMessageW");
 			auto peekmessage_hk = Hooks::JmpRipCode{ (uintptr_t)peekmessage, (uintptr_t)msg->address };
 
 			// NPT hook on PeekMessageW
@@ -52,7 +62,7 @@ void CommandHandler(PVOID context)
 		}
 		case ALLOC_MEM:
 		{
-			auto msg = (AllocMemMsg*)request;
+			auto msg = (AllocMemCmd*)request;
 
 			DbgPrint("receieved request %i, process id %i size %i \n", msg_id, msg->proc_id, msg->size);
 
@@ -62,13 +72,13 @@ void CommandHandler(PVOID context)
 			PsLookupProcessByProcessId((HANDLE)msg->proc_id, &process);
 			KeStackAttachProcess(process, &apc);
 
-			SIZE_T size = 512;
+			uintptr_t address = NULL;
 
 			auto status = ZwAllocateVirtualMemory(
 				NtCurrentProcess(),
-				(void**)&new_vmt,
+				(void**)&address,
 				0,
-				&size,
+				(size_t*)&msg->size,
 				MEM_COMMIT | MEM_RESERVE,
 				PAGE_EXECUTE_READWRITE
 			);
@@ -98,26 +108,20 @@ void CommandHandler(PVOID context)
 
 			DbgPrint("mod_base %p \n", mod_base);
 
-			Utils::WriteMem(msg->proc_id, msg->out_buf,  &mod_base, sizeof(uintptr_t));
+			Utils::WriteMem(msg->proc_id, (uintptr_t)msg->out_buf, &mod_base, sizeof(uintptr_t));
 
 			break;
 		}
 		case WRITE_MEM:
 		{		
-			auto msg = (WriteMsg*)request;
+			auto msg = (WriteCmd*)request;
 
 			DbgPrint("receieved request %i write size %i write buffer %p proc id %i write address %p\n", 
 				msg_id, msg->size, msg->buffer, msg->proc_id, msg->address);
 
-			Utils::WriteMem(msg->proc_id, msg->address, msg->buffer, msg->size);
+			auto status = Utils::WriteMem(msg->proc_id, msg->address, msg->buffer, msg->size);
 			
 			DbgPrint("wrote memory! status %p \n", status);
-			break;
-		}
-		case INIT_COMM:
-		{
-			auto msg = (InitMsg*)request;
-			PsLookupProcessByProcessId((HANDLE)msg->proc_id, &Interface::client);
 			break;
 		}
 		default:
@@ -126,8 +130,6 @@ void CommandHandler(PVOID context)
 		}
 	}
 }
-
-
 
 NTSTATUS DriverEntry(uintptr_t driver_base, uintptr_t driver_size)
 {

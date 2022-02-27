@@ -1,10 +1,5 @@
 #pragma once
-#include    <ntifs.h>
-#include    <Ntstrsafe.h>
-#include    <intrin.h>
-#include    <ntdef.h>
-#include    <windef.h>
-#include    <wdm.h>
+#include "includes.h"
 
 #define	PeHeader(image) ((IMAGE_NT_HEADERS64*)((uintptr_t)image + ((IMAGE_DOS_HEADER*)image)->e_lfanew))
 

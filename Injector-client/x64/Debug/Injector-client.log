@@ -1,0 +1,9 @@
+﻿  main.cpp
+C:\Users\lolxd\source\repos\BE-injector\Injector-client\communicate.h(145,20): error C2065: 'INIT_COMM': undeclared identifier
+  manual_map.cpp
+C:\Users\lolxd\source\repos\BE-injector\Injector-client\communicate.h(145,20): error C2065: 'INIT_COMM': undeclared identifier
+C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(167,36): warning C4018: '<': signed/unsigned mismatch
+C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(202,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(209,42): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+  utils.cpp
+  Generating Code...
