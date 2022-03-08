@@ -19,6 +19,8 @@ namespace Interface
         _In_ ULONG OutputBufferLength
     )
     {
+        DbgPrint("FileHandle %p \n", FileHandle);
+        /*  original bytes are fucked   */
         return static_cast<decltype(&NtDeviceIoControlFile_handler)>((void*)ioctl_hk.original_bytes)(
             FileHandle,
             Event,
@@ -37,9 +39,20 @@ namespace Interface
 
 	bool Init()
 	{
-		ioctl_hk = Hooks::JmpRipCode{ (uintptr_t)NtDeviceIoControlFile, (uintptr_t)NtDeviceIoControlFile_handler };
+        UNICODE_STRING ioctl_func_name = RTL_CONSTANT_STRING(L"NtDeviceIoControlFile");
+        auto DeviceIoControlFile = MmGetSystemRoutineAddress(&ioctl_func_name);        
+        
+		ioctl_hk = Hooks::JmpRipCode{ (uintptr_t)DeviceIoControlFile, (uintptr_t)NtDeviceIoControlFile_handler };
+        DbgPrint("ioctl_hk.hook_code %p \n", ioctl_hk.hook_code);
 
-        ForteVisor::SetNptHook((uintptr_t)NtDeviceIoControlFile, ioctl_hk.hook_code, ioctl_hk.hook_size);
+        __debugbreak();
+
+        DbgPrint("NtDeviceIoControlFile %p \n", DeviceIoControlFile);
+
+        ForteVisor::SetNptHook((uintptr_t)DeviceIoControlFile, (uint8_t*)ioctl_hk.hook_code, ioctl_hk.hook_size);
+       // ForteVisor::SetNptHook((uintptr_t)DeviceIoControlFile, (uint8_t*)"\xCC", 1);
+        __debugbreak();
+        NtDeviceIoControlFile(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
         return true;
 	}

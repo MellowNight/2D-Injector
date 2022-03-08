@@ -15,7 +15,7 @@ using namespace Interface;
 
 void CommandHandler(void* system_buffer)
 {
-	auto request = (Msg*)context;
+	auto request = (Msg*)system_buffer;
 
 	auto msg_id = request->message_id;
 
@@ -136,7 +136,14 @@ NTSTATUS DriverEntry(uintptr_t driver_base, uintptr_t driver_size)
 	DbgPrint("hello, driver_base %p, driver_size %p \n", driver_base, driver_size);
 
 	Disasm::Init();
-	Interface::Init();
+	HANDLE thread_handle;
+
+	PsCreateSystemThread(
+		&thread_handle,
+		GENERIC_ALL, NULL, NULL, NULL,
+		(PKSTART_ROUTINE)Interface::Init,
+		NULL
+	);
 
     return STATUS_SUCCESS;
 }

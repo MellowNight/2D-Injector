@@ -2,6 +2,7 @@
 #include "be_bypass.h"
 #include "utils.h"
 #include "hooks.h"
+#include "forte_api.h"
 
 #define BATTLEYE_NAME L"test-anticheat.exe"
 
@@ -100,5 +101,5 @@ void BypassBattleye()
 
     addveh_hook = new Hooks::JmpRipCode{ (uintptr_t)RtlpAddVectoredHandler, (uintptr_t)RtlAddVectoredExceptionHandler_hook };
 
-    ForteVisor::SetMpkHook(RtlpAddVectoredHandler, addveh_hook->hook_code, addveh_hook->hook_size);
+    ForteVisor::SetMpkHook((uintptr_t)RtlpAddVectoredHandler, addveh_hook->hook_code, addveh_hook->hook_size);
 }

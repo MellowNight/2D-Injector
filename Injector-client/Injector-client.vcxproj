@@ -25,6 +25,7 @@
     <ClInclude Include="manual_map.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="communicate.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manual_map.cpp" />
     <ClCompile Include="utils.cpp" />

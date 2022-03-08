@@ -2,7 +2,7 @@
 #include "manual_map.h"
 #include "utils.h"
 
-#define TARGET L"RainbowSix.exe"
+#define TARGET L"Notepad.exe"
 #define ENTRYPOINT_NAME "HookEntryPoint"
 
 extern "C" int main()
