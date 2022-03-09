@@ -6,32 +6,29 @@ namespace Interface
 {
     Hooks::JmpRipCode ioctl_hk;
 
-    NTSTATUS NTAPI NtDeviceIoControlFile_handler(
-        _In_ HANDLE FileHandle,
-        _In_opt_ HANDLE Event,
-        _In_opt_ PIO_APC_ROUTINE ApcRoutine,
-        _In_opt_ PVOID ApcContext,
-        _Out_ PIO_STATUS_BLOCK IoStatusBlock,
-        _In_ ULONG IoControlCode,
-        _In_reads_bytes_opt_(InputBufferLength) PVOID InputBuffer,
-        _In_ ULONG InputBufferLength,
-        _Out_writes_bytes_opt_(OutputBufferLength) PVOID OutputBuffer,
-        _In_ ULONG OutputBufferLength
-    )
+    NTSTATUS NTAPI NtReadFile_handler(
+            _In_ HANDLE FileHandle,
+            _In_opt_ HANDLE Event,
+            _In_opt_ PIO_APC_ROUTINE ApcRoutine,
+            _In_opt_ PVOID ApcContext,
+            _Out_ PIO_STATUS_BLOCK IoStatusBlock,
+            _Out_writes_bytes_(Length) PVOID Buffer,
+            _In_ ULONG Length,
+            _In_opt_ PLARGE_INTEGER ByteOffset,
+            _In_opt_ PULONG Key
+        )
     {
-        DbgPrint("FileHandle %p \n", FileHandle);
         /*  original bytes are fucked   */
-        return static_cast<decltype(&NtDeviceIoControlFile_handler)>((void*)ioctl_hk.original_bytes)(
+        return static_cast<decltype(&NtReadFile_handler)>((void*)ioctl_hk.original_bytes)(
             FileHandle,
             Event,
             ApcRoutine,
             ApcContext,
             IoStatusBlock,
-            IoControlCode,
-            InputBuffer,
-            InputBufferLength,
-            OutputBuffer,
-            OutputBufferLength
+            Buffer,
+            Length,
+            ByteOffset,
+            Key
         );
 
         DbgPrint("FileHandle %p \n", FileHandle);
@@ -39,20 +36,20 @@ namespace Interface
 
 	bool Init()
 	{
-        UNICODE_STRING ioctl_func_name = RTL_CONSTANT_STRING(L"NtDeviceIoControlFile");
-        auto DeviceIoControlFile = MmGetSystemRoutineAddress(&ioctl_func_name);        
+        UNICODE_STRING NtReadFile_name = RTL_CONSTANT_STRING(L"NtReadFile");
+        auto ReadFile = MmGetSystemRoutineAddress(&NtReadFile_name);
         
-		ioctl_hk = Hooks::JmpRipCode{ (uintptr_t)DeviceIoControlFile, (uintptr_t)NtDeviceIoControlFile_handler };
-        DbgPrint("ioctl_hk.hook_code %p \n", ioctl_hk.hook_code);
+		ioctl_hk = Hooks::JmpRipCode{ (uintptr_t)ReadFile, (uintptr_t)NtReadFile_handler };
 
+
+        DbgPrint("NtReadFile %p \n", ReadFile);
+        DbgPrint("ioctl_hk.jmp back %p \n", ioctl_hk.original_bytes);
         __debugbreak();
 
-        DbgPrint("NtDeviceIoControlFile %p \n", DeviceIoControlFile);
-
-        ForteVisor::SetNptHook((uintptr_t)DeviceIoControlFile, (uint8_t*)ioctl_hk.hook_code, ioctl_hk.hook_size);
-       // ForteVisor::SetNptHook((uintptr_t)DeviceIoControlFile, (uint8_t*)"\xCC", 1);
+        ForteVisor::SetNptHook((uintptr_t)ReadFile, (uint8_t*)ioctl_hk.hook_code, ioctl_hk.hook_size);
         __debugbreak();
-        NtDeviceIoControlFile(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+
+        NtReadFile(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
 
         return true;
 	}
