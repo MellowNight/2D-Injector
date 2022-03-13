@@ -1,6 +1,6 @@
 ﻿  Building 'injector-driver' with toolset 'WindowsKernelModeDriver10.0' and the 'Universal' target platform.
   Stamping x64\Debug\injector-driver.inf
-  Stamping [Version] section with DriverVer=02/28/2022,15.54.40.651
+  Stamping [Version] section with DriverVer=03/12/2022,14.51.53.708
   communicate.cpp
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition
@@ -296,8 +296,8 @@ C:\Users\lolxd\source\repos\BE-injector\injector-driver\kernel_structs.h(69,10):
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\kernel_structs.h(146,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\kernel_structs.h(166,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\kernel_structs.h(216,10): warning C4201: nonstandard extension used: nameless struct/union
-C:\Users\lolxd\source\repos\BE-injector\injector-driver\hooking.h(23,40): warning C4996: 'ExAllocatePool': was declared deprecated
-C:\Users\lolxd\source\repos\BE-injector\injector-driver\hooking.h(29,35): warning C4996: 'ExAllocatePool': was declared deprecated
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\hooking.h(25,40): warning C4996: 'ExAllocatePool': was declared deprecated
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\hooking.h(31,35): warning C4996: 'ExAllocatePool': was declared deprecated
   disassembly.cpp
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition
@@ -881,8 +881,8 @@ C:\Users\lolxd\source\repos\BE-injector\injector-driver\kernel_structs.h(69,10):
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\kernel_structs.h(146,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\kernel_structs.h(166,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\kernel_structs.h(216,10): warning C4201: nonstandard extension used: nameless struct/union
-C:\Users\lolxd\source\repos\BE-injector\injector-driver\hooking.h(23,40): warning C4996: 'ExAllocatePool': was declared deprecated
-C:\Users\lolxd\source\repos\BE-injector\injector-driver\hooking.h(29,35): warning C4996: 'ExAllocatePool': was declared deprecated
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\hooking.h(25,40): warning C4996: 'ExAllocatePool': was declared deprecated
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\hooking.h(31,35): warning C4996: 'ExAllocatePool': was declared deprecated
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\main.cpp(77,9): warning C4189: 'status': local variable is initialized but not referenced
   mapper_traces.cpp
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
@@ -1489,29 +1489,4 @@ C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(301,14): warnin
   Generating Code...
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(79): warning C4715: 'Utils::GetProcessId': not all control paths return a value
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(106): warning C4715: 'Utils::GetExport': not all control paths return a value
-C:\Users\lolxd\source\repos\BE-injector\injector-driver\communicate.cpp(35): warning C4702: unreachable code
-communicate.obj : warning LNK4210: .CRT section exists; there may be unhandled static initializers or terminators
-Zydis.lib(Register.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Register.obj)' or at 'C:\Users\lolxd\source\repos\BE-injector\x64\Debug\Zydis.pdb'; linking object as if no debug info
-Zydis.lib(SharedData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(SharedData.obj)' or at 'C:\Users\lolxd\source\repos\BE-injector\x64\Debug\Zydis.pdb'; linking object as if no debug info
-Zydis.lib(Decoder.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Decoder.obj)' or at 'C:\Users\lolxd\source\repos\BE-injector\x64\Debug\Zydis.pdb'; linking object as if no debug info
-Zydis.lib(DecoderData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(DecoderData.obj)' or at 'C:\Users\lolxd\source\repos\BE-injector\x64\Debug\Zydis.pdb'; linking object as if no debug info
-ForteVisorKernelApi.lib(forte_api_kernel.obj) : warning LNK4099: PDB '' was not found with 'ForteVisorKernelApi.lib(forte_api_kernel.obj)' or at ''; linking object as if no debug info
-  injector-driver.vcxproj -> C:\Users\lolxd\source\repos\BE-injector\x64\Debug\injector-driver.sys
-  Done Adding Additional Store
-  Successfully signed: C:\Users\lolxd\source\repos\BE-injector\x64\Debug\injector-driver.sys
-  
-  Driver is 'Universal'.
-  ........................
-  Signability test complete.
-  
-  Errors:
-  None
-  
-  Warnings:
-  None
-  
-  Catalog generation complete.
-  C:\Users\lolxd\source\repos\BE-injector\x64\Debug\injector-driver\injector-driver.cat
-  Done Adding Additional Store
-  Successfully signed: C:\Users\lolxd\source\repos\BE-injector\x64\Debug\injector-driver\injector-driver.cat
-  
+LINK : fatal error LNK1181: cannot open input file 'Zycore.lib'

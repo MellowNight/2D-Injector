@@ -29,8 +29,9 @@ namespace Driver
 
 	struct AllocMemCmd : Msg
 	{
-		DWORD proc_id;
-		DWORD size;
+		int32_t proc_id;
+		size_t size;
+		wchar_t	section_name[60];
 	};
 
 	struct InvokeRemoteFunctionCmd : Msg
@@ -43,7 +44,7 @@ namespace Driver
 
 	struct GetModuleMsg : Msg
 	{
-		DWORD proc_id;
+		uint32_t proc_id;
 		wchar_t module[50];
 	};
 

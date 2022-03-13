@@ -103,8 +103,14 @@ namespace PE
 			bool manualmap_dependency = false;
 
 			/*	if the module isn't mapped globally, then you have to manually  */
-			if (!Driver::GetModuleBase(StrToWStr(mod_name), target_pid))
+
+			auto module_base = Driver::GetModuleBase(StrToWStr(mod_name), target_pid);
+			std::wcout << StrToWStr(mod_name) << std::endl;
+
+			if (!module_base)
 			{
+				std::cout << mod_name << " base " << std::hex << module_base << std::endl;
+
 				continue;
 			}
 
@@ -118,6 +124,8 @@ namespace PE
 				if (Util::IsAddressValid(import_by_name))
 				{
 					thunk->u1.Function = (uintptr_t)GetProcAddress(module, import_by_name->Name);
+
+					std::cout << "thunk->u1.Function import " << std::hex << thunk->u1.Function << std::endl;
 				}
 				else
 				{
@@ -151,9 +159,9 @@ namespace PE
 		memcpy(dest, src, pe_hdr->OptionalHeader.SizeOfHeaders);
 	}
 
-	void ResolveRelocations(uint8_t* load_destination)
+	void ResolveRelocations(uint8_t* image_buffer, uint8_t* load_destination)
 	{
-		auto pe_hdr = PeHeader(load_destination);
+		auto pe_hdr = PeHeader(image_buffer);
 
 		auto& reloc_dir = pe_hdr->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];
 
@@ -162,13 +170,13 @@ namespace PE
 			return;
 		}
 
-		auto reloc = (IMAGE_BASE_RELOCATION*)(load_destination + reloc_dir.VirtualAddress);
+		auto reloc = (IMAGE_BASE_RELOCATION*)(image_buffer + reloc_dir.VirtualAddress);
 
 		for (auto cur_size = 0; cur_size < reloc_dir.Size; )
 		{
 			auto reloc_count = (reloc->SizeOfBlock - sizeof(IMAGE_BASE_RELOCATION)) / sizeof(int16_t);
 			auto reloc_data = (int16_t*)((char*)reloc + sizeof(IMAGE_BASE_RELOCATION));
-			auto reloc_base = (char*)(load_destination + reloc->VirtualAddress);
+			auto reloc_base = (char*)(image_buffer + reloc->VirtualAddress);
 
 			for (auto i = 0; i < reloc_count; ++i, ++reloc_data)
 			{
@@ -236,7 +244,7 @@ namespace PE
 			out_buffer
 		);
 
-		PE::ResolveRelocations((uint8_t*)load_destination);
+		PE::ResolveRelocations(*out_buffer, (uint8_t*)load_destination);
 
 		if (!PE::ResolveImports(*out_buffer, target_pid))
 		{

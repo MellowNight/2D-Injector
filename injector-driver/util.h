@@ -78,8 +78,5 @@ namespace Utils
 
 	NTSTATUS UnlockPages(PMDL mdl);
 
-	void* GetExport(
-		uintptr_t base,
-		char* export_name
-	);
+	void* GetExport(uintptr_t base, const char* export_name);
 }

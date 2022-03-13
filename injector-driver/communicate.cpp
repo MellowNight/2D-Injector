@@ -2,54 +2,69 @@
 #include "forte_api_kernel.h"
 #include "hooking.h"
 
+void CommandHandler(void* system_buffer, void* output_buffer);
+
 namespace Interface
 {
     Hooks::JmpRipCode ioctl_hk;
 
-    NTSTATUS NTAPI NtReadFile_handler(
+    NTSTATUS NTAPI NtDeviceIoControlFile_handler(
             _In_ HANDLE FileHandle,
             _In_opt_ HANDLE Event,
             _In_opt_ PIO_APC_ROUTINE ApcRoutine,
             _In_opt_ PVOID ApcContext,
             _Out_ PIO_STATUS_BLOCK IoStatusBlock,
-            _Out_writes_bytes_(Length) PVOID Buffer,
-            _In_ ULONG Length,
-            _In_opt_ PLARGE_INTEGER ByteOffset,
-            _In_opt_ PULONG Key
+            _In_ ULONG IoControlCode,
+            _In_reads_bytes_opt_(InputBufferLength) PVOID InputBuffer,
+            _In_ ULONG InputBufferLength,
+            _Out_writes_bytes_opt_(OutputBufferLength) PVOID OutputBuffer,
+            _In_ ULONG OutputBufferLength
         )
     {
         /*  original bytes are fucked   */
-        return static_cast<decltype(&NtReadFile_handler)>((void*)ioctl_hk.original_bytes)(
+        auto status = static_cast<decltype(&NtDeviceIoControlFile_handler)>((void*)ioctl_hk.original_bytes)(
             FileHandle,
             Event,
             ApcRoutine,
             ApcContext,
             IoStatusBlock,
-            Buffer,
-            Length,
-            ByteOffset,
-            Key
+            IoControlCode,
+            InputBuffer,
+            InputBufferLength,
+            OutputBuffer,
+            OutputBufferLength
         );
 
-        DbgPrint("FileHandle %p \n", FileHandle);
+        auto process_name = PsGetProcessImageFileName(PsGetCurrentProcess());
+
+        if (strstr("Injector-client.exe", process_name))
+        {
+            auto msg_buffer = (Msg*)InputBuffer;
+
+            if (!MmIsAddressValid(msg_buffer))
+            {
+                return status;
+            }
+
+            DbgPrint("NtDeviceIoControlFile called from injector client! command_key %p \n", msg_buffer->command_key);
+
+            if (msg_buffer->command_key == COMMAND_KEY)
+            {
+                CommandHandler(InputBuffer, OutputBuffer);
+            }
+        }
+
+        return status;
     }
 
 	bool Init()
 	{
-        UNICODE_STRING NtReadFile_name = RTL_CONSTANT_STRING(L"NtReadFile");
-        auto ReadFile = MmGetSystemRoutineAddress(&NtReadFile_name);
-        
-		ioctl_hk = Hooks::JmpRipCode{ (uintptr_t)ReadFile, (uintptr_t)NtReadFile_handler };
+        UNICODE_STRING NtDeviceIoControlFile_name = RTL_CONSTANT_STRING(L"NtDeviceIoControlFile");
+        auto NtDeviceIoControl = MmGetSystemRoutineAddress(&NtDeviceIoControlFile_name);
 
+        ioctl_hk = Hooks::JmpRipCode{ (uintptr_t)NtDeviceIoControl, (uintptr_t)NtDeviceIoControlFile_handler };
 
-        DbgPrint("NtReadFile %p \n", ReadFile);
-        DbgPrint("ioctl_hk.jmp back %p \n", ioctl_hk.original_bytes);
-        __debugbreak();
-
-        ForteVisor::SetNptHook((uintptr_t)ReadFile, (uint8_t*)ioctl_hk.hook_code, ioctl_hk.hook_size);
-        __debugbreak();
-
-        NtReadFile(NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
+        ForteVisor::SetNptHook((uintptr_t)NtDeviceIoControl, (uint8_t*)ioctl_hk.hook_code, ioctl_hk.hook_size);
 
         return true;
 	}

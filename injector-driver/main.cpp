@@ -3,17 +3,24 @@
 #include "kernel_structs.h"
 #include "hooking.h"
 #include "forte_api_kernel.h"
+#include "util.h"
 
-struct InjectInfo
+struct DllParams
 {
-	uint32_t header;
-	size_t dll_size;
+	struct
+	{
+		uint32_t header;
+		size_t dll_size;
+	} inject_info;
+
+	uintptr_t hooked_function;
 	uint8_t original_bytes[20];
+	size_t orig_bytes_size;
 };
 
 using namespace Interface;
 
-void CommandHandler(void* system_buffer)
+void CommandHandler(void* system_buffer, void* output_buffer)
 {
 	auto request = (Msg*)system_buffer;
 
@@ -30,31 +37,39 @@ void CommandHandler(void* system_buffer)
 		}
 		case Interface::START_THREAD:
 		{
-			auto msg = (InvokeRemoteFunctionCmd*)request;
+			auto msg = *(InvokeRemoteFunctionCmd*)request;
 
-			DbgPrint("receieved request %i start thread ProcessID %i\n", msg_id, msg->proc_id);
+			DbgPrint("receieved request %i start thread ProcessID %i\n", msg_id, msg.proc_id);
 
 			PEPROCESS process;
 			KAPC_STATE apc;
 
-			PsLookupProcessByProcessId((HANDLE)msg->proc_id, &process);
+			PsLookupProcessByProcessId((HANDLE)msg.proc_id, &process);
 			KeStackAttachProcess(process, &apc);
 			
-			auto dll_info = (InjectInfo*)msg->map_base;
+			auto dll_info = (DllParams*)msg.map_base;
 
-			dll_info->dll_size = msg->image_size;
-			dll_info->header = 0x1234;
+			dll_info->inject_info.dll_size = msg.image_size;
+			dll_info->inject_info.header = 0x12345678;
 
-			UNICODE_STRING user32_name = RTL_CONSTANT_STRING(L"user32.dll");
-			auto user32 = (uintptr_t)Utils::GetUserModule(PsGetCurrentProcess(), &user32_name);
+			UNICODE_STRING d3d11_name = RTL_CONSTANT_STRING(L"dxgi.dll");
+			auto dxgi = (uintptr_t)Utils::GetUserModule(PsGetCurrentProcess(), &d3d11_name);
 
-			auto peekmessage = (uintptr_t)Utils::GetExport(user32, "PeekMessageW");
-			auto peekmessage_hk = Hooks::JmpRipCode{ (uintptr_t)peekmessage, (uintptr_t)msg->address };
+			auto present = (uintptr_t)dxgi + 0x2A40;
+			auto present_hk = Hooks::JmpRipCode{ (uintptr_t)present, (uintptr_t)msg.address };
 
-			// NPT hook on PeekMessageW
-			ForteVisor::SetNptHook(peekmessage, peekmessage_hk.hook_code, peekmessage_hk.hook_size);
+			// NPT hook on CDXGISwapChain::Present
+			// ForteVisor::SetNptHook(peekmessage, peekmessage_hk.hook_code, peekmessage_hk.hook_size);
 
-			memcpy(dll_info->original_bytes, peekmessage_hk.original_bytes, peekmessage_hk.orig_bytes_size);
+			auto irql = Utils::DisableWP();
+
+			dll_info->hooked_function = present;
+			dll_info->orig_bytes_size = present_hk.orig_bytes_size;
+
+			memcpy(dll_info->original_bytes, present_hk.original_bytes, present_hk.orig_bytes_size);
+			memcpy((void*)present, present_hk.hook_code, present_hk.hook_size);
+
+			Utils::EnableWP(irql);
 
 			KeUnstackDetachProcess(&apc);
 
@@ -62,53 +77,57 @@ void CommandHandler(void* system_buffer)
 		}
 		case ALLOC_MEM:
 		{
-			auto msg = (AllocMemCmd*)request;
+			auto msg = *(AllocMemCmd*)request;
 
-			DbgPrint("receieved request %i, process id %i size %i \n", msg_id, msg->proc_id, msg->size);
+			DbgPrint("receieved request %i, process id %i size 0x%p \n", msg_id, msg.proc_id, msg.size);
+
+			uintptr_t address = NULL;
 
 			PEPROCESS process;
 			KAPC_STATE apc;
 
-			PsLookupProcessByProcessId((HANDLE)msg->proc_id, &process);
+			PsLookupProcessByProcessId((HANDLE)msg.proc_id, &process);
 			KeStackAttachProcess(process, &apc);
-
-			uintptr_t address = NULL;
 
 			auto status = ZwAllocateVirtualMemory(
 				NtCurrentProcess(),
 				(void**)&address,
 				0,
-				(size_t*)&msg->size,
+				(size_t*)&msg.size,
 				MEM_COMMIT | MEM_RESERVE,
 				PAGE_EXECUTE_READWRITE
 			);
+
+			memset((void*)address, 0x00, msg.size);
 	
 			KeUnstackDetachProcess(&apc);
+
+			*(uintptr_t*)output_buffer = address;
 
 			break;
 		}
 		case MODULE_BASE:
 		{
-			auto msg = (GetModuleMsg*)request;
+			auto msg = *(GetModuleMsg*)request;
 
-			DbgPrint("receieved request %i module name %ws\n", msg_id, msg->module);
+			DbgPrint("receieved request %i module name %ws\n", msg_id, msg.module);
 
 			PEPROCESS process;
 			KAPC_STATE apc;
 
-			PsLookupProcessByProcessId((HANDLE)msg->proc_id, &process);
+			PsLookupProcessByProcessId((HANDLE)msg.proc_id, &process);
 			KeStackAttachProcess(process, &apc);
 
 			UNICODE_STRING mod_name;
-			RtlInitUnicodeString(&mod_name, msg->module);
+			RtlInitUnicodeString(&mod_name, msg.module);
 				
-			auto mod_base = Utils::GetUserModule(process, &mod_name);
+			auto module_base = (void*)Utils::GetUserModule(process, &mod_name);
 
 			KeUnstackDetachProcess(&apc);
 
-			DbgPrint("mod_base %p \n", mod_base);
+			DbgPrint("retrieved module base %p \n", module_base);
 
-			Utils::WriteMem(msg->proc_id, (uintptr_t)msg->out_buf, &mod_base, sizeof(uintptr_t));
+			*(void**)output_buffer = module_base;
 
 			break;
 		}

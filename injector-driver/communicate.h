@@ -27,7 +27,7 @@ namespace Interface
 	{
 		int32_t proc_id;
 		size_t size;
-		uintptr_t* result;
+		uintptr_t result;
 		wchar_t	section_name[60];
 	};
 
@@ -41,16 +41,16 @@ namespace Interface
 
 	struct GetModuleMsg : Msg
 	{
-		DWORD proc_id;
+		uint32_t proc_id;
 		wchar_t module[50];
-		uintptr_t* out_buf;
 	};
+
 
 	struct WriteCmd : Msg
 	{
 		int proc_id;
 		uintptr_t address;
-		BYTE* buffer;
+		char* buffer;
 		int size;
 	};
 

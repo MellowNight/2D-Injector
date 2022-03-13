@@ -10,7 +10,7 @@ enum VMMCALL_ID : uintptr_t
     set_npt_hook = 0x6611AAFF22,
 };
 
-extern "C" int __stdcall vmmcall(VMMCALL_ID vmmcall_id, ...);
+extern "C" int __stdcall svm_vmmcall(VMMCALL_ID vmmcall_id, ...);
 
 namespace ForteVisor
 {

@@ -1,64 +1,11 @@
 #pragma once
-#include <iostream>
-#include <string>
-#include <Windows.h>
-#include <TlHelp32.h>
-#include <cstdint>
+#include "communicate.h"
 
 #define COMMAND_KEY 0xDEADBEEF
 
 namespace Driver
 {
 	HANDLE driver_handle;
-
-	enum messages : __int64
-	{
-		NONE,
-		START_THREAD,
-		ALLOC_MEM,
-		WRITE_MEM,
-		MODULE_BASE,
-		EXIT_CLEANUP,
-	};
-
-	struct Msg
-	{
-		int64_t command_key;
-		int message_id;
-	};
-
-	struct AllocMemCmd : Msg
-	{
-		DWORD proc_id;
-		DWORD size;
-	};
-
-	struct InvokeRemoteFunctionCmd : Msg
-	{
-		int proc_id;
-		uintptr_t map_base;
-		uintptr_t address;
-		uintptr_t image_size;
-	};
-
-	struct GetModuleMsg : Msg
-	{
-		DWORD proc_id;
-		wchar_t module[50];
-	};
-
-	struct WriteCmd : Msg
-	{
-		int proc_id;
-		uintptr_t address;
-		BYTE* buffer;
-		int size;
-	};
-
-	struct InitMsg : Msg
-	{
-		int proc_id;
-	};
 
 	uintptr_t AllocateMemory(DWORD proc_id, DWORD size)
 	{

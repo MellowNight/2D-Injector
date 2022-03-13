@@ -78,29 +78,27 @@ namespace Utils
         }
     }
 
-    void* GetExport(uintptr_t base, char* export_name)
+    void* GetExport(uintptr_t base, const char* export_name)
     {
-        PIMAGE_NT_HEADERS nt_header = (PIMAGE_NT_HEADERS)(
-            base + ((PIMAGE_DOS_HEADER)base)->e_lfanew
-        );
+        auto pe_hdr = PeHeader(base);
 
         IMAGE_DATA_DIRECTORY data_dir =
-            nt_header->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
+            pe_hdr->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
 
         auto export_dir = (IMAGE_EXPORT_DIRECTORY*)(data_dir.VirtualAddress + base);
 
+        auto function_array = (int*)(export_dir->AddressOfFunctions + base);
+        auto name_array = (int*)(export_dir->AddressOfNames + base);
+        auto ordinal_array = (int16_t*)(export_dir->AddressOfNameOrdinals + base);
+
         for (int i = 0; i < export_dir->NumberOfFunctions; ++i)
         {
-            int* function_array = (int*)(export_dir->AddressOfFunctions + base);
-            int* name_array = (int*)(export_dir->AddressOfNames + base);
-            int* ordinal_array = (int*)(export_dir->AddressOfNameOrdinals + base);
-
             char* name = (char*)(name_array[i] + base);
 
-            if (strcmp(export_name, name) == 0)
+            if (!strcmp(export_name, name))
             {
                 int ordinal = ordinal_array[i];
-                return (void*)function_array[ordinal];
+                return (void*)((uintptr_t)function_array[ordinal] + base);
             }
         }
     }
@@ -223,10 +221,10 @@ namespace Utils
         {
             LDR_DATA_TABLE_ENTRY* pEntry = CONTAINING_RECORD(pListEntry, LDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
 
-            DbgPrint("process module name %wZ \n", &pEntry->BaseDllName);
-
             if (RtlCompareUnicodeString(&pEntry->BaseDllName, ModuleName, TRUE) == 0)
             {
+                DbgPrint("found process module %wZ \n", &pEntry->BaseDllName);
+
                 return pEntry->DllBase;
             }
         }
