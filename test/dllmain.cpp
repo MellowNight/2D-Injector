@@ -10,7 +10,14 @@ BOOL APIENTRY DllMain( HMODULE hModule,
                      )
 {
     BypassBattleye();
-    MessageBoxA(NULL, "Hello world!", "Hello World!", NULL);
+
+    while (1)
+    {
+        Sleep(500)
+        {
+            IsBadReadPtr(NULL, 0);
+        }
+    }
 
     return TRUE;
 }

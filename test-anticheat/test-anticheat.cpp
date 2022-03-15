@@ -10,6 +10,7 @@ int main()
         Sleep(5000);
 
         veh::remove_veh((uintptr_t)is_bad_read);
+        Sleep(1000);
         veh::set_veh((uintptr_t)is_bad_read);
     }
 }

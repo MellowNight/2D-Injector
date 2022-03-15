@@ -30,6 +30,8 @@ LONG BreakpointRemoverVEH(_EXCEPTION_POINTERS* ExceptionInfo)
 
             auto status = ZwProtectVirtualMemory((HANDLE)-1, (PVOID*)&rip_page, &size, PAGE_EXECUTE_READWRITE, &old_protect);
 
+            /*  Restore the byte from disk  */ 
+
             DWORD bytes_read;
 
             SetFilePointer(
@@ -39,7 +41,7 @@ LONG BreakpointRemoverVEH(_EXCEPTION_POINTERS* ExceptionInfo)
 
             ReadFile(
                 file_handle,
-                (void*)ExceptionInfo->ContextRecord->Rip, /* quick thinking  */
+                (void*)ExceptionInfo->ContextRecord->Rip,
                 1, &bytes_read, NULL
             );
 
@@ -65,11 +67,22 @@ uint64_t (__fastcall* RtlpAddVectoredHandler)(
 
 uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr, unsigned int a3)
 {            
+    auto retaddr = *(uintptr_t*)_AddressOfReturnAddress();
+
     UNICODE_STRING mod_name;
-    auto module_base = Utils::ModuleFromAddress(*(uintptr_t*)_AddressOfReturnAddress(), &mod_name);
+    auto module_base = Utils::ModuleFromAddress(retaddr, &mod_name);
 
     if (!module_base || !wcscmp(mod_name.Buffer, BATTLEYE_NAME))
     {
+        if (!module_base)
+        {
+            Utils::log("RtlAddVectoredExceptionHandler was called from 0x%p \n", retaddr);
+        }
+        else
+        {
+            Utils::log("RtlAddVectoredExceptionHandler was called from %wZ+0x%p \n", mod_name, retaddr-module_base);
+        }
+
         static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
             first, 
             (uint64_t)BreakpointRemoverVEH,
@@ -90,6 +103,12 @@ uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr, un
 
 void BypassBattleye()
 {
+    /*  testing procedure:
+        1. launch test-anticheat
+        2. attach debugger/open dbgview
+        3. use CE to inject test bypass .dll
+    */
+
     Disasm::Init();
 
     /*  we are going to register our own exception handler to replace their VEH    */
