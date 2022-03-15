@@ -104,11 +104,12 @@ uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr, un
 void BypassBattleye()
 {
     /*  testing procedure:
-        1. launch test-anticheat
-        2. attach debugger/open dbgview
-        3. use CE to inject test bypass .dll
+        1. launch hypervisor
+        2. launch test-anticheat
+        3. attach debugger/open dbgview
+        4. use CE to inject test bypass .dll
     */
-
+    
     Disasm::Init();
 
     /*  we are going to register our own exception handler to replace their VEH    */
