@@ -5,8 +5,8 @@ C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(175,36): 
 C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(210,21): warning C4018: '<': signed/unsigned mismatch
 C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(217,42): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
   utils.cpp
-  Previous IPDB not found, fall back to full compilation.
   Generating code
+  Previous IPDB not found, fall back to full compilation.
 C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(220): warning C4715: 'PE::GetExport': not all control paths return a value
   All 191 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code

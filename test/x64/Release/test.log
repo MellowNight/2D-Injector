@@ -12,5 +12,5 @@ LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; us
   All 19 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
 ForteVisorApi.lib(forte_api.obj) : warning LNK4099: PDB '' was not found with 'ForteVisorApi.lib(forte_api.obj)' or at ''; linking object as if no debug info
-ForteVisorApi.lib(pch.obj) : warning LNK4099: PDB '' was not found with 'ForteVisorApi.lib(pch.obj)' or at ''; linking object as if no debug info
+ForteVisorApi.lib(pch.obj) : warning LNK4099: PDB 'ForteVisorApi.pdb' was not found with 'ForteVisorApi.lib(pch.obj)' or at 'C:\Users\lolxd\source\repos\BE-injector\x64\Release\ForteVisorApi.pdb'; linking object as if no debug info
   test.vcxproj -> C:\Users\lolxd\source\repos\BE-injector\x64\Release\test_bypass_BE_dll.dll

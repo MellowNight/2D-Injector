@@ -3,12 +3,12 @@
 #include "utils.h"
 #include <iostream>
 
-#define TARGET L"ShooterGame-Win64-DebugGame.exe"
+#define TARGET L"ShooterGame-Win64-Shipping.exe"
 #define ENTRYPOINT_NAME "HookEntryPoint"
 
 extern "C" int main()
 {
-	system("C:\\Users\\lolxd\\Downloads\\KsDumper\\Driver\\kdmapper C:\\Users\\lolxd\\source\\repos\\AMD-Hypervisor\\x64\\Release\\AMD-Hypervisor.sys");
+	//system("C:\\Users\\lolxd\\Downloads\\KsDumper\\Driver\\kdmapper C:\\Users\\lolxd\\source\\repos\\AMD-Hypervisor\\x64\\Release\\AMD-Hypervisor.sys");
 	system("C:\\Users\\lolxd\\Downloads\\KsDumper\\Driver\\kdmapper C:\\Users\\lolxd\\source\\repos\\BE-injector\\x64\\Release\\injector-driver.sys");
 	
 	std::string cheat_dll_name;
