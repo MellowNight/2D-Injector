@@ -13,10 +13,8 @@ BOOL APIENTRY DllMain( HMODULE hModule,
 
     while (1)
     {
-        Sleep(500)
-        {
-            IsBadReadPtr(NULL, 0);
-        }
+        Sleep(500);
+        IsBadReadPtr(NULL, 0);
     }
 
     return TRUE;

@@ -1,0 +1,24 @@
+﻿  Assembling bypass_be.asm...
+  pch.cpp
+  be_bypass.cpp
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(21,28): warning C4101: 'mod_name': unreferenced local variable
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,36): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,36): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,42): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,42): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,48): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,48): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,54): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,54): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,60): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,60): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,66): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,66): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,72): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,72): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,102): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,102): warning C4309: 'initializing': truncation of constant value
+  dllmain.cpp
+  utils.cpp
+C:\Users\lolxd\source\repos\BE-injector\test\utils.cpp(37,9): error C4996: 'vsprintf': This function or variable may be unsafe. Consider using vsprintf_s instead. To disable deprecation, use _CRT_SECURE_NO_WARNINGS. See online help for details.
+  Generating Code...

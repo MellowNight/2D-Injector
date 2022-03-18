@@ -1,0 +1,30 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(513,5): warning MSB8028: The intermediate directory (x64\Release\) contains files shared from another project (test.vcxproj, test_bypass_dll.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  Assembling bypass_be.asm...
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+  pch.cpp
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+  be_bypass.cpp
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(21,28): warning C4101: 'mod_name': unreferenced local variable
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,36): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,36): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,42): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,42): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,48): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,48): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,54): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,54): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,60): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,60): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,66): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,66): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,72): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,72): warning C4309: 'initializing': truncation of constant value
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,102): warning C4838: conversion from 'int' to 'char' requires a narrowing conversion
+C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(113,102): warning C4309: 'initializing': truncation of constant value
+  dllmain.cpp
+  utils.cpp
+  Generating code
+  Previous IPDB not found, fall back to full compilation.
+  All 2 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+  test.vcxproj -> C:\Users\lolxd\source\repos\BE-injector\x64\Release\test_bypass_BE_dll.dll

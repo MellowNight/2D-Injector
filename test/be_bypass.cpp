@@ -80,7 +80,7 @@ uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr, un
         }
         else
         {
-            Utils::log("RtlAddVectoredExceptionHandler was called from %wZ+0x%p \n", mod_name, retaddr-module_base);
+            Utils::log("RtlAddVectoredExceptionHandler was called from %wZ+0x%p \n", mod_name, retaddr-(uintptr_t)module_base);
         }
 
         static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
@@ -121,5 +121,5 @@ void BypassBattleye()
 
     addveh_hook = new Hooks::JmpRipCode{ (uintptr_t)RtlpAddVectoredHandler, (uintptr_t)RtlAddVectoredExceptionHandler_hook };
 
-    ForteVisor::SetMpkHook((uintptr_t)RtlpAddVectoredHandler, addveh_hook->hook_code, addveh_hook->hook_size);
+    ForteVisor::SetNptHook((uintptr_t)RtlpAddVectoredHandler, addveh_hook->hook_code, addveh_hook->hook_size);
 }

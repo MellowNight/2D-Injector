@@ -1,6 +1,6 @@
 ﻿  Building 'injector-driver' with toolset 'WindowsKernelModeDriver10.0' and the 'Universal' target platform.
   Stamping x64\Release\injector-driver.inf
-  Stamping [Version] section with DriverVer=03/13/2022,20.38.41.46
+  Stamping [Version] section with DriverVer=03/17/2022,22.22.28.986
   communicate.cpp
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition
