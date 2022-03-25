@@ -58,48 +58,69 @@ LONG BreakpointRemoverVEH(_EXCEPTION_POINTERS* ExceptionInfo)
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
-Hooks::JmpRipCode* addveh_hook = NULL;
-uint64_t (__fastcall* RtlpAddVectoredHandler)(
-    int a1,
-    __int64 a2,
-    unsigned int a3
-) = NULL;
+//uint64_t (__fastcall* RtlpAddVectoredHandler)(
+//    int a1,
+//    __int64 a2,
+//    unsigned int a3
+//) = NULL;
+//
+//uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr, unsigned int a3)
+//{            
+//    auto retaddr = *(uintptr_t*)_AddressOfReturnAddress();
+//
+//    UNICODE_STRING mod_name;
+//    auto module_base = Utils::ModuleFromAddress(retaddr, &mod_name);
+//
+//    if (!module_base || !wcscmp(mod_name.Buffer, BATTLEYE_NAME))
+//    {
+//        if (!module_base)
+//        {
+//            Utils::log("RtlAddVectoredExceptionHandler was called from 0x%p \n", retaddr);
+//        }
+//        else
+//        {
+//            Utils::log("RtlAddVectoredExceptionHandler was called from %wZ+0x%p \n", mod_name, retaddr-(uintptr_t)module_base);
+//        }
+//
+//        static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
+//            first, 
+//            (uint64_t)BreakpointRemoverVEH,
+//            a3
+//        );
+//
+//        return (uint64_t)BreakpointRemoverVEH;
+//    }
+//    else
+//    {
+//        return static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
+//            first,
+//            (uint64_t)handler_addr,
+//            a3
+//        );
+//    }
+//}
 
-uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr, unsigned int a3)
-{            
-    auto retaddr = *(uintptr_t*)_AddressOfReturnAddress();
+Hooks::JmpRipCode* is_bad_read_hk = NULL;
 
-    UNICODE_STRING mod_name;
-    auto module_base = Utils::ModuleFromAddress(retaddr, &mod_name);
+BOOL IsBadRead_caller(CONST VOID* param1, UINT_PTR param2)
+{
+    auto kernel32 = GetModuleHandle(L"kernel32.dll");
 
-    if (!module_base || !wcscmp(mod_name.Buffer, BATTLEYE_NAME))
-    {
-        if (!module_base)
-        {
-            Utils::log("RtlAddVectoredExceptionHandler was called from 0x%p \n", retaddr);
-        }
-        else
-        {
-            Utils::log("RtlAddVectoredExceptionHandler was called from %wZ+0x%p \n", mod_name, retaddr-(uintptr_t)module_base);
-        }
+    auto is_bad_read = (decltype(&IsBadReadPtr))GetProcAddress(kernel32, "IsBadReadPtr");
 
-        static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
-            first, 
-            (uint64_t)BreakpointRemoverVEH,
-            a3
-        );
-
-        return (uint64_t)BreakpointRemoverVEH;
-    }
-    else
-    {
-        return static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
-            first,
-            (uint64_t)handler_addr,
-            a3
-        );
-    }
+    return is_bad_read(param1, param2);
 }
+
+BOOL IsBadRead_caller_handler(_In_opt_ CONST VOID* lp,
+    _In_     UINT_PTR ucb)
+{
+    auto result = static_cast<decltype(&IsBadRead_caller)>((void*)is_bad_read_hk->original_bytes)(lp, ucb);
+
+    __debugbreak();
+
+    return result;
+}
+
 
 void BypassBattleye()
 {
@@ -112,14 +133,21 @@ void BypassBattleye()
     
     Disasm::Init();
 
-    /*  we are going to register our own exception handler to replace their VEH    */
+    auto kernel32 = GetModuleHandle(L"kernel32.dll");
 
-    auto ntdll = GetModuleHandle(L"ntdll.dll");
-    
-    RtlpAddVectoredHandler = (decltype(RtlpAddVectoredHandler))GetProcAddress(ntdll, "RtlAddVectoredExceptionHandler");
-    RtlpAddVectoredHandler = (decltype(RtlpAddVectoredHandler))RELATIVE_ADDR((uint8_t*)RtlpAddVectoredHandler + 3, 1, 5);
+    auto is_bad_read = (decltype(&IsBadReadPtr))GetProcAddress(kernel32, "IsBadReadPtr");
 
-    addveh_hook = new Hooks::JmpRipCode{ (uintptr_t)RtlpAddVectoredHandler, (uintptr_t)RtlAddVectoredExceptionHandler_hook };
+   // is_bad_read_hk = new Hooks::JmpRipCode{ (uintptr_t)IsBadRead_caller, (uintptr_t)IsBadRead_caller_handler };
 
-    ForteVisor::SetNptHook((uintptr_t)RtlpAddVectoredHandler, addveh_hook->hook_code, addveh_hook->hook_size);
+    // ForteVisor::SetNptHook((uintptr_t)IsBadRead_caller, is_bad_read_hk->hook_code, is_bad_read_hk->hook_size);
+    ForteVisor::SetNptHook((uintptr_t)is_bad_read, (uint8_t*)"\xCC", 1);
+
+    __debugbreak();
+    IsBadRead_caller(NULL, 0);
+
+    while (1)
+    {
+        Sleep(600);
+        IsBadRead_caller(NULL, 0);
+    }
 }

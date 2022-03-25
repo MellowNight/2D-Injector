@@ -31,7 +31,7 @@ namespace Utils
 
     void log(const char* format, ...)
     {
-        static char buffer[256];
+        char buffer[256];
         va_list args;
         va_start(args, format);
         vsprintf(buffer, format, args);

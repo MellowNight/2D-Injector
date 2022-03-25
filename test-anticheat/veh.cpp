@@ -1,9 +1,12 @@
 #include "veh.h"
 #include "utils.h"
 
-std::vector<std::tuple<uintptr_t, BYTE>>checks;
+std::vector<std::tuple<uintptr_t, BYTE>> checks;
 
 LONG WINAPI veh::be_handler(struct _EXCEPTION_POINTERS* ExceptionInfo) {
+
+	__debugbreak();
+	Utils::log("veh::be_handler called \n");
 
 	if (ExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_BREAKPOINT)
 	{
@@ -62,7 +65,7 @@ LONG WINAPI veh::be_handler(struct _EXCEPTION_POINTERS* ExceptionInfo) {
 
 void veh::set_veh(uintptr_t func) 
 {
-	AddVectoredExceptionHandler(true, veh::be_handler);
+	auto handler = AddVectoredExceptionHandler(true, veh::be_handler);
 
 	if (!func)
 	{
