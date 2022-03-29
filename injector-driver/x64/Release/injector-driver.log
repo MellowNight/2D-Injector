@@ -1,6 +1,6 @@
 ﻿  Building 'injector-driver' with toolset 'WindowsKernelModeDriver10.0' and the 'Universal' target platform.
   Stamping x64\Release\injector-driver.inf
-  Stamping [Version] section with DriverVer=03/25/2022,17.41.20.870
+  Stamping [Version] section with DriverVer=03/29/2022,16.36.54.620
   communicate.cpp
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition
@@ -1485,7 +1485,7 @@ C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(299,14): warnin
   Generating Code...
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(79): warning C4715: 'Utils::GetProcessId': not all control paths return a value
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(104): warning C4715: 'Utils::GetExport': not all control paths return a value
-ForteVisorKernelApi.lib(forte_api_kernel.obj) : warning LNK4099: PDB '' was not found with 'ForteVisorKernelApi.lib(forte_api_kernel.obj)' or at ''; linking object as if no debug info
+ForteVisorKernelApi.lib(forte_api_kernel.obj) : warning LNK4099: PDB 'ForteVisorKernelApi.pdb' was not found with 'ForteVisorKernelApi.lib(forte_api_kernel.obj)' or at 'C:\Users\lolxd\source\repos\BE-injector\x64\Release\ForteVisorKernelApi.pdb'; linking object as if no debug info
   injector-driver.vcxproj -> C:\Users\lolxd\source\repos\BE-injector\x64\Release\injector-driver.sys
   Done Adding Additional Store
   Successfully signed: C:\Users\lolxd\source\repos\BE-injector\x64\Release\injector-driver.sys

@@ -114,9 +114,9 @@ BOOL IsBadRead_caller(CONST VOID* param1, UINT_PTR param2)
 BOOL IsBadRead_caller_handler(_In_opt_ CONST VOID* lp,
     _In_     UINT_PTR ucb)
 {
-    auto result = static_cast<decltype(&IsBadRead_caller)>((void*)is_bad_read_hk->original_bytes)(lp, ucb);
+    auto result = static_cast<decltype(&IsBadRead_caller_handler)>((void*)is_bad_read_hk->original_bytes)(lp, ucb);
 
-    __debugbreak();
+    MessageBoxA(NULL, "IsBadReadPtr called", "IsBadReadPtr called", MB_OK);
 
     return result;
 }
@@ -137,17 +137,16 @@ void BypassBattleye()
 
     auto is_bad_read = (decltype(&IsBadReadPtr))GetProcAddress(kernel32, "IsBadReadPtr");
 
-   // is_bad_read_hk = new Hooks::JmpRipCode{ (uintptr_t)IsBadRead_caller, (uintptr_t)IsBadRead_caller_handler };
+    is_bad_read_hk = new Hooks::JmpRipCode{ (uintptr_t)is_bad_read, (uintptr_t)IsBadRead_caller_handler };
 
-    // ForteVisor::SetNptHook((uintptr_t)IsBadRead_caller, is_bad_read_hk->hook_code, is_bad_read_hk->hook_size);
-    ForteVisor::SetNptHook((uintptr_t)is_bad_read, (uint8_t*)"\xCC", 1);
+    ForteVisor::SetNptHook((uintptr_t)is_bad_read, is_bad_read_hk->hook_code, is_bad_read_hk->hook_size);
 
-    __debugbreak();
-    IsBadRead_caller(NULL, 0);
+    auto a = IsBadReadPtr(0, 0);
 
     while (1)
     {
-        Sleep(600);
-        IsBadRead_caller(NULL, 0);
+        Sleep(1000);
+        __debugbreak();
+        IsBadReadPtr(0, 0);
     }
 }
