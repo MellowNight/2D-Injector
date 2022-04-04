@@ -34,6 +34,7 @@ namespace Interface
             OutputBuffer,
             OutputBufferLength
         );
+        DbgPrint("NtDeviceIoControlFile called \n");
 
         auto process_name = PsGetProcessImageFileName(PsGetCurrentProcess());
 

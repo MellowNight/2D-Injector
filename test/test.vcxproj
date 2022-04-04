@@ -143,11 +143,11 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>ZYCORE_STATIC_BUILD;ZYDIS_STATIC_BUILD;_CRT_SECURE_NO_WARNINGS;NDEBUG;TEST_EXPORTS;_WINDOWS;_USRDLL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>pch.h</PrecompiledHeaderFile>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\Zydis\include;$(SolutionDir)dependencies\ForteVisor\include</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\Zydis\include;$(SolutionDir)dependencies\ForteVisor\include;$(ProjectDir)imgui-master</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -155,21 +155,35 @@
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableUAC>false</EnableUAC>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\ForteVisor\lib\Usermode\$(Configuration);$(SolutionDir)dependencies\Zydis\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\ForteVisor\lib\Usermode\$(Configuration);$(SolutionDir)dependencies\Zydis\lib\$(Configuration);$(DXSDK_DIR)Lib\$(Platform);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>Zydis.lib;Zycore.lib;ForteVisorApi.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="be_bypass.h" />
+    <ClInclude Include="d3d_hook.h" />
+    <ClInclude Include="disassembly.h" />
     <ClInclude Include="framework.h" />
+    <ClInclude Include="global.h" />
     <ClInclude Include="hooks.h" />
+    <ClInclude Include="imgui-master\backends\imgui_impl_dx11.h" />
+    <ClInclude Include="imgui-master\backends\imgui_impl_win32.h" />
     <ClInclude Include="includes.h" />
+    <ClInclude Include="menu.h" />
     <ClInclude Include="pch.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="be_bypass.cpp" />
+    <ClCompile Include="d3d_hook.cpp" />
+    <ClCompile Include="disassembly.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="global.cpp" />
+    <ClCompile Include="imgui-master\backends\imgui_impl_dx11.cpp" />
+    <ClCompile Include="imgui-master\backends\imgui_impl_win32.cpp" />
+    <ClCompile Include="imgui-master\imgui.cpp" />
+    <ClCompile Include="imgui-master\imgui_draw.cpp" />
+    <ClCompile Include="imgui-master\imgui_tables.cpp" />
+    <ClCompile Include="imgui-master\imgui_widgets.cpp" />
+    <ClCompile Include="menu.cpp" />
     <ClCompile Include="pch.cpp">
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
@@ -177,11 +191,6 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="utils.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <MASM Include="bypass_be.asm">
-      <FileType>Document</FileType>
-    </MASM>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

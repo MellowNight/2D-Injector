@@ -1,6 +1,6 @@
 ﻿  Building 'injector-driver' with toolset 'WindowsKernelModeDriver10.0' and the 'Universal' target platform.
   Stamping x64\Release\injector-driver.inf
-  Stamping [Version] section with DriverVer=03/29/2022,16.36.54.620
+  Stamping [Version] section with DriverVer=04/02/2022,22.16.11.284
   communicate.cpp
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\VC\Tools\MSVC\14.29.30133\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition
@@ -1483,8 +1483,8 @@ C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(287,36): warnin
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(299,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(299,14): warning C4189: 'status2': local variable is initialized but not referenced
   Generating Code...
-C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(79): warning C4715: 'Utils::GetProcessId': not all control paths return a value
 C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(104): warning C4715: 'Utils::GetExport': not all control paths return a value
+C:\Users\lolxd\source\repos\BE-injector\injector-driver\util.cpp(79): warning C4715: 'Utils::GetProcessId': not all control paths return a value
 ForteVisorKernelApi.lib(forte_api_kernel.obj) : warning LNK4099: PDB 'ForteVisorKernelApi.pdb' was not found with 'ForteVisorKernelApi.lib(forte_api_kernel.obj)' or at 'C:\Users\lolxd\source\repos\BE-injector\x64\Release\ForteVisorKernelApi.pdb'; linking object as if no debug info
   injector-driver.vcxproj -> C:\Users\lolxd\source\repos\BE-injector\x64\Release\injector-driver.sys
   Done Adding Additional Store
