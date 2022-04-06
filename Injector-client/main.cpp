@@ -25,9 +25,8 @@ extern "C" int main()
 	auto image_size = Util::LoadFileIntoMemory(cheat_dll_name.c_str(), &cheat_dll_raw);
 
 	auto image_real_size = PeHeader(cheat_dll_raw)->OptionalHeader.SizeOfImage;
-	std::cout << std::hex << " image real size 0x" << image_real_size << std::endl;
+
 	auto alloc_base = Driver::AllocateMemory(target_pid, image_real_size + PAGE_SIZE);
-	std::cout << std::hex << " alloc_base 0x" << alloc_base << std::endl;
 
 	auto cheat_base = alloc_base + PAGE_SIZE;
 

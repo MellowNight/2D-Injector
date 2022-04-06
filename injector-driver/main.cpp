@@ -4,18 +4,12 @@
 #include "hooking.h"
 #include "forte_api_kernel.h"
 #include "util.h"
+#include "offsets.h"
 
 struct DllParams
 {
-	struct
-	{
-		uint32_t header;
-		size_t dll_size;
-	} inject_info;
-
-	uintptr_t hooked_function;
-	uint8_t original_bytes[20];
-	size_t orig_bytes_size;
+	uint32_t header;
+	size_t dll_size;
 };
 
 using namespace Interface;
@@ -39,7 +33,7 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 		{
 			auto msg = *(InvokeRemoteFunctionCmd*)request;
 
-			DbgPrint("receieved request %i start thread ProcessID %i\n", msg_id, msg.proc_id);
+			DbgPrint("receieved request %i start thread ProcessID %i msg.map_base %p \n", msg_id, msg.proc_id, msg.map_base);
 
 			PEPROCESS process;
 			KAPC_STATE apc;
@@ -49,25 +43,21 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 			
 			auto dll_info = (DllParams*)msg.map_base;
 
-			dll_info->inject_info.dll_size = msg.image_size;
-			dll_info->inject_info.header = 0x12345678;
+			dll_info->dll_size = msg.image_size;
+			dll_info->header = 0x12345678;
 
 			UNICODE_STRING d3d11_name = RTL_CONSTANT_STRING(L"dxgi.dll");
+
 			auto dxgi = (uintptr_t)Utils::GetUserModule(PsGetCurrentProcess(), &d3d11_name);
 
-			auto present = (uintptr_t)dxgi + 0x2A40;
+			auto present = (uintptr_t)dxgi + DXGI_OFFSET::swapchain_present;
+
 			auto present_hk = Hooks::JmpRipCode{ (uintptr_t)present, (uintptr_t)msg.address };
 
-			// NPT hook on CDXGISwapChain::Present
-			// ForteVisor::SetNptHook(peekmessage, peekmessage_hk.hook_code, peekmessage_hk.hook_size);
+			// NPT hook on dxgi.dll!CDXGISwapChain::Present
+			ForteVisor::SetNptHook(present, present_hk.hook_code, present_hk.hook_size);
 
 			auto irql = Utils::DisableWP();
-
-			dll_info->hooked_function = present;
-			dll_info->orig_bytes_size = present_hk.orig_bytes_size;
-
-			memcpy(dll_info->original_bytes, present_hk.original_bytes, present_hk.orig_bytes_size);
-			memcpy((void*)present, present_hk.hook_code, present_hk.hook_size);
 
 			Utils::EnableWP(irql);
 

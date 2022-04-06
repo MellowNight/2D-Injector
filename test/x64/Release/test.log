@@ -1,16 +1,19 @@
-﻿  Assembling bypass_be.asm...
-cl : command line warning D9025: overriding '/sdl' with '/GS-'
+﻿cl : command line warning D9025: overriding '/sdl' with '/GS-'
   pch.cpp
 cl : command line warning D9025: overriding '/sdl' with '/GS-'
-  be_bypass.cpp
-C:\Users\lolxd\source\repos\BE-injector\test\be_bypass.cpp(38,30): warning C4244: 'argument': conversion from 'uintptr_t' to 'LONG', possible loss of data
+  d3d_hook.cpp
+C:\Users\lolxd\source\repos\BE-injector\test\d3d_hook.cpp(127,34): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+C:\Users\lolxd\source\repos\BE-injector\test\d3d_hook.cpp(128,34): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+  disassembly.cpp
   dllmain.cpp
+C:\Users\lolxd\source\repos\BE-injector\test\dllmain.cpp(25,102): error C2660: 'ForteVisor::SetNptHook': function does not take 3 arguments
+C:\Users\lolxd\source\repos\BE-injector\dependencies\ForteVisor\include\forte_api.h(24,9): message : see declaration of 'ForteVisor::SetNptHook'
+  global.cpp
+  imgui_impl_dx11.cpp
+  imgui_impl_win32.cpp
+  imgui.cpp
+  imgui_draw.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  menu.cpp
   utils.cpp
-  Previous IPDB not found, fall back to full compilation.
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
-  Generating code
-  All 14 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
-  Finished generating code
-ForteVisorApi.lib(forte_api.obj) : warning LNK4099: PDB '' was not found with 'ForteVisorApi.lib(forte_api.obj)' or at ''; linking object as if no debug info
-ForteVisorApi.lib(pch.obj) : warning LNK4099: PDB 'ForteVisorApi.pdb' was not found with 'ForteVisorApi.lib(pch.obj)' or at 'C:\Users\lolxd\source\repos\BE-injector\x64\Release\ForteVisorApi.pdb'; linking object as if no debug info
-  test.vcxproj -> C:\Users\lolxd\source\repos\BE-injector\x64\Release\test_bypass_BE_dll.dll
