@@ -34,25 +34,19 @@ namespace Interface
             OutputBuffer,
             OutputBufferLength
         );
-        DbgPrint("NtDeviceIoControlFile called \n");
 
-        auto process_name = PsGetProcessImageFileName(PsGetCurrentProcess());
+        auto msg_buffer = (Msg*)InputBuffer;
 
-        if (strstr("Injector-client.exe", process_name))
+        if (!MmIsAddressValid(msg_buffer))
         {
-            auto msg_buffer = (Msg*)InputBuffer;
+            return status;
+        }
 
-            if (!MmIsAddressValid(msg_buffer))
-            {
-                return status;
-            }
-
+        if (msg_buffer->command_key == COMMAND_KEY)
+        {
             DbgPrint("NtDeviceIoControlFile called from injector client! command_key %p \n", msg_buffer->command_key);
 
-            if (msg_buffer->command_key == COMMAND_KEY)
-            {
-                CommandHandler(InputBuffer, OutputBuffer);
-            }
+            CommandHandler(InputBuffer, OutputBuffer);
         }
 
         return status;

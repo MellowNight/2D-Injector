@@ -8,7 +8,7 @@ Class=Sample ; TODO: edit Class
 ClassGuid={78A1C341-4539-11d3-B88D-00C04FAD5171} ; TODO: edit ClassGuid
 Provider=%ManufacturerName%
 CatalogFile=injector-driver.cat
-DriverVer = 04/02/2022,22.16.11.284
+DriverVer = 04/05/2022,16.53.2.894
 PnpLockDown=1
 
 [DestinationDirs]

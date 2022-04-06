@@ -11,15 +11,11 @@
 
 extern "C" __int64 __stdcall ZwProtectVirtualMemory(HANDLE ProcessHandle, PVOID * BaseAddress, PULONG RegionSize, ULONG NewProtect, PULONG OldProtect);
 
-enum Offset
-{
-    LDR_IMAGESIZE = 0x40,
-};
-
 namespace Utils
 {
     uintptr_t RvaToOffset(void* base, uintptr_t rva);
     PVOID ModuleFromAddress(uintptr_t address, PUNICODE_STRING out_name);
     void log(const char* format, ...);
+    bool IsAddressValid(void* address);
 };
 

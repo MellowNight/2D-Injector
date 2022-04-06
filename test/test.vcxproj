@@ -162,6 +162,7 @@
   <ItemGroup>
     <ClInclude Include="d3d_hook.h" />
     <ClInclude Include="disassembly.h" />
+    <ClInclude Include="dllmain.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="global.h" />
     <ClInclude Include="hooks.h" />
@@ -170,12 +171,14 @@
     <ClInclude Include="includes.h" />
     <ClInclude Include="menu.h" />
     <ClInclude Include="pch.h" />
+    <ClInclude Include="portable_executable.h" />
     <ClInclude Include="utils.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="d3d_hook.cpp" />
     <ClCompile Include="disassembly.cpp" />
     <ClCompile Include="dllmain.cpp" />
+    <ClCompile Include="entry_point.cpp" />
     <ClCompile Include="global.cpp" />
     <ClCompile Include="imgui-master\backends\imgui_impl_dx11.cpp" />
     <ClCompile Include="imgui-master\backends\imgui_impl_win32.cpp" />

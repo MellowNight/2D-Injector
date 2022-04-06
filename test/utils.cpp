@@ -24,6 +24,11 @@ namespace Utils
         return rva;
     }
 
+    enum Offset
+    {
+        LDR_IMAGESIZE = 0x40,
+    };
+
     PVOID ModuleFromAddress(uintptr_t address, PUNICODE_STRING out_name)
     {
         auto peb = (PPEB)__readgsqword(0x60);
@@ -58,5 +63,17 @@ namespace Utils
         va_end(args);
         buffer[200] = '\0';
         OutputDebugStringA(buffer);
+    }
+
+    bool IsAddressValid(void* address)
+    {
+        if (((uintptr_t)address < 0x7FFFFFFFFFFF) && ((uintptr_t)address > 0x1000))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }
