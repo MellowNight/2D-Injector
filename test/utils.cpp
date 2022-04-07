@@ -6,6 +6,18 @@
 
 namespace Utils
 {
+    bool IsInRange(uintptr_t base, uintptr_t size, uintptr_t address);
+    {
+        if ((address <= base + size) && (address >= base))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+
     uintptr_t RvaToOffset(void* base, uintptr_t rva)
     {
         auto Pe = PeHeader(base);

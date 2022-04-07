@@ -4,7 +4,9 @@
 #include "hooks.h"
 #include "forte_api.h"
 
-#define BATTLEYE_NAME L"test-anticheat.exe"
+#define BATTLEYE_NAME L"BEClient.dll"
+
+Hooks::JmpRipCode RtlpAddVectoredHandler_hook, NtQueryVirtual_hook;
 
 LONG BreakpointRemoverVEH(_EXCEPTION_POINTERS* ExceptionInfo)
 {
@@ -58,95 +60,115 @@ LONG BreakpointRemoverVEH(_EXCEPTION_POINTERS* ExceptionInfo)
     return EXCEPTION_CONTINUE_SEARCH;
 }
 
-//uint64_t (__fastcall* RtlpAddVectoredHandler)(
-//    int a1,
-//    __int64 a2,
-//    unsigned int a3
-//) = NULL;
-//
-//uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr, unsigned int a3)
-//{            
-//    auto retaddr = *(uintptr_t*)_AddressOfReturnAddress();
-//
-//    UNICODE_STRING mod_name;
-//    auto module_base = Utils::ModuleFromAddress(retaddr, &mod_name);
-//
-//    if (!module_base || !wcscmp(mod_name.Buffer, BATTLEYE_NAME))
-//    {
-//        if (!module_base)
-//        {
-//            Utils::log("RtlAddVectoredExceptionHandler was called from 0x%p \n", retaddr);
-//        }
-//        else
-//        {
-//            Utils::log("RtlAddVectoredExceptionHandler was called from %wZ+0x%p \n", mod_name, retaddr-(uintptr_t)module_base);
-//        }
-//
-//        static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
-//            first, 
-//            (uint64_t)BreakpointRemoverVEH,
-//            a3
-//        );
-//
-//        return (uint64_t)BreakpointRemoverVEH;
-//    }
-//    else
-//    {
-//        return static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
-//            first,
-//            (uint64_t)handler_addr,
-//            a3
-//        );
-//    }
-//}
+uint64_t (__fastcall* RtlpAddVectoredHandler)(
+    int a1,
+    __int64 a2,
+    unsigned int a3
+) = NULL;
 
-Hooks::JmpRipCode* is_bad_read_hk = NULL;
+uint64_t RtlAddVectoredExceptionHandler_hook(int first, __int64 handler_addr, unsigned int a3)
+{            
+    auto retaddr = *(uintptr_t*)_AddressOfReturnAddress();
 
-BOOL IsBadRead_caller(CONST VOID* param1, UINT_PTR param2)
-{
-    auto kernel32 = GetModuleHandle(L"kernel32.dll");
+    UNICODE_STRING mod_name;
+    auto module_base = Utils::ModuleFromAddress(retaddr, &mod_name);
 
-    auto is_bad_read = (decltype(&IsBadReadPtr))GetProcAddress(kernel32, "IsBadReadPtr");
+    if (!module_base || !wcscmp(mod_name.Buffer, BATTLEYE_NAME))
+    {
+        if (!module_base)
+        {
+            Utils::log("RtlAddVectoredExceptionHandler was called from 0x%p \n", retaddr);
+        }
+        else
+        {
+            Utils::log("RtlAddVectoredExceptionHandler was called from %wZ+0x%p \n", mod_name, retaddr-(uintptr_t)module_base);
+        }
 
-    return is_bad_read(param1, param2);
+        static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
+            first, 
+            (uint64_t)BreakpointRemoverVEH,
+            a3
+        );
+
+        return (uint64_t)BreakpointRemoverVEH;
+    }
+    else
+    {
+        return static_cast<decltype(RtlpAddVectoredHandler)>(addveh_hook->original_bytes)(
+            first,
+            (uint64_t)handler_addr,
+            a3
+        );
+    }
 }
 
-BOOL IsBadRead_caller_handler(_In_opt_ CONST VOID* lp,
-    _In_     UINT_PTR ucb)
+NTSTATUS (NTAPI* NtQueryVirtual)(
+    HANDLE ProcessHandle,
+    PVOID BaseAddress,
+    MEMORY_INFORMATION_CLASS MemoryInformationClass,
+    PVOID MemoryInformation,
+    SIZE_T MemoryInformationLength,
+    PSIZE_T ReturnLength
+) = NULL;
+
+
+NTSTATUS NTAPI NtQueryVirtualMemory_handler(
+    HANDLE ProcessHandle,
+    PVOID BaseAddress,
+    MEMORY_INFORMATION_CLASS MemoryInformationClass,
+    PVOID MemoryInformation,
+    SIZE_T MemoryInformationLength,
+    PSIZE_T ReturnLength
+)
 {
-    auto result = static_cast<decltype(&IsBadRead_caller_handler)>((void*)is_bad_read_hk->original_bytes)(lp, ucb);
+    auto status = static_cast<decltype(NtQueryVirtualMemory_handler)>(addveh_hook->original_bytes)(
+        ProcessHandle,
+        BaseAddress,
+        MemoryInformationClass,
+        MemoryInformation,
+        MemoryInformationLength,
+        ReturnLength
+    );
 
-    MessageBoxA(NULL, "IsBadReadPtr called", "IsBadReadPtr called", MB_OK);
+    auto mem_info = (MEMORY_BASIC_INFORMATION*)MemoryInformation;
 
-    return result;
+    if (MemoryInformationClass == MemoryBasicInformation)
+    {
+        /*  if our address was queried  */
+        
+        if (mem_info->BaseAddress == Global::dll_info->dll_base)
+        {      
+            mem_info->AllocationBase = 0;
+            mem_info->AllocationProtect = 0;
+            mem_info->State = MEM_FREE;
+            mem_info->Protect = PAGE_NOACCESS;
+            mem_info->Type = 0;
+        }
+        else if ((mem_info->BaseAddress + mem_info->RegionSize) == Global::dll_info->dll_base)
+        {
+            mem_info->RegionSize += (Global::dll_info->dll_size + 1);
+        }
+    }
+
+    return status;
 }
-
 
 void BypassBattleye()
-{
-    /*  testing procedure:
-        1. launch hypervisor
-        2. launch test-anticheat
-        3. attach debugger/open dbgview
-        4. use CE to inject test bypass .dll
-    */
-    
+{   
     Disasm::Init();
 
-    auto kernel32 = GetModuleHandle(L"kernel32.dll");
+    auto ntdll = GetModuleHandle(L"ntdll.dll");
 
-    auto is_bad_read = (decltype(&IsBadReadPtr))GetProcAddress(kernel32, "IsBadReadPtr");
+    RtlpAddVectoredHandler = (decltype(&RtlpAddVectoredHandler))GetProcAddress(ntdll, "RtlpAddVectoredHandler");
 
-    is_bad_read_hk = new Hooks::JmpRipCode{ (uintptr_t)is_bad_read, (uintptr_t)IsBadRead_caller_handler };
+    RtlpAddVectoredHandler_hook = Hooks::JmpRipCode{ (uintptr_t)RtlpAddVectoredHandler, (uintptr_t)RtlAddVectoredExceptionHandler_hook };
 
-    ForteVisor::SetNptHook((uintptr_t)is_bad_read, is_bad_read_hk->hook_code, is_bad_read_hk->hook_size);
+    ForteVisor::SetNptHook((uintptr_t)RtlpAddVectoredHandler, RtlpAddVectoredHandler.hook_code, RtlpAddVectoredHandler.hook_size);
 
-    auto a = IsBadReadPtr(0, 0);
 
-    while (1)
-    {
-        Sleep(1000);
-        __debugbreak();
-        IsBadReadPtr(0, 0);
-    }
+    NtQueryVirtual = (decltype(&NtQueryVirtual))GetProcAddress(ntdll, "NtQueryVirtualMemory");
+
+    NtQueryVirtual_hook = Hooks::JmpRipCode{ (uintptr_t)NtQueryVirtual, (uintptr_t)NtQueryVirtualMemory_handler };
+
+    ForteVisor::SetNptHook((uintptr_t)NtQueryVirtual, NtQueryVirtual_hook.hook_code, NtQueryVirtual_hook.hook_size);
 }

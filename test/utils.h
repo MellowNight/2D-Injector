@@ -21,5 +21,6 @@ namespace Utils
     uintptr_t RvaToOffset(void* base, uintptr_t rva);
     PVOID ModuleFromAddress(uintptr_t address, PUNICODE_STRING out_name);
     void log(const char* format, ...);
+    bool IsInRange(uintptr_t base, uintptr_t size, uintptr_t address);
 };
 
