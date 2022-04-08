@@ -19,7 +19,7 @@ namespace Driver
 
 		DWORD bytes;
 
-		DeviceIoControl(driver_handle, 0, &msg, sizeof(msg),
+		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg),
 			&alloc_base, sizeof(uintptr_t), &bytes, 0);
 
 		return alloc_base;
@@ -38,7 +38,7 @@ namespace Driver
 
 		DWORD bytes;
 
-		return DeviceIoControl(driver_handle, 0, &msg, sizeof(msg), 0, 0, &bytes, 0);
+		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), 0, 0, &bytes, 0);
 	}
 
 	bool WriteMem(int process_id, ULONG64 address, BYTE* buffer, int size)
@@ -54,7 +54,7 @@ namespace Driver
 
 		DWORD bytes;
 
-		return DeviceIoControl(driver_handle, 0, &msg,
+		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg,
 			sizeof(msg), 0, 0, &bytes, 0);
 	}
 
@@ -76,7 +76,7 @@ namespace Driver
 
 		DWORD bytes;
 
-		DeviceIoControl(driver_handle, 0, &msg, sizeof(msg), &result, 8, &bytes, 0);
+		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), &result, 8, &bytes, 0);
 
 		return result;
 	}

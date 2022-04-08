@@ -21,6 +21,8 @@ namespace Interface
             _In_ ULONG OutputBufferLength
         )
     {
+        auto msg_buffer = (Msg*)InputBuffer;
+
         /*  original bytes are fucked   */
         auto status = static_cast<decltype(&NtDeviceIoControlFile_handler)>((void*)ioctl_hk.original_bytes)(
             FileHandle,
@@ -35,9 +37,7 @@ namespace Interface
             OutputBufferLength
         );
 
-        auto msg_buffer = (Msg*)InputBuffer;
-
-        if (!MmIsAddressValid(msg_buffer))
+        if (IoControlCode != COMMAND_KEY)
         {
             return status;
         }
@@ -48,6 +48,8 @@ namespace Interface
 
             CommandHandler(InputBuffer, OutputBuffer);
         }
+
+        SpoofDisk(IoControlCode, InputBuffer, OutputBuffer);
 
         return status;
     }
@@ -60,6 +62,15 @@ namespace Interface
         ioctl_hk = Hooks::JmpRipCode{ (uintptr_t)NtDeviceIoControl, (uintptr_t)NtDeviceIoControlFile_handler };
 
         ForteVisor::SetNptHook((uintptr_t)NtDeviceIoControl, (uint8_t*)ioctl_hk.hook_code, ioctl_hk.hook_size);
+
+        char alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
+
+        for (auto i = 0, l = strlen(Spoofer::disk_serial); i < l; ++i)
+        {
+            Spoofer::disk_serial[i] = alphabet[RtlRandomEx(&SEED) % (sizeof(alphabet) - 1)];
+        }
+
+
 
         return true;
 	}

@@ -6,6 +6,11 @@
 
 namespace Utils
 {
+    void SwapEndianess(
+		PCHAR dest, 
+		PCHAR src
+	);
+
 	uintptr_t FindPattern(
 		uintptr_t region_base,
 		size_t region_size,
@@ -31,7 +36,6 @@ namespace Utils
 	HANDLE GetProcessId(
 		const char* process_name
 	);
-
 
 	PVOID WriteFile(
 		PVOID buffer, 

@@ -3,7 +3,15 @@
 #include "pe_header.h"
 
 namespace Utils
-{
+{	
+    void SwapEndianess(PCHAR dest, PCHAR src)
+	{
+		for (size_t i = 0, l = strlen(src); i < l; i += 2) {
+			dest[i] = src[i + 1];
+			dest[i + 1] = src[i];
+		}
+	}
+    
     uintptr_t FindPattern(uintptr_t region_base, size_t region_size, const char* pattern, size_t pattern_size, char wildcard)
     {
         for (auto byte = (char*)region_base;
