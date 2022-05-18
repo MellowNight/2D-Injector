@@ -6,6 +6,8 @@
 
 namespace Utils
 {
+	uint32_t Random();
+
     void SwapEndianess(
 		PCHAR dest, 
 		PCHAR src
@@ -81,6 +83,6 @@ namespace Utils
 	}
 
 	NTSTATUS UnlockPages(PMDL mdl);
-
-	void* GetExport(uintptr_t base, const char* export_name);
+	
+	KAPC_STATE AttachToProcess(int32_t pid);
 }

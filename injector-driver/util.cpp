@@ -4,6 +4,16 @@
 
 namespace Utils
 {	
+    uint32_t Random()
+    {
+        LARGE_INTEGER time;
+        KeQuerySystemTime(&time);
+
+        auto seed = time.LowPart;
+
+        return RtlRandomEx(&seed);
+    }
+
     void SwapEndianess(PCHAR dest, PCHAR src)
 	{
 		for (size_t i = 0, l = strlen(src); i < l; i += 2) {
@@ -83,31 +93,6 @@ namespace Utils
             }
 
             current_entry = current_entry->Flink;
-        }
-    }
-
-    void* GetExport(uintptr_t base, const char* export_name)
-    {
-        auto pe_hdr = PeHeader(base);
-
-        IMAGE_DATA_DIRECTORY data_dir =
-            pe_hdr->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
-
-        auto export_dir = (IMAGE_EXPORT_DIRECTORY*)(data_dir.VirtualAddress + base);
-
-        auto function_array = (int*)(export_dir->AddressOfFunctions + base);
-        auto name_array = (int*)(export_dir->AddressOfNames + base);
-        auto ordinal_array = (int16_t*)(export_dir->AddressOfNameOrdinals + base);
-
-        for (int i = 0; i < export_dir->NumberOfFunctions; ++i)
-        {
-            char* name = (char*)(name_array[i] + base);
-
-            if (!strcmp(export_name, name))
-            {
-                int ordinal = ordinal_array[i];
-                return (void*)((uintptr_t)function_array[ordinal] + base);
-            }
         }
     }
 
@@ -307,5 +292,16 @@ namespace Utils
         auto status2 = ZwWriteFile(hFile, NULL, NULL, NULL, &ioStatusBlock, buffer, FileSize.QuadPart, &FileOffset, 0);
 
         return buffer;
+    }
+
+    KAPC_STATE AttachToProcess(int32_t pid)
+    {
+        PEPROCESS process;
+        KAPC_STATE apc;
+
+        PsLookupProcessByProcessId((HANDLE)pid, &process);
+        KeStackAttachProcess(process, &apc);
+
+        return apc;
     }
 }

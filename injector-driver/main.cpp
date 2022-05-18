@@ -12,6 +12,12 @@ struct DllParams
 	size_t dll_size;
 };
 
+enum INJECTOR_CONSTANTS
+{
+	mapped_dll_header = 0x12345678,
+	entrypoint_npt_hook = 0xAAAA
+};
+
 using namespace Interface;
 
 void CommandHandler(void* system_buffer, void* output_buffer)
@@ -35,16 +41,12 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			DbgPrint("receieved request %i start thread ProcessID %i msg.map_base %p \n", msg_id, msg.proc_id, msg.map_base);
 
-			PEPROCESS process;
-			KAPC_STATE apc;
-
-			PsLookupProcessByProcessId((HANDLE)msg.proc_id, &process);
-			KeStackAttachProcess(process, &apc);
+			auto apc = Utils::AttachToProcess(msg.proc_id);
 			
-			auto dll_info = (DllParams*)msg.map_base;
+			auto dll_params = (DllParams*)msg.map_base;
 
-			dll_info->dll_size = msg.image_size;
-			dll_info->header = 0x12345678;
+			dll_params->dll_size = msg.image_size;
+			dll_params->header = mapped_dll_header;
 
 			UNICODE_STRING d3d11_name = RTL_CONSTANT_STRING(L"dxgi.dll");
 
@@ -52,20 +54,16 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			auto present = (uintptr_t)dxgi + DXGI_OFFSET::swapchain_present;
 
-			auto present_hk = Hooks::JmpRipCode{ (uintptr_t)present, (uintptr_t)msg.address };
+			auto present_hk = Hooks::JmpRipCode{ present, msg.address };
 
 			// NPT hook on dxgi.dll!CDXGISwapChain::Present
-			ForteVisor::SetNptHook(present, present_hk.hook_code, present_hk.hook_size);
-
-			auto irql = Utils::DisableWP();
-
-			Utils::EnableWP(irql);
+			ForteVisor::SetNptHook(present, present_hk.hook_code, present_hk.hook_size, entrypoint_npt_hook);
 
 			KeUnstackDetachProcess(&apc);
 
 			break;
 		}
-		case ALLOC_MEM:
+		case Interface::ALLOC_MEM:
 		{
 			auto msg = *(AllocMemCmd*)request;
 
@@ -73,11 +71,7 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			uintptr_t address = NULL;
 
-			PEPROCESS process;
-			KAPC_STATE apc;
-
-			PsLookupProcessByProcessId((HANDLE)msg.proc_id, &process);
-			KeStackAttachProcess(process, &apc);
+			auto apc = Utils::AttachToProcess(msg.proc_id);
 
 			auto status = ZwAllocateVirtualMemory(
 				NtCurrentProcess(),
@@ -96,24 +90,20 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			break;
 		}
-		case MODULE_BASE:
+		case Interface::MODULE_BASE:
 		{
 			auto msg = *(GetModuleMsg*)request;
 
 			DbgPrint("receieved request %i module name %ws\n", msg_id, msg.module);
 
-			PEPROCESS process;
-			KAPC_STATE apc;
-
-			PsLookupProcessByProcessId((HANDLE)msg.proc_id, &process);
-			KeStackAttachProcess(process, &apc);
+			auto apcstate = Utils::AttachToProcess(msg.proc_id);
 
 			UNICODE_STRING mod_name;
 			RtlInitUnicodeString(&mod_name, msg.module);
 				
-			auto module_base = (void*)Utils::GetUserModule(process, &mod_name);
+			auto module_base = (void*)Utils::GetUserModule(IoGetCurrentProcess(), &mod_name);
 
-			KeUnstackDetachProcess(&apc);
+			KeUnstackDetachProcess(&apcstate);
 
 			DbgPrint("retrieved module base %p \n", module_base);
 
@@ -121,16 +111,26 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			break;
 		}
-		case WRITE_MEM:
+		case Interface::SET_NPT_HOOK:
+		{
+			auto hook_cmd = *(NptHookMsg*)request;
+
+			DbgPrint("receieved request %i hook_cmd.shellcode 0x%p hook_cmd.size %i \n", hook_cmd.message_id, hook_cmd.shellcode, hook_cmd.size);
+
+			auto apcstate = Utils::AttachToProcess(hook_cmd.proc_id);
+
+			ForteVisor::SetNptHook(hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size);
+
+			KeUnstackDetachProcess(&apcstate);
+
+			break;
+		}
+		case Interface::WRITE_MEM:
 		{		
 			auto msg = (WriteCmd*)request;
 
-			DbgPrint("receieved request %i write size %i write buffer %p proc id %i write address %p\n", 
-				msg_id, msg->size, msg->buffer, msg->proc_id, msg->address);
-
 			auto status = Utils::WriteMem(msg->proc_id, msg->address, msg->buffer, msg->size);
-			
-			DbgPrint("wrote memory! status %p \n", status);
+		
 			break;
 		}
 		default:

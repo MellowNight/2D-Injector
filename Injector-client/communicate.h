@@ -19,12 +19,21 @@ namespace Driver
 		WRITE_MEM,
 		MODULE_BASE,
 		EXIT_CLEANUP,
+		SET_NPT_HOOK
 	};
 
 	struct Msg
 	{
 		int64_t command_key;
 		int message_id;
+	};
+
+	struct NptHookMsg : Msg
+	{
+		int32_t proc_id;
+		size_t size;
+		uintptr_t hook_address;
+		uint8_t shellcode[0x1000];
 	};
 
 	struct AllocMemCmd : Msg
@@ -60,6 +69,8 @@ namespace Driver
 	{
 		int proc_id;
 	};
+
+	bool SetNptHook(int32_t proc_id, size_t size, uintptr_t hook_address, uint8_t* shellcode);
 
 	uintptr_t AllocateMemory(DWORD proc_id, DWORD size);
 

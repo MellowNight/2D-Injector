@@ -125,7 +125,7 @@ namespace PE
 				{
 					thunk->u1.Function = (uintptr_t)GetProcAddress(module, import_by_name->Name);
 
-					std::cout << "thunk->u1.Function import " << std::hex << thunk->u1.Function << std::endl;
+					std::cout << import_by_name->Name << " import: " << std::hex << thunk->u1.Function << std::endl;
 				}
 				else
 				{
@@ -149,6 +149,7 @@ namespace PE
 			SectionCallback(&section[i], (uintptr_t)image_base, callback_data);
 		}
 	}
+
 
 	void CopyHeaders(uint8_t* src, uint8_t* dest)
 	{
@@ -219,8 +220,9 @@ namespace PE
 		}
 	}
 
-	size_t RemapImage(uint8_t* unmapped_pe, uint8_t** out_buffer, int32_t target_pid, uintptr_t load_destination)
+	size_t RemapImage(uint8_t* unmapped_pe, uint8_t** out_buffer, int32_t target_pid, uintptr_t map_destination)
 	{
+		std::cout << *(int*)unmapped_pe;
 		auto pe_header = PeHeader(unmapped_pe);
 
 		auto virtual_size = pe_header->OptionalHeader.SizeOfImage;
@@ -244,7 +246,7 @@ namespace PE
 			out_buffer
 		);
 
-		PE::ResolveRelocations(*out_buffer, (uint8_t*)load_destination);
+		PE::ResolveRelocations(*out_buffer, (uint8_t*)map_destination);
 
 		if (!PE::ResolveImports(*out_buffer, target_pid))
 		{

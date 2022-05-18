@@ -60,12 +60,18 @@
     <ClInclude Include="disassembly.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="hwid_spoof.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
+    <ClInclude Include="hwid_structs.h">
+      <Filter>Source Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="communicate.cpp">
+    <ClCompile Include="ioctlhook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="mapper_traces.cpp">
@@ -75,6 +81,9 @@
       <Filter>Source Files\util</Filter>
     </ClCompile>
     <ClCompile Include="disassembly.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="hwid_spoof.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

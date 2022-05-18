@@ -6,7 +6,7 @@
 
 namespace Utils
 {
-    bool IsInRange(uintptr_t base, uintptr_t size, uintptr_t address);
+    bool IsInRange(uintptr_t base, uintptr_t size, uintptr_t address)
     {
         if ((address <= base + size) && (address >= base))
         {
@@ -70,5 +70,17 @@ namespace Utils
         va_end(args);
         buffer[200] = '\0';
         OutputDebugStringA(buffer);
+    }
+
+    bool IsAddressValid(void* address)
+    {
+        if (((uintptr_t)address < 0x7FFFFFFFFFFF) && ((uintptr_t)address > 0x1000))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 }

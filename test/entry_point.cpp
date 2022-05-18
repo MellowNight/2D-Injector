@@ -1,4 +1,4 @@
-// dllmain.cpp : Defines the entry point for the DLL application.
+// entry_point.cpp : Defines the entry point for the DLL application.
 #include "pch.h"
 #include "portable_executable.h"
 #include "forte_api.h"
@@ -43,7 +43,9 @@ extern "C" __declspec(dllexport) void HookEntryPoint()
 
         PE::ResolveImports((uint8_t*)dll_params + 0x1000);
 
-        BypassBattleye();
+        MessageBoxA(NULL, "hello2", "hello1", MB_OK);
+
+        // BypassBattleye();
     }
 }
 

@@ -15,12 +15,21 @@ namespace Interface
 		WRITE_MEM,
 		MODULE_BASE,
 		EXIT_CLEANUP,
+		SET_NPT_HOOK
 	};
 
 	struct Msg
 	{
 		__int64 command_key;
 		int message_id;
+	};
+
+	struct NptHookMsg : Msg
+	{
+		int32_t proc_id;
+		size_t size;
+		uintptr_t hook_address;
+		uint8_t shellcode[PAGE_SIZE];	// to store hooked page
 	};
 
 	struct AllocMemCmd : Msg

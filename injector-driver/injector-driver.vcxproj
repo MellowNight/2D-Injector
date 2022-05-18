@@ -179,6 +179,8 @@
   <ItemGroup>
     <ClInclude Include="communicate.h" />
     <ClInclude Include="disassembly.h" />
+    <ClInclude Include="hwid_spoof.h" />
+    <ClInclude Include="hwid_structs.h" />
     <ClInclude Include="ia32.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="kernel_structs.h" />
@@ -189,8 +191,9 @@
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="communicate.cpp" />
+    <ClCompile Include="ioctlhook.cpp" />
     <ClCompile Include="disassembly.cpp" />
+    <ClCompile Include="hwid_spoof.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mapper_traces.cpp" />
     <ClCompile Include="util.cpp" />
