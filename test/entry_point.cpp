@@ -41,7 +41,10 @@ extern "C" __declspec(dllexport) void HookEntryPoint()
 
         /* some DLLs such as api - ms dlls aren't globally mapped so  we have to do it here */
 
-        PE::ResolveImports((uint8_t*)dll_params + 0x1000);
+        auto cheat_base = (uint8_t*)dll_params + PAGE_SIZE;
+
+        PE::ResolveImports(cheat_base);
+        PE::InitializeTLS(cheat_base);
 
         StartCheat();
     }

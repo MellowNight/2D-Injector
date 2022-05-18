@@ -2,8 +2,8 @@
   pch.cpp
 cl : command line warning D9025: overriding '/sdl' with '/GS-'
   d3d_hook.cpp
-C:\Users\lolxd\source\repos\BE-injector\test\d3d_hook.cpp(127,34): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
-C:\Users\lolxd\source\repos\BE-injector\test\d3d_hook.cpp(128,34): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\d3d_hook.cpp(127,34): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\d3d_hook.cpp(128,34): warning C4244: '=': conversion from 'LONG' to 'float', possible loss of data
   disassembly.cpp
   dllmain.cpp
   entry_point.cpp
@@ -16,10 +16,10 @@ C:\Users\lolxd\source\repos\BE-injector\test\d3d_hook.cpp(128,34): warning C4244
   imgui_widgets.cpp
   menu.cpp
   utils.cpp
-     Creating library C:\Users\lolxd\source\repos\BE-injector\x64\Release\test_bypass_BE_dll.lib and object C:\Users\lolxd\source\repos\BE-injector\x64\Release\test_bypass_BE_dll.exp
-LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+LINK : warning LNK4044: unrecognized option '/Zc:threadSafeInit-'; ignored
+     Creating library C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\x64\Release\test_bypass_BE_dll.lib and object C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\x64\Release\test_bypass_BE_dll.exp
   Generating code
   Previous IPDB not found, fall back to full compilation.
-  All 999 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 1000 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
-  test.vcxproj -> C:\Users\lolxd\source\repos\BE-injector\x64\Release\test_bypass_BE_dll.dll
+  test.vcxproj -> C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\x64\Release\test_bypass_BE_dll.dll

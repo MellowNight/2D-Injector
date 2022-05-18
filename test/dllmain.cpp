@@ -4,6 +4,7 @@
 #include "d3d_hook.h"
 #include "utils.h"
 
+
 Hooks::JmpRipCode* present_hk = NULL;
 
 void StartCheat()

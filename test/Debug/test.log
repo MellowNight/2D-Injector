@@ -1,0 +1,32 @@
+﻿  pch.cpp
+  d3d_hook.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\d3d_hook.cpp(134,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  disassembly.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\disassembly.cpp(43,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  dllmain.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\includes.h(7,10): fatal error C1083: Cannot open include file: 'forte_api.h': No such file or directory
+  entry_point.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\entry_point.cpp(4,10): fatal error C1083: Cannot open include file: 'forte_api.h': No such file or directory
+  global.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\global.cpp(13,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui_impl_dx11.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\imgui-master\backends\imgui_impl_dx11.cpp(594,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui_impl_win32.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\imgui-master\backends\imgui_impl_win32.cpp(616,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\imgui-master\imgui.cpp(2163,1): warning C4005: 'va_copy': macro redefinition
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\imgui-master\imgui.cpp(2161): message : see previous definition of 'va_copy'
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\imgui-master\imgui.cpp(11933,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui_draw.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\imgui-master\imgui_draw.cpp(139,10): error C2006: '#include': expected "FILENAME" or <FILENAME>
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\imgui-master\imgui_draw.cpp(163,10): error C2006: '#include': expected "FILENAME" or <FILENAME>
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\imgui-master\imgui_draw.cpp(4179,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui_tables.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\imgui-master\imgui_tables.cpp(4051,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  imgui_widgets.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\imgui-master\imgui_widgets.cpp(8208,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  menu.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\menu.cpp(15,1): fatal error C1010: unexpected end of file while looking for precompiled header. Did you forget to add '#include "pch.h"' to your source?
+  utils.cpp
+C:\Users\lolxd\source\repos\BE-injector-present-hook-testing\test\includes.h(7,10): fatal error C1083: Cannot open include file: 'forte_api.h': No such file or directory
+  Generating Code...
