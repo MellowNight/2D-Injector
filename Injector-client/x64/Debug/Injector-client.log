@@ -1,10 +1,10 @@
 ﻿  communicate.cpp
   main.cpp
   manual_map.cpp
-C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(167,36): warning C4018: '<': signed/unsigned mismatch
-C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(202,21): warning C4018: '<': signed/unsigned mismatch
-C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(209,42): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+C:\Users\cppco\source\repos\BE-injector\Injector-client\manual_map.cpp(176,36): warning C4018: '<': signed/unsigned mismatch
+C:\Users\cppco\source\repos\BE-injector\Injector-client\manual_map.cpp(211,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\cppco\source\repos\BE-injector\Injector-client\manual_map.cpp(218,42): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
   utils.cpp
   Generating Code...
-C:\Users\lolxd\source\repos\BE-injector\Injector-client\manual_map.cpp(212): warning C4715: 'PE::GetExport': not all control paths return a value
-  Injector-client.vcxproj -> C:\Users\lolxd\source\repos\BE-injector\x64\Debug\Injector-client.exe
+C:\Users\cppco\source\repos\BE-injector\Injector-client\manual_map.cpp(221): warning C4715: 'PE::GetExport': not all control paths return a value
+  Injector-client.vcxproj -> C:\Users\cppco\source\repos\BE-injector\x64\Debug\Injector-client.exe

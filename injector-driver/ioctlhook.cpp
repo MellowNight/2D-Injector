@@ -62,7 +62,7 @@ namespace Interface
 
         ioctl_hk = Hooks::JmpRipCode{ (uintptr_t)NtDeviceIoControl, (uintptr_t)NtDeviceIoControlFile_handler };
 
-        ForteVisor::SetNptHook((uintptr_t)NtDeviceIoControl, (uint8_t*)ioctl_hk.hook_code, ioctl_hk.hook_size);
+        ForteVisor::SetNptHook((uintptr_t)NtDeviceIoControl, (uint8_t*)ioctl_hk.hook_code, ioctl_hk.hook_size, NULL);
 
         return true;
 	}

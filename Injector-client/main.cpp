@@ -3,7 +3,6 @@
 #include "utils.h"
 #include <iostream>
 
-#define TARGET L"ShooterGame-Win64-Shipping.exe"
 #define ENTRYPOINT_NAME "HookEntryPoint"
 
 extern "C" int InjectDLLBytes(int32_t pid, uint8_t* dll_raw, const char* entrypoint_name)
@@ -83,11 +82,18 @@ extern "C" int main()
 	std::cout << "Enter the name of the DLL to inject: " << std::endl;
 	std::cin >> cheat_dll_name;
 
-	auto target_pid = Util::GetProcId(TARGET);
+
+	std::wstring target_process;
+
+	std::cout << "Enter the name of the target process: " << std::endl;
+	std::wcin >> target_process;
+
+	auto target_pid = Util::GetProcId(target_process.c_str());
 
 	uint8_t* cheat_dll_raw = NULL;
 
 	auto image_size = Util::LoadFileIntoMemory(cheat_dll_name.c_str(), &cheat_dll_raw);
 
 	InjectDLLBytes(target_pid, cheat_dll_raw, ENTRYPOINT_NAME);
+	std::cin.get();
 }

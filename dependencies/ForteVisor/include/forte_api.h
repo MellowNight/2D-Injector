@@ -1,6 +1,4 @@
 #pragma once
-#include "pch.h"
-#include "framework.h"
 #include <cstdint>
 #include <Windows.h>
 #include <math.h>

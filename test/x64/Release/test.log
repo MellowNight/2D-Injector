@@ -1,1 +1,36 @@
-﻿
+﻿  Assembling inline_syscall.asm...
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+  pch.cpp
+cl : command line warning D9025: overriding '/sdl' with '/GS-'
+  be_bypass.cpp
+C:\Users\cppco\source\repos\BE-injector\test\be_bypass.cpp(43,30): warning C4244: 'argument': conversion from 'uintptr_t' to 'LONG', possible loss of data
+C:\Users\cppco\source\repos\BE-injector\test\inline_syscall.h(70,1): warning C4311: 'type cast': pointer truncation from 'void *' to 'NTSTATUS'
+C:\Users\cppco\source\repos\BE-injector\test\be_bypass.cpp(37): message : see reference to function template instantiation 'Return do_syscall<NTSTATUS,HANDLE,PVOID*,DWORD*,int,ULONG*>(uint32_t,HANDLE,PVOID *,DWORD *,int,ULONG *)' being compiled
+          with
+          [
+              Return=NTSTATUS
+          ]
+C:\Users\cppco\source\repos\BE-injector\test\inline_syscall.h(70,1): warning C4302: 'type cast': truncation from 'void *' to 'NTSTATUS'
+  disassembly.cpp
+  entry_point.cpp
+  global.cpp
+  imgui_impl_dx11.cpp
+  imgui_impl_win32.cpp
+  imgui.cpp
+  imgui_draw.cpp
+  imgui_tables.cpp
+  imgui_widgets.cpp
+  utils.cpp
+     Creating library C:\Users\cppco\source\repos\BE-injector\x64\Release\test_bypass_BE_dll.lib and object C:\Users\cppco\source\repos\BE-injector\x64\Release\test_bypass_BE_dll.exp
+  Previous IPDB not found, fall back to full compilation.
+LINK : warning LNK4098: defaultlib 'MSVCRT' conflicts with use of other libs; use /NODEFAULTLIB:library
+  Generating code
+  All 325 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+Zydis.lib(Decoder.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Decoder.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
+Zydis.lib(Register.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Register.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
+Zydis.lib(DecoderData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(DecoderData.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
+Zydis.lib(SharedData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(SharedData.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
+ForteVisorApi.lib(forte_api.obj) : warning LNK4099: PDB 'ForteVisorApi.pdb' was not found with 'ForteVisorApi.lib(forte_api.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\ForteVisorApi.pdb'; linking object as if no debug info
+ForteVisorApi.lib(pch.obj) : warning LNK4099: PDB 'ForteVisorApi.pdb' was not found with 'ForteVisorApi.lib(pch.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\ForteVisorApi.pdb'; linking object as if no debug info
+  test.vcxproj -> C:\Users\cppco\source\repos\BE-injector\x64\Release\test_bypass_BE_dll.dll

@@ -1,2 +1,2 @@
-PlatformToolSet=WindowsKernelModeDriver10.0:VCToolArchitecture=Native32Bit:VCToolsVersion=14.29.30133:VCServicingVersionCrtHeaders=14.29.30136:TargetPlatformVersion=10.0.19041.0:VcpkgTriplet=x64-windows:
-Release|x64|C:\Users\lolxd\source\repos\BE-injector\|
+PlatformToolSet=WindowsKernelModeDriver10.0:VCToolArchitecture=Native64Bit:VCToolsVersion=14.32.31326:TargetPlatformVersion=10.0.22621.0:VcpkgTriplet=x64-windows:
+Release|x64|C:\Users\cppco\source\repos\BE-injector\|

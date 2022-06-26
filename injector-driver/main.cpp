@@ -119,7 +119,7 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			auto apcstate = Utils::AttachToProcess(hook_cmd.proc_id);
 
-			ForteVisor::SetNptHook(hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size);
+			ForteVisor::SetNptHook(hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size, NULL);
 
 			KeUnstackDetachProcess(&apcstate);
 

@@ -25,11 +25,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <Inf Include="injector-driver.inf">
-      <Filter>Driver Files</Filter>
-    </Inf>
-  </ItemGroup>
-  <ItemGroup>
     <ClInclude Include="stack.h">
       <Filter>Source Files</Filter>
     </ClInclude>
