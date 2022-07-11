@@ -8,6 +8,6 @@ C:\Users\cppco\source\repos\BE-injector\Injector-client\manual_map.cpp(218,42): 
   Generating code
   Previous IPDB not found, fall back to full compilation.
 C:\Users\cppco\source\repos\BE-injector\Injector-client\manual_map.cpp(221): warning C4715: 'PE::GetExport': not all control paths return a value
-  All 203 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  All 201 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
   Injector-client.vcxproj -> C:\Users\cppco\source\repos\BE-injector\x64\Release\Injector-client.exe

@@ -1177,8 +1177,9 @@ C:\Users\cppco\source\repos\BE-injector\injector-driver\kernel_structs.h(166,10)
 C:\Users\cppco\source\repos\BE-injector\injector-driver\kernel_structs.h(216,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\cppco\source\repos\BE-injector\injector-driver\hooking.h(25,40): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
 C:\Users\cppco\source\repos\BE-injector\injector-driver\hooking.h(31,35): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
-C:\Users\cppco\source\repos\BE-injector\injector-driver\main.cpp(76,9): warning C4189: 'status': local variable is initialized but not referenced
-C:\Users\cppco\source\repos\BE-injector\injector-driver\main.cpp(132,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\cppco\source\repos\BE-injector\injector-driver\offsets.h(1,1): warning C4821: Unable to determine Unicode encoding type, please save the file with signature (BOM)
+C:\Users\cppco\source\repos\BE-injector\injector-driver\main.cpp(80,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\cppco\source\repos\BE-injector\injector-driver\main.cpp(136,9): warning C4189: 'status': local variable is initialized but not referenced
   mapper_traces.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition
@@ -1769,6 +1770,7 @@ C:\Users\cppco\source\repos\BE-injector\injector-driver\kernel_structs.h(69,10):
 C:\Users\cppco\source\repos\BE-injector\injector-driver\kernel_structs.h(146,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\cppco\source\repos\BE-injector\injector-driver\kernel_structs.h(166,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\cppco\source\repos\BE-injector\injector-driver\kernel_structs.h(216,10): warning C4201: nonstandard extension used: nameless struct/union
+C:\Users\cppco\source\repos\BE-injector\injector-driver\offsets.h(1,1): warning C4821: Unable to determine Unicode encoding type, please save the file with signature (BOM)
 C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(111,25): warning C4101: 'DrvName': unreferenced local variable
 C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(179,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
 C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(179,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
@@ -1786,6 +1788,7 @@ Zydis.lib(Decoder.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zy
 Zydis.lib(Register.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Register.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
 Zydis.lib(DecoderData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(DecoderData.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
 Zydis.lib(SharedData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(SharedData.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
+ForteVisorKernelApi.lib(forte_api_kernel.obj) : warning LNK4099: PDB 'ForteVisorKernelApi.pdb' was not found with 'ForteVisorKernelApi.lib(forte_api_kernel.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\ForteVisorKernelApi.pdb'; linking object as if no debug info
   injector-driver.vcxproj -> C:\Users\cppco\source\repos\BE-injector\x64\Release\injector-driver.sys
   Driver is 'Universal'.
   Inf2Cat task was skipped as there were no inf files to process

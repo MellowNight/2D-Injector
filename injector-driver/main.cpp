@@ -48,16 +48,20 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 			dll_params->dll_size = msg.image_size;
 			dll_params->header = mapped_dll_header;
 
-			UNICODE_STRING d3d11_name = RTL_CONSTANT_STRING(L"dxgi.dll");
+			UNICODE_STRING dxgi_name = RTL_CONSTANT_STRING(L"dxgi.dll");
 
-			auto dxgi = (uintptr_t)Utils::GetUserModule(PsGetCurrentProcess(), &d3d11_name);
+			auto dxgi = (uintptr_t)Utils::GetUserModule(PsGetCurrentProcess(), &dxgi_name);
 
-			auto present = (uintptr_t)dxgi + DXGI_OFFSET::swapchain_present;
+			auto present_address = Utils::FindPattern(
+				dxgi, PeHeader(dxgi)->OptionalHeader.SizeOfImage,
+				"\x48\x89\x74\x24\x00\x55\x57\x41\x56\x48\x8D\x6C\x24\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x45\x60", 35, 0x00
+			) - 5;
 
-			auto present_hk = Hooks::JmpRipCode{ present, msg.address };
+
+			auto present_hk = Hooks::JmpRipCode{ present_address, msg.address };
 
 			// NPT hook on dxgi.dll!CDXGISwapChain::Present
-			ForteVisor::SetNptHook(present, present_hk.hook_code, present_hk.hook_size, entrypoint_npt_hook);
+			ForteVisor::SetNptHook(present_address, present_hk.hook_code, present_hk.hook_size, entrypoint_npt_hook);
 
 			KeUnstackDetachProcess(&apc);
 

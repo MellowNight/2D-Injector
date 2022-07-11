@@ -1782,4 +1782,5 @@ C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(292,93): warnin
 C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(292,14): warning C4189: 'status2': local variable is initialized but not referenced
   Generating Code...
 C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(97): warning C4715: 'Utils::GetProcessId': not all control paths return a value
+C:\Program Files\Microsoft Visual Studio\2022\Community\MSBuild\Microsoft\VC\v170\Microsoft.CppCommon.targets(1092,5): error MSB6006: "link.exe" exited with code 1181.
 LINK : fatal error LNK1181: cannot open input file 'Zycore.lib'
