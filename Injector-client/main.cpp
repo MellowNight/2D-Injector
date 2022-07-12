@@ -2,11 +2,19 @@
 #include "manual_map.h"
 #include "utils.h"
 #include <iostream>
+#include "security.h"
 
-#define ENTRYPOINT_NAME "HookEntryPoint"
-
-extern "C" int InjectDLLBytes(int32_t pid, uint8_t* dll_raw, const char* entrypoint_name)
+extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_raw, const char* entrypoint_name)
 {
+	if (*(int32_t*)dll_raw != INJECTOR_PASSWORD)
+	{
+		SecurityViolation();
+	}
+	else
+	{
+		*(int32_t*)dll_raw = 0x5A4D;
+	}
+
 	Driver::Init();
 
 	auto image_real_size = PeHeader(dll_raw)->OptionalHeader.SizeOfImage;
@@ -71,6 +79,8 @@ extern "C" int InjectDLLBytes(int32_t pid, uint8_t* dll_raw, const char* entrypo
 
 	return 0;
 }
+
+#define ENTRYPOINT_NAME "HookEntryPoint"
 
 extern "C" int main()
 {

@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="communicate.h" />
     <ClInclude Include="includes.h" />
+    <ClInclude Include="security.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="manual_map.h" />
   </ItemGroup>
@@ -93,6 +94,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
+    <TargetExt>.exe</TargetExt>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
