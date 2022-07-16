@@ -4,6 +4,33 @@
 
 namespace Utils
 {	
+    void* GetDriverBaseAddress(size_t* out_driver_size, UNICODE_STRING driver_name)
+    {
+        auto moduleList = (PLIST_ENTRY)PsLoadedModuleList;
+
+        UNICODE_STRING  DrvName;
+
+        for (PLIST_ENTRY pListEntry = moduleList->Flink; pListEntry != moduleList; pListEntry = pListEntry->Flink)
+        {
+            // Search for Ntoskrnl entry
+            auto entry = CONTAINING_RECORD(pListEntry, LDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
+
+            if (RtlCompareUnicodeString(&entry->FullDllName, &driver_name, TRUE))
+            {
+                DbgPrint("Found Module! %wZ \n", &entry->FullDllName);
+
+                if (out_driver_size)
+                {
+                    *out_driver_size = entry->SizeOfImage;
+                }
+
+                return entry->DllBase;
+            }
+        }
+
+        return 0;
+    }
+
     uint32_t Random()
     {
         LARGE_INTEGER time;

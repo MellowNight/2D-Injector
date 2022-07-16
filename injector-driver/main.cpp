@@ -57,7 +57,6 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 				"\x48\x89\x74\x24\x00\x55\x57\x41\x56\x48\x8D\x6C\x24\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x45\x60", 35, 0x00
 			) - 5;
 
-
 			auto present_hk = Hooks::JmpRipCode{ present_address, msg.address };
 
 			// NPT hook on dxgi.dll!CDXGISwapChain::Present

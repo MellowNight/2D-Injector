@@ -15,6 +15,11 @@ Spoofer* Spoofer::Get()
 
 void Spoofer::SpoofDisk(uint32_t IoControlCode, void* InputBuffer, void* OutputBuffer, size_t OutputBufferLength)
 {
+    if (!Utils::GetKernelModule(NULL, RTL_CONSTANT_STRING(L"BEDaisy.sys")))
+    {
+        return;
+    }
+
     if (IoControlCode == IOCTL_STORAGE_QUERY_PROPERTY)
     {
         if (StorageDeviceProperty == ((STORAGE_PROPERTY_QUERY*)InputBuffer)->PropertyId)

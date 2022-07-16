@@ -1178,8 +1178,9 @@ C:\Users\cppco\source\repos\BE-injector\injector-driver\kernel_structs.h(216,10)
 C:\Users\cppco\source\repos\BE-injector\injector-driver\hooking.h(25,40): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
 C:\Users\cppco\source\repos\BE-injector\injector-driver\hooking.h(31,35): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
 C:\Users\cppco\source\repos\BE-injector\injector-driver\offsets.h(1,1): warning C4821: Unable to determine Unicode encoding type, please save the file with signature (BOM)
-C:\Users\cppco\source\repos\BE-injector\injector-driver\main.cpp(80,9): warning C4189: 'status': local variable is initialized but not referenced
-C:\Users\cppco\source\repos\BE-injector\injector-driver\main.cpp(136,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\cppco\source\repos\BE-injector\injector-driver\main.cpp(69,9): warning C4189: 'ntoskrnl': local variable is initialized but not referenced
+C:\Users\cppco\source\repos\BE-injector\injector-driver\main.cpp(83,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\cppco\source\repos\BE-injector\injector-driver\main.cpp(139,9): warning C4189: 'status': local variable is initialized but not referenced
   mapper_traces.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition
@@ -1771,19 +1772,20 @@ C:\Users\cppco\source\repos\BE-injector\injector-driver\kernel_structs.h(146,10)
 C:\Users\cppco\source\repos\BE-injector\injector-driver\kernel_structs.h(166,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\cppco\source\repos\BE-injector\injector-driver\kernel_structs.h(216,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\cppco\source\repos\BE-injector\injector-driver\offsets.h(1,1): warning C4821: Unable to determine Unicode encoding type, please save the file with signature (BOM)
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(111,25): warning C4101: 'DrvName': unreferenced local variable
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(179,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(179,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(189,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(245,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(245,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(257,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(280,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(280,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(292,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(292,14): warning C4189: 'status2': local variable is initialized but not referenced
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(11,25): warning C4101: 'DrvName': unreferenced local variable
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(138,25): warning C4101: 'DrvName': unreferenced local variable
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(206,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(206,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(216,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(272,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(272,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(284,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(307,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(307,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(319,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(319,14): warning C4189: 'status2': local variable is initialized but not referenced
   Generating Code...
-C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(97): warning C4715: 'Utils::GetProcessId': not all control paths return a value
+C:\Users\cppco\source\repos\BE-injector\injector-driver\util.cpp(124): warning C4715: 'Utils::GetProcessId': not all control paths return a value
 Zydis.lib(Decoder.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Decoder.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
 Zydis.lib(Register.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Register.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
 Zydis.lib(DecoderData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(DecoderData.obj)' or at 'C:\Users\cppco\source\repos\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info

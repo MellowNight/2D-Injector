@@ -85,4 +85,6 @@ namespace Utils
 	NTSTATUS UnlockPages(PMDL mdl);
 	
 	KAPC_STATE AttachToProcess(int32_t pid);
+
+	void* GetDriverBaseAddress(size_t* out_driver_size, UNICODE_STRING driver_name);
 }
