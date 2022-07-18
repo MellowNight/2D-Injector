@@ -52,6 +52,7 @@ namespace Interface
 		uintptr_t map_base;
 		uintptr_t address;
 		uintptr_t image_size;
+		uintptr_t RtlAddFunctionTable_address;
 	};
 
 	struct GetModuleMsg : Msg

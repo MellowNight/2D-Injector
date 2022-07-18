@@ -35,6 +35,7 @@ namespace Driver
 		msg.address = start_addr;	// thread addr
 		msg.map_base = params_addr;	// to pass custom parameters to mapped DLL
 		msg.image_size = real_image_size;
+		msg.RtlAddFunctionTable_address = (uintptr_t)RtlAddFunctionTable;
 
 		DWORD bytes;
 
