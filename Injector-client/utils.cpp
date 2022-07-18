@@ -1,5 +1,6 @@
 #pragma once
 #include "includes.h"
+#include "communicate.h"
 
 #define StrToWStr(s) (std::wstring(s, &s[strlen(s)]).c_str())
 
@@ -41,7 +42,7 @@ namespace Util
 
 	DWORD GetProcId(const wchar_t* procName)
 	{
-		DWORD procId = 0;
+		/*DWORD procId = 0;
 		HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
 
 		if (hSnap != INVALID_HANDLE_VALUE)
@@ -62,6 +63,7 @@ namespace Util
 			}
 		}
 		CloseHandle(hSnap);
-		return procId;
+		return procId;*/
+		return Driver::GetProcessId(procName);
 	}
 };

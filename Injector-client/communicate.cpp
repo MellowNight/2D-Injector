@@ -99,6 +99,23 @@ namespace Driver
 		return result;
 	}
 
+	int GetProcessId(const wchar_t* process_name)
+	{
+		GetProcessIdMsg msg;
+
+		uintptr_t result;
+
+		msg.command_key = COMMAND_KEY;
+		msg.message_id = PROCESS_ID;
+		wcscpy(msg.process_name, process_name);
+
+		DWORD bytes;
+
+		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), &result, 8, &bytes, 0);
+
+		return result;
+	}
+
 	void Init()
 	{
 		driver_handle = CreateFileW(

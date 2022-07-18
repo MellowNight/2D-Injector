@@ -25,16 +25,10 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="stack.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="communicate.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="mapper_traces.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
-    <ClInclude Include="offsets.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="util.h">

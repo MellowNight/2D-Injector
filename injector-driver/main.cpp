@@ -4,7 +4,6 @@
 #include "hooking.h"
 #include "forte_api_kernel.h"
 #include "util.h"
-#include "offsets.h"
 
 struct DllParams
 {
@@ -134,6 +133,16 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			auto status = Utils::WriteMem(msg->proc_id, msg->address, msg->buffer, msg->size);
 		
+			break;
+		}
+		case Interface::PROCESS_ID:
+		{
+			auto msg = *(GetProcessIdMsg*)request;
+
+			int processid = Utils::ZwGetRunningSystemProcess(msg.process_name);
+
+			*(int*)output_buffer = processid;
+
 			break;
 		}
 		default:

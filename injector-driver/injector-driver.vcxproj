@@ -76,7 +76,7 @@
     <ConfigurationType>Driver</ConfigurationType>
     <DriverType>KMDF</DriverType>
     <DriverTargetPlatform>Universal</DriverTargetPlatform>
-    <Driver_SpectreMitigation>Spectre</Driver_SpectreMitigation>
+    <Driver_SpectreMitigation>false</Driver_SpectreMitigation>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|ARM'" Label="Configuration">
     <TargetVersion>Windows10</TargetVersion>
@@ -184,10 +184,8 @@
     <ClInclude Include="ia32.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="kernel_structs.h" />
-    <ClInclude Include="offsets.h" />
     <ClInclude Include="pe_header.h" />
     <ClInclude Include="mapper_traces.h" />
-    <ClInclude Include="stack.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>

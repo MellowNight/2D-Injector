@@ -1,5 +1,4 @@
 #include "util.h"
-#include "offsets.h"
 #include "pe_header.h"
 
 namespace Utils
@@ -251,6 +250,57 @@ namespace Utils
         
         return NULL;
     }
+
+	int ZwGetRunningSystemProcess(LPWSTR ProcessName)
+	{
+		ULONG cbBuffer = 0x8000; //32k
+		PVOID pSystemInfo;
+		NTSTATUS status;
+		PSYSTEM_PROCESS_INFORMATION pInfo;
+		//Allocate enough space for the search process
+		do
+		{
+			pSystemInfo = ExAllocatePool(NonPagedPool, cbBuffer);
+			if (pSystemInfo == NULL) //Failed to apply for space, return
+			{
+				return 1;
+			}
+			status = ZwQuerySystemInformation(SystemProcessInformation, pSystemInfo, cbBuffer, NULL);
+			if (status == STATUS_INFO_LENGTH_MISMATCH) //Insufficient space
+			{
+				ExFreePool(pSystemInfo);
+				cbBuffer *= 2;
+			}
+			else if (!NT_SUCCESS(status))
+			{
+				ExFreePool(pSystemInfo);
+				return 1;
+			}
+		} while (status == STATUS_INFO_LENGTH_MISMATCH); //If there is not enough space, keep looping
+		pInfo = (PSYSTEM_PROCESS_INFORMATION)pSystemInfo; //Put the obtained information into pInfo
+		for (;;)
+		{
+			LPWSTR pszProcessName = pInfo->ImageName.Buffer;
+			if (pszProcessName == NULL)
+			{
+				pszProcessName = L"NULL";
+			}
+
+			if (wcscmp(pszProcessName, ProcessName) == 0)
+			{
+				//DbgMessage("PID:%d, process name:%S\n", pInfo->UniqueProcessId, pszProcessName);
+				return (int)pInfo->UniqueProcessId;
+			}
+
+			if (pInfo->NextEntryOffset == 0) //== 0, indicating that the end of the process chain has been reached
+			{
+				break;
+			}
+			pInfo = (PSYSTEM_PROCESS_INFORMATION)(((PUCHAR)pInfo) + pInfo->NextEntryOffset); //Traversal
+		}
+		return 0;
+	}
+
 
     PVOID WriteFile(PVOID buffer, const wchar_t* FileName, ULONG64 size)
     {
