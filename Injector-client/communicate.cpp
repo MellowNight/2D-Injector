@@ -35,6 +35,7 @@ namespace Driver
 		msg.address = start_addr;	// thread addr
 		msg.map_base = params_addr;	// to pass custom parameters to mapped DLL
 		msg.image_size = real_image_size;
+		msg.RtlAddFunctionTable_address = (uintptr_t)RtlAddFunctionTable;
 
 		DWORD bytes;
 
@@ -91,6 +92,23 @@ namespace Driver
 		msg.message_id = MODULE_BASE;
 		wcscpy(msg.module, module.c_str());
 		msg.proc_id = pid;
+
+		DWORD bytes;
+
+		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), &result, 8, &bytes, 0);
+
+		return result;
+	}
+
+	int GetProcessId(const wchar_t* process_name)
+	{
+		GetProcessIdMsg msg;
+
+		uintptr_t result;
+
+		msg.command_key = COMMAND_KEY;
+		msg.message_id = PROCESS_ID;
+		wcscpy(msg.process_name, process_name);
 
 		DWORD bytes;
 

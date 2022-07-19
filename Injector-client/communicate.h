@@ -19,13 +19,19 @@ namespace Driver
 		WRITE_MEM,
 		MODULE_BASE,
 		EXIT_CLEANUP,
-		SET_NPT_HOOK
+		SET_NPT_HOOK,
+		PROCESS_ID
 	};
 
 	struct Msg
 	{
 		int64_t command_key;
 		int message_id;
+	};
+
+	struct GetProcessIdMsg : Msg
+	{
+		wchar_t process_name[50];
 	};
 
 	struct NptHookMsg : Msg
@@ -49,6 +55,7 @@ namespace Driver
 		uintptr_t map_base;
 		uintptr_t address;
 		uintptr_t image_size;
+		uintptr_t RtlAddFunctionTable_address;
 	};
 
 	struct GetModuleMsg : Msg
@@ -81,6 +88,8 @@ namespace Driver
 	void ExitDriver();
 
 	uint64_t GetModuleBase(std::wstring module, int pid);
+
+	int GetProcessId(const wchar_t* process_name);
 
 	void Init();
 }

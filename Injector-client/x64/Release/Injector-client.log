@@ -1,11 +1,18 @@
-﻿  main.cpp
-C:\Users\cppco\source\repos\BE-injector\Injector-client\security.h(26,56): warning C4244: 'argument': conversion from 'uint64_t' to 'ULONG', possible loss of data
-C:\Users\cppco\source\repos\BE-injector\Injector-client\security.h(26,51): warning C4244: 'argument': conversion from 'uint64_t' to 'ULONG', possible loss of data
-C:\Users\cppco\source\repos\BE-injector\Injector-client\security.h(34,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
-     Creating library C:\Users\cppco\source\repos\BE-injector\x64\Release\Injector-client.lib and object C:\Users\cppco\source\repos\BE-injector\x64\Release\Injector-client.exp
+﻿  communicate.cpp
+C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\Injector-client\communicate.cpp(117,10): warning C4244: 'return': conversion from 'uintptr_t' to 'int', possible loss of data
+  main.cpp
+C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\Injector-client\security.h(26,56): warning C4244: 'argument': conversion from 'uint64_t' to 'ULONG', possible loss of data
+C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\Injector-client\security.h(26,51): warning C4244: 'argument': conversion from 'uint64_t' to 'ULONG', possible loss of data
+C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\Injector-client\security.h(34,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+  manual_map.cpp
+C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\Injector-client\manual_map.cpp(176,36): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\Injector-client\manual_map.cpp(211,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\Injector-client\manual_map.cpp(218,42): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+  utils.cpp
+     Creating library C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\x64\Release\Injector-client.lib and object C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\x64\Release\Injector-client.exp
   Generating code
-  0 of 204 functions ( 0.0%) were compiled, the rest were copied from previous compilation.
-    0 functions were new in current compilation
-    0 functions had inline decision re-evaluated but remain unchanged
+  Previous IPDB not found, fall back to full compilation.
+C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\Injector-client\manual_map.cpp(221): warning C4715: 'PE::GetExport': not all control paths return a value
+  All 211 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
   Finished generating code
-  Injector-client.vcxproj -> C:\Users\cppco\source\repos\BE-injector\x64\Release\Injector-client.exe
+  Injector-client.vcxproj -> C:\Users\Administrator\Downloads\BE-injector-be-bypass-testing\BE-injector-be-bypass-testing\BE-injector-simple-BE-mapper-\x64\Release\Injector-client.exe

@@ -4,12 +4,12 @@
 #include "hooking.h"
 #include "forte_api_kernel.h"
 #include "util.h"
-#include "offsets.h"
 
 struct DllParams
 {
 	uint32_t header;
-	size_t dll_size;
+	uintptr_t swapchain_present_address;
+	uintptr_t RtlAddFunctionTable_fn;
 };
 
 enum INJECTOR_CONSTANTS
@@ -42,11 +42,6 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 			DbgPrint("receieved request %i start thread ProcessID %i msg.map_base %p \n", msg_id, msg.proc_id, msg.map_base);
 
 			auto apc = Utils::AttachToProcess(msg.proc_id);
-			
-			auto dll_params = (DllParams*)msg.map_base;
-
-			dll_params->dll_size = msg.image_size;
-			dll_params->header = mapped_dll_header;
 
 			UNICODE_STRING dxgi_name = RTL_CONSTANT_STRING(L"dxgi.dll");
 
@@ -58,6 +53,13 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 			) - 5;
 
 			auto present_hk = Hooks::JmpRipCode{ present_address, msg.address };
+
+			auto dll_params = (DllParams*)msg.map_base;
+
+			//dll_params->dll_size = msg.image_size; ? not needed
+			dll_params->header = mapped_dll_header;
+			dll_params->swapchain_present_address = present_address;
+			dll_params->RtlAddFunctionTable_fn = msg.RtlAddFunctionTable_address;
 
 			// NPT hook on dxgi.dll!CDXGISwapChain::Present
 			ForteVisor::SetNptHook(present_address, present_hk.hook_code, present_hk.hook_size, entrypoint_npt_hook);
@@ -134,6 +136,16 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			auto status = Utils::WriteMem(msg->proc_id, msg->address, msg->buffer, msg->size);
 		
+			break;
+		}
+		case Interface::PROCESS_ID:
+		{
+			auto msg = *(GetProcessIdMsg*)request;
+
+			int processid = Utils::ZwGetRunningSystemProcess(msg.process_name);
+
+			*(int*)output_buffer = processid;
+
 			break;
 		}
 		default:

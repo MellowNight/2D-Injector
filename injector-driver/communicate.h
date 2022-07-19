@@ -15,13 +15,19 @@ namespace Interface
 		WRITE_MEM,
 		MODULE_BASE,
 		EXIT_CLEANUP,
-		SET_NPT_HOOK
+		SET_NPT_HOOK,
+		PROCESS_ID
 	};
 
 	struct Msg
 	{
 		__int64 command_key;
 		int message_id;
+	};
+
+	struct GetProcessIdMsg : Msg
+	{
+		wchar_t process_name[50];
 	};
 
 	struct NptHookMsg : Msg
@@ -46,6 +52,7 @@ namespace Interface
 		uintptr_t map_base;
 		uintptr_t address;
 		uintptr_t image_size;
+		uintptr_t RtlAddFunctionTable_address;
 	};
 
 	struct GetModuleMsg : Msg

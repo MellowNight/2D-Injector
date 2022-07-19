@@ -60,6 +60,10 @@ namespace Utils
 		IN PUNICODE_STRING ModuleName
 	);
 
+	int ZwGetRunningSystemProcess(
+		LPWSTR ProcessName
+	);
+
 	PVOID ReadFile(
 		PVOID buffer, 
 		const wchar_t* FileName, 
