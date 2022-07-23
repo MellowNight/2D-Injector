@@ -4,11 +4,14 @@
 #include "hooking.h"
 #include "forte_api_kernel.h"
 #include "util.h"
+#include "dll_hiding.h"
 
 struct DllParams
 {
 	uint32_t header;
+	size_t dll_size;
 	uintptr_t swapchain_present_address;
+	uintptr_t original_function_address;
 	uintptr_t RtlAddFunctionTable_fn;
 };
 
@@ -17,6 +20,7 @@ enum INJECTOR_CONSTANTS
 	mapped_dll_header = 0x12345678,
 	entrypoint_npt_hook = 0xAAAA
 };
+
 
 using namespace Interface;
 
@@ -56,15 +60,56 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			auto dll_params = (DllParams*)msg.map_base;
 
-			//dll_params->dll_size = msg.image_size; ? not needed
+			dll_params->dll_size = msg.image_size;
 			dll_params->header = mapped_dll_header;
 			dll_params->swapchain_present_address = present_address;
 			dll_params->RtlAddFunctionTable_fn = msg.RtlAddFunctionTable_address;
+
+			global_dll_start = msg.map_base;
+			global_dll_size = PeHeader(msg.map_base)->OptionalHeader.SizeOfImage;
 
 			// NPT hook on dxgi.dll!CDXGISwapChain::Present
 			ForteVisor::SetNptHook(present_address, present_hk.hook_code, present_hk.hook_size, entrypoint_npt_hook);
 
 			KeUnstackDetachProcess(&apc);
+
+			/*	another NPT hook on NtQueryVirtualMemory	*/
+
+			ULONG nt_size;
+			UNICODE_STRING nt_name = RTL_CONSTANT_STRING(L"ntoskrnl.exe");
+
+			auto nt_base = Utils::GetKernelModule(&nt_size, nt_name);
+
+			auto pe_hdr = PeHeader(nt_base);
+
+			auto section = (IMAGE_SECTION_HEADER*)(pe_hdr + 1);
+
+			for (int i = 0; i < pe_hdr->FileHeader.NumberOfSections; ++i)
+			{
+				DbgPrint("pe_hdr->FileHeader.NumberOfSections %i \n", pe_hdr->FileHeader.NumberOfSections);
+
+				/*	NtQueryVirtualMemory hook	*/
+
+				if (!strcmp((char*)section[i].Name, "PAGE"))
+				{
+					uint8_t* start = section[i].VirtualAddress + (uint8_t*)nt_base;
+
+					auto found = Utils::FindPattern((uintptr_t)start, section[i].Misc.VirtualSize, "\xE8\x00\x00\x00\x00\x8B\xF8\x89\x44\x24\x40\x85\xC0\x78\x3B", 15, 0x00);
+
+					NtQueryVirtualMem = RELATIVE_ADDR(found, 1, 5);
+				}
+			}
+
+			ntqvm_hook = Hooks::JmpRipCode(NtQueryVirtualMem, (uintptr_t)NtQueryVirtualMemory_Hook);
+
+			HANDLE thread_handle;
+
+			PsCreateSystemThread(
+				&thread_handle,
+				GENERIC_ALL, NULL, NULL, NULL,
+				(PKSTART_ROUTINE)HookNTQVM,
+				NULL
+			);
 
 			break;
 		}

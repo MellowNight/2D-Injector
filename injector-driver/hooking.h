@@ -1,3 +1,4 @@
+#pragma once
 #include "disassembly.h"
 
 namespace Hooks
