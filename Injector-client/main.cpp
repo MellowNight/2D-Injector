@@ -2,7 +2,58 @@
 #include "manual_map.h"
 #include "utils.h"
 #include <iostream>
+#include <vector>
 #include "security.h"
+
+uintptr_t LoadSignedHostDLL(int32_t pid)
+{
+	/*	use Overwolf's DLL to carry our cheat	*/
+
+	auto overwolf_name = L"C:\\Users\\user123\\Desktop\\OWClient.dll";
+
+	auto overwolf_path_size = wcslen(overwolf_name) + 1;
+
+	auto loadlib_parameter = Driver::AllocateMemory(pid, overwolf_path_size);
+
+	auto loadlib_address = GetProcAddress(GetModuleHandle(L"kernel32.dll"), "LoadLibraryW");
+
+
+	/* Executing LoadLibrary using usermode APCs in target process */
+
+	THREADENTRY32 thread_entry;
+
+	std::vector<uint32_t> target_threads;
+
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS | TH32CS_SNAPTHREAD, 0);
+
+	if (Thread32First(snapshot, &thread_entry)) 
+	{
+		do 
+		{
+			if (thread_entry.th32OwnerProcessID == pid) 
+			{
+				target_threads.push_back(thread_entry.th32ThreadID);
+			}
+		} 
+		while (Thread32Next(snapshot, &thread_entry));
+	}
+
+	for (DWORD thread_id : target_threads)
+	{
+		auto hthread = OpenThread(THREAD_ALL_ACCESS, FALSE, thread_id);
+
+		if (hthread == NULL)
+		{
+			std::cout << "[ :( ] Failed to OpenThread. GetLastError = 0x" << std::hex << GetLastError() << std::endl;
+		}
+
+		auto result = QueueUserAPC((PAPCFUNC)loadlib_address, hthread, loadlib_parameter);
+		
+		CloseHandle(hthread);
+	}
+
+	return Driver::GetModuleBase(L"OWClient.dll", pid);
+}
 
 extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_raw, const char* entrypoint_name)
 {
@@ -17,13 +68,15 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 
 	Driver::Init();
 
+	/* Load the DLL we will be stealthily mapping our cheat on top of */
+
+	auto host_dll_base = LoadSignedHostDLL(pid);
+
+	auto cheat_base = host_dll_base + PAGE_SIZE;
+
 	auto image_real_size = PeHeader(dll_raw)->OptionalHeader.SizeOfImage;
 
 	auto alloc_size = image_real_size + PAGE_SIZE;
-
-	auto alloc_base = Driver::AllocateMemory(pid, alloc_size);
-
-	auto cheat_base = alloc_base + PAGE_SIZE;
 
 	/*	local copy of cheat dll	*/
 
@@ -31,17 +84,18 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 
 	PE::RemapImage(dll_raw, &cheat_mapped, pid, cheat_base);
 
-	std::cout << std::hex << " cheat_base 0x" << cheat_base << std::endl;
+	std::cout << std::hex << " cheat_base 0x" << host_dll_base + PAGE_SIZE << std::endl;
 
-	auto pe_hdr = PeHeader(cheat_mapped);
 
 	/*	write the dll	*/
 
 	Driver::WriteMem(pid, cheat_base, cheat_mapped, image_real_size);
 
+
+
 	/*	hide .text	*/
 
-	auto section = (IMAGE_SECTION_HEADER*)(pe_hdr + 1);
+	auto section = (IMAGE_SECTION_HEADER*)(PeHeader(cheat_mapped) + 1);
 
 	//for (int i = 0; i < pe_hdr->FileHeader.NumberOfSections; ++i)
 	//{
@@ -73,7 +127,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 
 	std::cout << std::hex << " entry_point 0x" << entry_point + cheat_base << std::endl;
 
-	Driver::InvokeRemoteFunc(entry_point + cheat_base, pid, alloc_base, image_real_size);
+	Driver::InvokeRemoteFunc(entry_point + cheat_base, pid, host_dll_base, image_real_size);
 
 	Driver::ExitDriver();
 
@@ -84,9 +138,6 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 
 extern "C" int main()
 {
-	//system("kdmapper C:\\Users\\cppco\\OneDrive\\Desktop\\testing_drivers\\AMD-Hypervisor.sys");
-	//system("kdmapper C:\\Users\\cppco\\OneDrive\\Desktop\\testing_drivers\\injector-driver.sys");
-	
 	std::string cheat_dll_name;
 
 	std::cout << "Enter the name of the DLL to inject: " << std::endl;
@@ -105,5 +156,6 @@ extern "C" int main()
 	auto image_size = Util::LoadFileIntoMemory(cheat_dll_name.c_str(), &cheat_dll_raw);
 
 	InjectDLLBytes(target_pid, cheat_dll_raw, ENTRYPOINT_NAME);
+
 	std::cin.get();
 }
