@@ -60,7 +60,7 @@ namespace Driver
 			sizeof(msg), 0, 0, &bytes, 0);
 	}
 
-	bool WriteMem(int process_id, ULONG64 address, BYTE* buffer, int size)
+	bool WriteMem(int process_id, ULONG64 address, uint8_t* buffer, int size)
 	{
 		WriteCmd msg;
 
@@ -77,9 +77,21 @@ namespace Driver
 			sizeof(msg), 0, 0, &bytes, 0);
 	}
 
-	void ExitDriver()
+	bool ReadMem(int process_id, ULONG64 address, uint8_t* buffer, int size)
 	{
-		auto msg = EXIT_CLEANUP;
+		ReadCmd msg;
+
+		msg.command_key = COMMAND_KEY;
+		msg.message_id = READ_MEM;
+		msg.proc_id = process_id;
+		msg.address = address;
+		msg.buffer = buffer;
+		msg.size = size;
+
+		DWORD bytes;
+
+		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg,
+			sizeof(msg), 0, 0, &bytes, 0);
 	}
 
 	uint64_t GetModuleBase(std::wstring module, int pid)
@@ -98,6 +110,24 @@ namespace Driver
 		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), &result, 8, &bytes, 0);
 
 		return result;
+	}
+
+	void ProtectMemory(int pid, uintptr_t address, DWORD memory_protection, ULONG size)
+	{
+		ProtectMemoryMsg message;
+
+		message.command_key = COMMAND_KEY;
+		message.message_id = PROTECT_MEMORY;
+		message.proc_id = pid;
+		message.address = address;
+		message.memory_protection = memory_protection;
+		message.size = size;
+
+		DWORD bytes;
+
+		DeviceIoControl(driver_handle, COMMAND_KEY, &message, sizeof(message), NULL, 0, &bytes, 0);
+
+		return;
 	}
 
 	int GetProcessId(const wchar_t* process_name)

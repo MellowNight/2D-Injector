@@ -34,10 +34,28 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 	switch (request->message_id)
 	{
-		case Interface::EXIT_CLEANUP:
+		case Interface::PROTECT_MEMORY:
 		{
-			DbgPrint("Exit request \n");
-			return;
+			auto msg = *(ProtectMemory*)system_buffer;
+
+			auto apc = Utils::AttachToProcess(msg.proc_id);
+
+			DWORD old_protection = 0;
+			SIZE_T size = msg.size;
+
+			auto status = ZwProtectVirtualMemory(
+				ZwCurrentProcess(),
+				(void**)&msg.address,
+				&size,
+				msg.memory_protection,
+				&old_protection
+			);
+
+			KeUnstackDetachProcess(&apc);
+
+			DbgPrint("msg_id %i msg.address 0x%p msg.size %p, msg.memory_protection %d status 0x%p \n", msg_id, msg.address, size, msg.memory_protection, status);
+
+			break;
 		}
 		case Interface::START_THREAD:
 		{
@@ -129,7 +147,7 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 				0,
 				(size_t*)&msg.size,
 				MEM_COMMIT | MEM_RESERVE,
-				PAGE_EXECUTE_READWRITE
+				PAGE_READWRITE
 			);
 
 			memset((void*)address, 0x00, msg.size);
@@ -176,11 +194,20 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 			break;
 		}
 		case Interface::WRITE_MEM:
-		{		
+		{
 			auto msg = (WriteCmd*)request;
 
 			auto status = Utils::WriteMem(msg->proc_id, msg->address, msg->buffer, msg->size);
-		
+
+			break;
+		}
+		case Interface::READ_MEM:
+		{
+			auto msg = (WriteCmd*)request;
+
+			auto status = Utils::ReadMem(msg->proc_id, msg->address, msg->buffer, msg->size);
+			DbgPrint("receieved request %i target_pid %i msg.address %p msg->buffer %p \n", msg_id, msg->proc_id, msg->address, msg->buffer);
+
 			break;
 		}
 		case Interface::PROCESS_ID:

@@ -212,12 +212,16 @@ namespace PE
 		{
 			char* name = (char*)(name_array[i] + base);
 
+			std::cout << "export name " << name << "\n";
+
 			if (!strcmp(export_name, name))
 			{
 				int ordinal = ordinal_array[i];
 				return (void*)function_array[ordinal];
 			}
 		}
+
+		return NULL;
 	}
 
 	size_t RemapImage(uint8_t* unmapped_pe, uint8_t** out_buffer, int32_t target_pid, uintptr_t map_destination)

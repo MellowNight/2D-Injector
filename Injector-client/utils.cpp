@@ -39,9 +39,4 @@ namespace Util
 			return false;
 		}
 	}
-
-	DWORD GetProcId(const wchar_t* procName)
-	{
-		return Driver::GetProcessId(procName);
-	}
 };
