@@ -11,7 +11,7 @@ struct DllParams
 };
 
 #define HOST_DLL_NAME	L"OWClient.dll"
-#define HOST_DLL_PATH	L"C:\\Users\\user123\\Desktop\\OWClient.dll"
+#define HOST_DLL_PATH	"C:\\Users\\user123\\Desktop\\OWClient.dll"
 #define ENTRYPOINT_NAME	"HookEntryPoint"
 
 void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8_t* entry_address)
@@ -49,37 +49,39 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 				return FALSE;
 			}
 		},
-		(LPARAM)&proc_info);
+	(LPARAM)&proc_info);
 
-		auto hook = SetWindowsHookExA(WH_GETMESSAGE, (HOOKPROC)entry_address, (HINSTANCE)host_dll_handle, proc_info.thread_id);
+	auto hook = SetWindowsHookExA(WH_GETMESSAGE, (HOOKPROC)entry_address, (HINSTANCE)host_dll_handle, proc_info.thread_id);
 
-		PostThreadMessageW(proc_info.thread_id, 0x123, 0, 0);
+	PostThreadMessageW(proc_info.thread_id, 0x123, 0, 0);
 
-		Sleep(100);
+	Sleep(5);
 
-		UnhookWindowsHookEx(hook);
+	auto status = UnhookWindowsHookEx(hook);
 
-		/*	write a return true (\xb0\x01\xC3) to the entry point to avoid crashes caused by dllmain being called multiple times.
-			Every time SetWindowsHookEx is called, Dllmain is invoked.
-		*/
+	std::cout << "UnhookWindowsHookEx " << std::hex << status << " GetLastError() " << GetLastError() << std::endl;
 
-		static bool entrypoint_patched = false;
+	/*	write a return true (\xb0\x01\xC3) to the entry point to avoid crashes caused by dllmain being called multiple times.
+		Every time SetWindowsHookEx is called, Dllmain is invoked.
+	*/
 
-		if (!entrypoint_patched)
-		{
-			auto dll_entrypoint = PeHeader(host_dll_handle)->OptionalHeader.AddressOfEntryPoint + host_dll_handle;
+	static bool entrypoint_patched = false;
 
-			Driver::SetNptHook(pid, 3, (uintptr_t)dll_entrypoint, (BYTE*)"\xb0\x01\xC3");
+	if (!entrypoint_patched)
+	{
+		auto dll_entrypoint = PeHeader(host_dll_handle)->OptionalHeader.AddressOfEntryPoint + host_dll_handle;
 
-			entrypoint_patched = true;
-		}
+		Driver::SetNptHook(pid, 3, (uintptr_t)dll_entrypoint, (BYTE*)"\xb0\x01\xC3");
+
+		entrypoint_patched = true;
+	}
 }
 
-uintptr_t LoadSignedHostDLL(int32_t pid)
+uintptr_t LoadSignedHostDLL(int32_t pid, const char* signed_dll_name)
 {
 	/*	use Overwolf's DLL to carry our cheat	*/
 
-	auto host_dll = (uintptr_t)LoadLibraryExW(HOST_DLL_PATH, nullptr, DONT_RESOLVE_DLL_REFERENCES);
+	auto host_dll = (uintptr_t)LoadLibraryExA(signed_dll_name, nullptr, DONT_RESOLVE_DLL_REFERENCES);
 
 	/*	Find ret (0xC3) instruction	*/
 
@@ -96,35 +98,35 @@ uintptr_t LoadSignedHostDLL(int32_t pid)
 	return Driver::GetModuleBase(L"OWClient.dll", pid);
 }
 
-extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_raw, const char* entrypoint_name)
+extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_cheat_dll, const char* entrypoint_name, const char* signed_dll_name)
 {
-	if (*(int32_t*)dll_raw != INJECTOR_PASSWORD)
+	if (*(int32_t*)raw_cheat_dll != INJECTOR_PASSWORD)
 	{
 		SecurityViolation();
 	}
 	else
 	{
-		*(int32_t*)dll_raw = 0x5A4D;
+		*(int32_t*)raw_cheat_dll = 0x5A4D;
 	}
 
 	Driver::Init();
 
 	/* We will be stealthily mapping our cheat on top of a signed DLL */
 
-	auto cheat_base = LoadSignedHostDLL(pid);
+	auto cheat_base = LoadSignedHostDLL(pid, signed_dll_name);
 
 	auto host_dll_base = cheat_base;
 
-	auto image_real_size = PeHeader(dll_raw)->OptionalHeader.SizeOfImage;
+	auto image_real_size = PeHeader(raw_cheat_dll)->OptionalHeader.SizeOfImage;
 
 
 	/*	align .rdata section of our own DLL with the .data section of the host DLL, because we can't hide .rdata strings	*/
 
 	uintptr_t rdata_offset = 0;
 
-	auto section = (IMAGE_SECTION_HEADER*)(PeHeader(dll_raw) + 1);
+	auto section = (IMAGE_SECTION_HEADER*)(PeHeader(raw_cheat_dll) + 1);
 
-	for (int i = 0; i < PeHeader(dll_raw)->FileHeader.NumberOfSections; ++i)
+	for (int i = 0; i < PeHeader(raw_cheat_dll)->FileHeader.NumberOfSections; ++i)
 	{
 		if (!strcmp(".rdata", (char*)section[i].Name))
 		{
@@ -139,16 +141,15 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 		if (!strcmp(".data", (char*)section[i].Name))
 		{
 			cheat_base += section[i].VirtualAddress;
-			cheat_base - rdata_offset;
+			cheat_base -= rdata_offset;
 		}
 	}
 
-	
 	/*	prepare the cheat for manual mapping	*/
 
 	uint8_t* cheat_mapped = NULL;
 
-	PE::RemapImage(dll_raw, &cheat_mapped, pid, cheat_base);
+	PE::RemapImage(raw_cheat_dll, &cheat_mapped, pid, cheat_base);
 
 	std::cout << std::hex << " cheat_base 0x" << cheat_base << std::endl;
 
@@ -161,11 +162,11 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 
 	auto header_size = PeHeader(cheat_mapped)->OptionalHeader.SizeOfHeaders;
 
-	//auto value = Driver::ReadMem(pid, cheat_base, &buffer, 1);
-	//Driver::SetNptHook(pid, header_size, cheat_base, cheat_mapped);
+	auto value = Driver::ReadMem(pid, cheat_base, &buffer, 1);
+	Driver::SetNptHook(pid, header_size, cheat_base, cheat_mapped);
 
-	Driver::ProtectMemory(pid, cheat_base, PAGE_EXECUTE_READWRITE, header_size);
-	Driver::WriteMem(pid, cheat_base, cheat_mapped, header_size);
+	//Driver::ProtectMemory(pid, cheat_base, PAGE_EXECUTE_READWRITE, header_size);
+	//Driver::WriteMem(pid, cheat_base, cheat_mapped, header_size);
 
 	for (int i = 0; i < PeHeader(cheat_mapped)->FileHeader.NumberOfSections; ++i)
 	{
@@ -176,11 +177,11 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 			if (strcmp((char*)section[i].Name, ".rdata") && strcmp((char*)section[i].Name, ".data") &&
 				strcmp((char*)section[i].Name, ".pdata"))
 			{
-				//auto value = Driver::ReadMem(pid, cheat_base + (page - cheat_mapped), &buffer, 1);
-				//Driver::SetNptHook(pid, PAGE_SIZE, cheat_base + (page - cheat_mapped), page);
+				auto value = Driver::ReadMem(pid, cheat_base + (page - cheat_mapped), &buffer, 1);
+				Driver::SetNptHook(pid, PAGE_SIZE, cheat_base + (page - cheat_mapped), page);
 				
-				Driver::ProtectMemory(pid, cheat_base + (page - cheat_mapped), PAGE_EXECUTE_READWRITE, PAGE_SIZE);
-				Driver::WriteMem(pid, cheat_base + (page - cheat_mapped), page, PAGE_SIZE);
+				////Driver::ProtectMemory(pid, cheat_base + (page - cheat_mapped), PAGE_EXECUTE_READWRITE, PAGE_SIZE);
+				//Driver::WriteMem(pid, cheat_base + (page - cheat_mapped), page, PAGE_SIZE);
 			}
 			else
 			{
@@ -188,8 +189,6 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 			}
 		}
 	}
-
-
 
 	/*	write DLL parameters	*/
 
@@ -224,18 +223,16 @@ extern "C" int main()
 	std::cin >> cheat_dll_name;
 
 
-	std::wstring target_process;
+	int32_t target_pid;
 
-	std::cout << "Enter the name of the target process: " << std::endl;
-	std::wcin >> target_process;
-
-	auto target_pid = Driver::GetProcessId(target_process.c_str());
+	std::cout << "Enter the pid of the target process: " << std::endl;
+	std::cin >> target_pid;
 
 	uint8_t* cheat_dll_raw = NULL;
 
 	auto image_size = Util::LoadFileIntoMemory(cheat_dll_name.c_str(), &cheat_dll_raw);
 
-	InjectDLLBytes(target_pid, cheat_dll_raw, ENTRYPOINT_NAME);
+	InjectDLLBytes(target_pid, cheat_dll_raw, ENTRYPOINT_NAME, HOST_DLL_PATH);
 
 	std::cin.get();
 }
