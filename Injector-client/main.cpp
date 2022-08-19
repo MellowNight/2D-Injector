@@ -11,31 +11,34 @@ struct DllParams
 };
 
 #define HOST_DLL_NAME	L"OWClient.dll"
-#define HOST_DLL_PATH	"C:\\Users\\user123\\Desktop\\OWClient.dll"
+#define HOST_DLL_PATH	"C:\\Users\\cppco\\AppData\\Roaming\\qwiejoqwhdiqkwdi\\OWClient.dll"
 #define ENTRYPOINT_NAME	"HookEntryPoint"
 
 void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8_t* entry_address)
 {
 	/*	find the threads associated with this target process	*/
 
-	struct ProcessInfo
+	struct EnumWindowsParam
 	{
-		uint32_t thread_id;
+		uint8_t* entry_address;
+		uintptr_t host_dll_handle;
 		uint32_t pid;
-	} proc_info;
+	} parameter;
 
-	proc_info.pid = pid;
+	parameter.pid = pid;
+	parameter.entry_address = entry_address;
+	parameter.host_dll_handle = host_dll_handle;
 
 	EnumWindows(
 		(WNDENUMPROC)[](HWND hwnd, LPARAM lparam) -> BOOL CALLBACK {
 			
-			auto proc_info = (ProcessInfo*)lparam;
+			auto parameter = (EnumWindowsParam*)lparam;
 
 			unsigned long process_id = 0;
 
 			auto thread_id = GetWindowThreadProcessId(hwnd, &process_id);
 
-			if (proc_info->pid != process_id || !(GetWindow(hwnd, GW_OWNER) == NULL)
+			if (parameter->pid != process_id || !(GetWindow(hwnd, GW_OWNER) == NULL)
 				|| !IsWindowVisible(hwnd))
 			{
 				return TRUE;
@@ -44,23 +47,31 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 			{
 				/*	we found main window for setwindowshookex injection	*/
 
-				proc_info->thread_id = thread_id;
+				auto hook = SetWindowsHookExA(WH_GETMESSAGE, (HOOKPROC)parameter->entry_address, (HINSTANCE)parameter->host_dll_handle, thread_id);
 
-				return FALSE;
+				if (GetLastError() == 0)
+				{
+					PostThreadMessageW(thread_id, 0x123, 0, 0);
+
+					Sleep(20);
+
+					auto status = UnhookWindowsHookEx(hook);
+
+					std::cout << "UnhookWindowsHookEx " << std::hex << status << " GetLastError() " << GetLastError() << std::endl;
+
+					return FALSE;
+				}
+				
+
+				std::cout << " GetLastError() 0x" << std::hex << GetLastError() << std::endl;
+
+
+				return TRUE;
 			}
 		},
-	(LPARAM)&proc_info);
+	(LPARAM)&parameter);
 
-	auto hook = SetWindowsHookExA(WH_GETMESSAGE, (HOOKPROC)entry_address, (HINSTANCE)host_dll_handle, proc_info.thread_id);
-
-	PostThreadMessageW(proc_info.thread_id, 0x123, 0, 0);
-
-	Sleep(5);
-
-	auto status = UnhookWindowsHookEx(hook);
-
-	std::cout << "UnhookWindowsHookEx " << std::hex << status << " GetLastError() " << GetLastError() << std::endl;
-
+	
 	/*	write a return true (\xb0\x01\xC3) to the entry point to avoid crashes caused by dllmain being called multiple times.
 		Every time SetWindowsHookEx is called, Dllmain is invoked.
 	*/
@@ -174,12 +185,13 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 			page < cheat_mapped + section[i].VirtualAddress + section[i].SizeOfRawData;
 			page += PAGE_SIZE)
 		{
-			if (strcmp((char*)section[i].Name, ".rdata") && strcmp((char*)section[i].Name, ".data") &&
-				strcmp((char*)section[i].Name, ".pdata"))
+			if (!strcmp((char*)section[i].Name, ".text") || !strcmp((char*)section[i].Name, "code"))
 			{
 				auto value = Driver::ReadMem(pid, cheat_base + (page - cheat_mapped), &buffer, 1);
 				Driver::SetNptHook(pid, PAGE_SIZE, cheat_base + (page - cheat_mapped), page);
-				
+
+			//	SwitchToThread();
+
 				////Driver::ProtectMemory(pid, cheat_base + (page - cheat_mapped), PAGE_EXECUTE_READWRITE, PAGE_SIZE);
 				//Driver::WriteMem(pid, cheat_base + (page - cheat_mapped), page, PAGE_SIZE);
 			}
