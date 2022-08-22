@@ -149,8 +149,6 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	auto pe_header = PeHeader(raw_cheat_dll);
 
-	auto idata_size = PAGE_ALIGN(pe_header->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IAT].Size + PAGE_SIZE);
-
 	for (int i = 0; i < PeHeader(host_dll_base)->FileHeader.NumberOfSections; ++i)
 	{
 		if (!strcmp(".data", (char*)section[i].Name))
@@ -185,7 +183,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	uint8_t* offset = 0;
 
-	for (offset = cheat_mapped; offset < (cheat_mapped + rdata_offset + idata_size); offset += PAGE_SIZE)
+	for (offset = cheat_mapped; offset < (cheat_mapped + rdata_offset); offset += PAGE_SIZE)
 	{
 		auto value = Driver::ReadMem(pid, cheat_base + (offset - cheat_mapped), &buffer, 1);
 		Driver::SetNptHook(pid, PAGE_SIZE, cheat_base + (offset - cheat_mapped), offset);
