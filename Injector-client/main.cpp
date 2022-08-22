@@ -10,9 +10,9 @@ struct DllParams
 	uintptr_t module_base;
 };
 
-#define HOST_DLL_NAME	L"OWClient.dll"
-#define HOST_DLL_PATH	"C:\\Users\\cppco\\AppData\\Roaming\\qwiejoqwhdiqkwdi\\OWClient.dll"
+#define HOST_DLL_PATH	"C:\\Program Files\\bvm\\OWClient.dll"
 #define ENTRYPOINT_NAME	"HookEntryPoint"
+#define FLS_CALLBACK_PATCH_OFFSET 0x1B7C10
 
 void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8_t* entry_address)
 {
@@ -53,7 +53,7 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 				{
 					PostThreadMessageW(thread_id, 0x123, 0, 0);
 
-					Sleep(20);
+					Sleep(50);
 
 					auto status = UnhookWindowsHookEx(hook);
 
@@ -62,9 +62,7 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 					return FALSE;
 				}
 				
-
 				std::cout << " GetLastError() 0x" << std::hex << GetLastError() << std::endl;
-
 
 				return TRUE;
 			}
@@ -80,6 +78,8 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 
 	if (!entrypoint_patched)
 	{
+		Sleep(5000);
+
 		auto dll_entrypoint = PeHeader(host_dll_handle)->OptionalHeader.AddressOfEntryPoint + host_dll_handle;
 
 		Driver::SetNptHook(pid, 3, (uintptr_t)dll_entrypoint, (BYTE*)"\xb0\x01\xC3");
@@ -147,11 +147,15 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	section = (IMAGE_SECTION_HEADER*)(PeHeader(host_dll_base) + 1);
 
+	auto pe_header = PeHeader(raw_cheat_dll);
+
+	auto idata_size = PAGE_ALIGN(pe_header->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IAT].Size + PAGE_SIZE);
+
 	for (int i = 0; i < PeHeader(host_dll_base)->FileHeader.NumberOfSections; ++i)
 	{
 		if (!strcmp(".data", (char*)section[i].Name))
 		{
-			cheat_base += section[i].VirtualAddress;
+			cheat_base += section[i].VirtualAddress;			
 			cheat_base -= rdata_offset;
 		}
 	}
@@ -179,28 +183,21 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 	//Driver::ProtectMemory(pid, cheat_base, PAGE_EXECUTE_READWRITE, header_size);
 	//Driver::WriteMem(pid, cheat_base, cheat_mapped, header_size);
 
-	for (int i = 0; i < PeHeader(cheat_mapped)->FileHeader.NumberOfSections; ++i)
+	uint8_t* offset = 0;
+
+	for (offset = cheat_mapped; offset < (cheat_mapped + rdata_offset + idata_size); offset += PAGE_SIZE)
 	{
-		for (auto page = cheat_mapped + section[i].VirtualAddress;
-			page < cheat_mapped + section[i].VirtualAddress + section[i].SizeOfRawData;
-			page += PAGE_SIZE)
-		{
-			if (!strcmp((char*)section[i].Name, ".text") || !strcmp((char*)section[i].Name, "code"))
-			{
-				auto value = Driver::ReadMem(pid, cheat_base + (page - cheat_mapped), &buffer, 1);
-				Driver::SetNptHook(pid, PAGE_SIZE, cheat_base + (page - cheat_mapped), page);
-
-			//	SwitchToThread();
-
-				////Driver::ProtectMemory(pid, cheat_base + (page - cheat_mapped), PAGE_EXECUTE_READWRITE, PAGE_SIZE);
-				//Driver::WriteMem(pid, cheat_base + (page - cheat_mapped), page, PAGE_SIZE);
-			}
-			else
-			{
-				Driver::WriteMem(pid, cheat_base + (page - cheat_mapped), page, PAGE_SIZE);
-			}
-		}
+		auto value = Driver::ReadMem(pid, cheat_base + (offset - cheat_mapped), &buffer, 1);
+		Driver::SetNptHook(pid, PAGE_SIZE, cheat_base + (offset - cheat_mapped), offset);
 	}
+
+	for (offset; offset < (cheat_mapped + PeHeader(cheat_mapped)->OptionalHeader.SizeOfImage); offset += PAGE_SIZE)
+	{
+		Driver::WriteMem(pid, cheat_base + (offset - cheat_mapped), offset, PAGE_SIZE);
+	}
+
+	value = Driver::ReadMem(pid, host_dll_base + FLS_CALLBACK_PATCH_OFFSET, &buffer, 1);
+	Driver::SetNptHook(pid, 1, host_dll_base + FLS_CALLBACK_PATCH_OFFSET, (uint8_t*)"\xC3");
 
 	/*	write DLL parameters	*/
 
