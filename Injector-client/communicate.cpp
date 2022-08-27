@@ -25,6 +25,24 @@ namespace Driver
 		return alloc_base;
 	}
 
+	void HideMemory(int32_t target_pid, uintptr_t address, uintptr_t hiding_range_size)
+	{
+		HideMemoryCmd msg;
+
+		msg.command_key = COMMAND_KEY;
+		msg.message_id = HIDE_MEMORY;
+		msg.target_pid = target_pid;
+		msg.hiding_range_size = hiding_range_size;
+		msg.address = address;
+
+		DWORD bytes;
+
+		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg),
+			NULL, NULL, &bytes, 0);
+
+		return;
+	}
+
 	BOOL InvokeRemoteFunc(ULONG64 start_addr, int proc_id, uintptr_t params_addr, uintptr_t real_image_size)
 	{
 		InvokeRemoteFunctionCmd msg;

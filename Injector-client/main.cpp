@@ -10,9 +10,11 @@ struct DllParams
 	uintptr_t module_base;
 };
 
-#define HOST_DLL_PATH	"C:\\Program Files\\bvm\\OWClient.dll"
+#define HOST_DLL_PATH	"C:\\Program Files (x86)\\Overwolf\\0.204.0.1\\OWClient.dll"
 #define ENTRYPOINT_NAME	"HookEntryPoint"
+
 #define FLS_CALLBACK_PATCH_OFFSET 0x1B7C10
+#define ACRT_LOCALE_RELEASE_OFFSET 0x1C47BC
 
 void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8_t* entry_address)
 {
@@ -128,8 +130,6 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	auto host_dll_base = cheat_base;
 
-	auto image_real_size = PeHeader(raw_cheat_dll)->OptionalHeader.SizeOfImage;
-
 
 	/*	align .rdata section of our own DLL with the .data section of the host DLL, because we can't hide .rdata strings	*/
 
@@ -165,9 +165,10 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 	PE::RemapImage(raw_cheat_dll, &cheat_mapped, pid, cheat_base);
 
 	std::cout << std::hex << " cheat_base 0x" << cheat_base << std::endl;
+	std::cout << std::hex << " cheat_base offset from signed DLL: +0x" << cheat_base - host_dll_base << std::endl;
 
 
-	/*	write pe headers and then hide every section of the cheat DLL except for .rdata, .pdata and .data	*/
+	/*	 NPT hide every section of the cheat DLL except for .rdata, .pdata and .data	*/
 
 	section = (IMAGE_SECTION_HEADER*)(PeHeader(cheat_mapped) + 1);
 	
@@ -185,9 +186,18 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	for (offset = cheat_mapped; offset < (cheat_mapped + rdata_offset); offset += PAGE_SIZE)
 	{
+		/*	page in the memory and NPT map our cheat over it	*/
+
 		auto value = Driver::ReadMem(pid, cheat_base + (offset - cheat_mapped), &buffer, 1);
+
+		Driver::ProtectMemory(pid, cheat_base + (offset - cheat_mapped), PAGE_EXECUTE_READWRITE, PAGE_SIZE);
+
 		Driver::SetNptHook(pid, PAGE_SIZE, cheat_base + (offset - cheat_mapped), offset);
-	}
+	}	
+
+	/*	hide the RWX memory protection	in the host signed	DLL	*/
+
+	Driver::HideMemory(pid, cheat_base, rdata_offset);
 
 	for (offset; offset < (cheat_mapped + PeHeader(cheat_mapped)->OptionalHeader.SizeOfImage); offset += PAGE_SIZE)
 	{
@@ -196,6 +206,9 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	value = Driver::ReadMem(pid, host_dll_base + FLS_CALLBACK_PATCH_OFFSET, &buffer, 1);
 	Driver::SetNptHook(pid, 1, host_dll_base + FLS_CALLBACK_PATCH_OFFSET, (uint8_t*)"\xC3");
+
+	value = Driver::ReadMem(pid, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, &buffer, 1);
+	Driver::SetNptHook(pid, 1, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, (uint8_t*)"\xC3");
 
 	/*	write DLL parameters	*/
 

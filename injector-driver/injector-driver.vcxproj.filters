@@ -28,9 +28,6 @@
     <ClInclude Include="communicate.h">
       <Filter>Source Files</Filter>
     </ClInclude>
-    <ClInclude Include="mapper_traces.h">
-      <Filter>Source Files</Filter>
-    </ClInclude>
     <ClInclude Include="util.h">
       <Filter>Source Files\util</Filter>
     </ClInclude>
@@ -55,6 +52,9 @@
     <ClInclude Include="hwid_structs.h">
       <Filter>Source Files</Filter>
     </ClInclude>
+    <ClInclude Include="memory_hiding.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -63,16 +63,13 @@
     <ClCompile Include="ioctlhook.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="mapper_traces.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="util.cpp">
       <Filter>Source Files\util</Filter>
     </ClCompile>
     <ClCompile Include="disassembly.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="hwid_spoof.cpp">
+    <ClCompile Include="disk_spoof.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

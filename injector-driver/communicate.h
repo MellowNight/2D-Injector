@@ -18,6 +18,7 @@ namespace Interface
 		EXIT_CLEANUP,
 		SET_NPT_HOOK,
 		PROCESS_ID,
+		HIDE_MEMORY,
 		PROTECT_MEMORY
 	};
 
@@ -85,6 +86,13 @@ namespace Interface
 		uintptr_t address;
 		BYTE* buffer;
 		int size;
+	};
+
+	struct HideMemoryCmd : Msg
+	{
+		int32_t target_pid;
+		uintptr_t address;
+		uintptr_t hiding_range_size;
 	};
 
 	bool Init();
