@@ -11,6 +11,7 @@ struct DllParams
 };
 
 #define HOST_DLL_PATH	"C:\\Program Files (x86)\\Overwolf\\0.204.0.1\\OWClient.dll"
+#define HOST_DLL_NAME	"OWClient.dll"
 #define ENTRYPOINT_NAME	"HookEntryPoint"
 
 #define FLS_CALLBACK_PATCH_OFFSET 0x1B7C10
@@ -129,7 +130,6 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 	auto cheat_base = LoadSignedHostDLL(pid, signed_dll_name);
 
 	auto host_dll_base = cheat_base;
-
 
 	/*	align .rdata section of our own DLL with the .data section of the host DLL, because we can't hide .rdata strings	*/
 
