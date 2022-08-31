@@ -112,6 +112,21 @@ uintptr_t LoadSignedHostDLL(int32_t pid, const char* signed_dll_name)
 	return Driver::GetModuleBase(L"OWClient.dll", pid);
 }
 
+void TriggerCOWAndPageIn(int32_t pid, uintptr_t address)
+{
+	uint8_t buffer;
+
+	/*	1. trigger COW	*/
+
+	Driver::ProtectMemory(pid, address, PAGE_EXECUTE_READWRITE, PAGE_SIZE);
+
+	/*	2. page in	*/
+
+	auto status = Driver::ReadMem(pid, address, &buffer, 1);
+	Driver::WriteMem(pid, address, (uint8_t*)"\xC3", 1);
+	Driver::WriteMem(pid, address, &buffer, 1);
+}
+
 extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_cheat_dll, const char* entrypoint_name, const char* signed_dll_name)
 {
 	if (*(int32_t*)raw_cheat_dll != INJECTOR_PASSWORD)
@@ -186,12 +201,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	for (offset = cheat_mapped; offset < (cheat_mapped + rdata_offset); offset += PAGE_SIZE)
 	{
-		/*	page in the memory and NPT map our cheat over it	*/
-
-		auto value = Driver::ReadMem(pid, cheat_base + (offset - cheat_mapped), &buffer, 1);
-
-		Driver::ProtectMemory(pid, cheat_base + (offset - cheat_mapped), PAGE_EXECUTE_READWRITE, PAGE_SIZE);
-
+		TriggerCOWAndPageIn(pid, cheat_base + (offset - cheat_mapped));
 		Driver::SetNptHook(pid, PAGE_SIZE, cheat_base + (offset - cheat_mapped), offset);
 	}	
 
@@ -204,10 +214,14 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 		Driver::WriteMem(pid, cheat_base + (offset - cheat_mapped), offset, PAGE_SIZE);
 	}
 
-	value = Driver::ReadMem(pid, host_dll_base + FLS_CALLBACK_PATCH_OFFSET, &buffer, 1);
+	TriggerCOWAndPageIn(pid, host_dll_base + FLS_CALLBACK_PATCH_OFFSET);
+
 	Driver::SetNptHook(pid, 1, host_dll_base + FLS_CALLBACK_PATCH_OFFSET, (uint8_t*)"\xC3");
 
-	value = Driver::ReadMem(pid, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, &buffer, 1);
+	TriggerCOWAndPageIn(pid, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET);
+
+	Driver::ProtectMemory(pid, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, PAGE_EXECUTE_READWRITE, PAGE_SIZE);
+
 	Driver::SetNptHook(pid, 1, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, (uint8_t*)"\xC3");
 
 	/*	write DLL parameters	*/
