@@ -81,7 +81,7 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 
 	if (!entrypoint_patched)
 	{
-		Sleep(5000);
+		Sleep(3500);
 
 		auto dll_entrypoint = PeHeader(host_dll_handle)->OptionalHeader.AddressOfEntryPoint + host_dll_handle;
 
@@ -218,11 +218,18 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	Driver::SetNptHook(pid, 1, host_dll_base + FLS_CALLBACK_PATCH_OFFSET, (uint8_t*)"\xC3");
 
+
+	/*	a lot of crashes when trying to patch out this second callback	*/
+
+	std::cout << "please wait for something... " << std::endl;
+
+	Sleep(2000);
+
 	TriggerCOWAndPageIn(pid, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET);
-
 	Driver::ProtectMemory(pid, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, PAGE_EXECUTE_READWRITE, PAGE_SIZE);
-
 	Driver::SetNptHook(pid, 1, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, (uint8_t*)"\xC3");
+
+	Sleep(2000);
 
 	/*	write DLL parameters	*/
 
