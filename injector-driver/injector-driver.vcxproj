@@ -150,6 +150,7 @@
       <PreprocessorDefinitions>ZYCORE_STATIC_BUILD;ZYDIS_STATIC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
+      <StructMemberAlignment>Default</StructMemberAlignment>
     </ClCompile>
     <Link>
       <EntryPointSymbol>MapperEntry</EntryPointSymbol>
@@ -171,6 +172,7 @@
       <TreatWarningAsError>false</TreatWarningAsError>
       <AdditionalIncludeDirectories>$(SolutionDir)dependencies\ForteVisor\include;$(SolutionDir)dependencies\Zydis\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ZYCORE_STATIC_BUILD;ZYDIS_STATIC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <StructMemberAlignment>Default</StructMemberAlignment>
     </ClCompile>
   </ItemDefinitionGroup>
   <ItemGroup>
@@ -184,16 +186,15 @@
     <ClInclude Include="ia32.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="kernel_structs.h" />
+    <ClInclude Include="memory_hiding.h" />
     <ClInclude Include="pe_header.h" />
-    <ClInclude Include="mapper_traces.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="disk_spoof.cpp" />
     <ClCompile Include="ioctlhook.cpp" />
     <ClCompile Include="disassembly.cpp" />
-    <ClCompile Include="hwid_spoof.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="mapper_traces.cpp" />
     <ClCompile Include="util.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

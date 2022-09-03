@@ -13,10 +13,13 @@ namespace Interface
 		START_THREAD,
 		ALLOC_MEM,
 		WRITE_MEM,
+		READ_MEM,
 		MODULE_BASE,
 		EXIT_CLEANUP,
 		SET_NPT_HOOK,
-		PROCESS_ID
+		PROCESS_ID,
+		HIDE_MEMORY,
+		PROTECT_MEMORY
 	};
 
 	struct Msg
@@ -45,7 +48,7 @@ namespace Interface
 		uintptr_t result;
 		wchar_t	section_name[60];
 	};
-
+	
 	struct InvokeRemoteFunctionCmd : Msg
 	{
 		int proc_id;
@@ -61,6 +64,13 @@ namespace Interface
 		wchar_t module[50];
 	};
 
+	struct ProtectMemory : Msg
+	{
+		int proc_id;
+		uintptr_t address;
+		ULONG memory_protection;
+		ULONG size;
+	};
 
 	struct WriteCmd : Msg
 	{
@@ -68,6 +78,21 @@ namespace Interface
 		uintptr_t address;
 		char* buffer;
 		int size;
+	};
+
+	struct ReadCmd : Msg
+	{
+		int proc_id;
+		uintptr_t address;
+		BYTE* buffer;
+		int size;
+	};
+
+	struct HideMemoryCmd : Msg
+	{
+		int32_t target_pid;
+		uintptr_t address;
+		uintptr_t hiding_range_size;
 	};
 
 	bool Init();

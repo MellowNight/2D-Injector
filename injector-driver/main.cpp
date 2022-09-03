@@ -4,7 +4,7 @@
 #include "hooking.h"
 #include "forte_api_kernel.h"
 #include "util.h"
-#include "dll_hiding.h"
+#include "memory_hiding.h"
 
 struct DllParams
 {
@@ -21,7 +21,6 @@ enum INJECTOR_CONSTANTS
 	entrypoint_npt_hook = 0xAAAA
 };
 
-
 using namespace Interface;
 
 void CommandHandler(void* system_buffer, void* output_buffer)
@@ -34,10 +33,42 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 	switch (request->message_id)
 	{
-		case Interface::EXIT_CLEANUP:
+		case Interface::HIDE_MEMORY:
+		{	
+			auto msg = *(HideMemoryCmd*)system_buffer;
+
+			DbgPrint("msg_id %i target_pid %i \n", msg_id, msg.target_pid);
+
+			hiding_range_start = msg.address;
+			hiding_range_size = msg.hiding_range_size;
+
+			HANDLE hthread;
+			PsCreateSystemThread(&hthread, THREAD_ALL_ACCESS, NULL, NULL, NULL, (PKSTART_ROUTINE)HookNTQVM, NULL);
+
+			break;
+		}
+		case Interface::PROTECT_MEMORY:
 		{
-			DbgPrint("Exit request \n");
-			return;
+			auto msg = *(ProtectMemory*)system_buffer;
+
+			auto apc = Utils::AttachToProcess(msg.proc_id);
+
+			DWORD old_protection = 0;
+			SIZE_T size = msg.size;
+
+			auto status = ZwProtectVirtualMemory(
+				ZwCurrentProcess(),
+				(void**)&msg.address,
+				&size,
+				msg.memory_protection,
+				&old_protection
+			);
+
+			KeUnstackDetachProcess(&apc);
+
+			DbgPrint("msg_id %i msg.address 0x%p msg.size %p, msg.memory_protection %d status 0x%p \n", msg_id, msg.address, size, msg.memory_protection, status);
+
+			break;
 		}
 		case Interface::START_THREAD:
 		{
@@ -65,51 +96,10 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 			dll_params->swapchain_present_address = present_address;
 			dll_params->RtlAddFunctionTable_fn = msg.RtlAddFunctionTable_address;
 
-			global_dll_start = msg.map_base;
-			global_dll_size = PeHeader(msg.map_base)->OptionalHeader.SizeOfImage;
-
 			// NPT hook on dxgi.dll!CDXGISwapChain::Present
 			ForteVisor::SetNptHook(present_address, present_hk.hook_code, present_hk.hook_size, entrypoint_npt_hook);
 
 			KeUnstackDetachProcess(&apc);
-
-			/*	another NPT hook on NtQueryVirtualMemory	*/
-
-			ULONG nt_size;
-			UNICODE_STRING nt_name = RTL_CONSTANT_STRING(L"ntoskrnl.exe");
-
-			auto nt_base = Utils::GetKernelModule(&nt_size, nt_name);
-
-			auto pe_hdr = PeHeader(nt_base);
-
-			auto section = (IMAGE_SECTION_HEADER*)(pe_hdr + 1);
-
-			for (int i = 0; i < pe_hdr->FileHeader.NumberOfSections; ++i)
-			{
-				DbgPrint("pe_hdr->FileHeader.NumberOfSections %i \n", pe_hdr->FileHeader.NumberOfSections);
-
-				/*	NtQueryVirtualMemory hook	*/
-
-				if (!strcmp((char*)section[i].Name, "PAGE"))
-				{
-					uint8_t* start = section[i].VirtualAddress + (uint8_t*)nt_base;
-
-					auto found = Utils::FindPattern((uintptr_t)start, section[i].Misc.VirtualSize, "\xE8\x00\x00\x00\x00\x8B\xF8\x89\x44\x24\x40\x85\xC0\x78\x3B", 15, 0x00);
-
-					NtQueryVirtualMem = RELATIVE_ADDR(found, 1, 5);
-				}
-			}
-
-			ntqvm_hook = Hooks::JmpRipCode(NtQueryVirtualMem, (uintptr_t)NtQueryVirtualMemory_Hook);
-
-			HANDLE thread_handle;
-
-			PsCreateSystemThread(
-				&thread_handle,
-				GENERIC_ALL, NULL, NULL, NULL,
-				(PKSTART_ROUTINE)HookNTQVM,
-				NULL
-			);
 
 			break;
 		}
@@ -129,7 +119,7 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 				0,
 				(size_t*)&msg.size,
 				MEM_COMMIT | MEM_RESERVE,
-				PAGE_EXECUTE_READWRITE
+				PAGE_READWRITE
 			);
 
 			memset((void*)address, 0x00, msg.size);
@@ -176,11 +166,20 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 			break;
 		}
 		case Interface::WRITE_MEM:
-		{		
+		{
 			auto msg = (WriteCmd*)request;
 
 			auto status = Utils::WriteMem(msg->proc_id, msg->address, msg->buffer, msg->size);
-		
+
+			break;
+		}
+		case Interface::READ_MEM:
+		{
+			auto msg = (WriteCmd*)request;
+
+			auto status = Utils::ReadMem(msg->proc_id, msg->address, msg->buffer, msg->size);
+			DbgPrint("receieved request %i target_pid %i msg.address %p msg->buffer %p \n", msg_id, msg->proc_id, msg->address, msg->buffer);
+
 			break;
 		}
 		case Interface::PROCESS_ID:

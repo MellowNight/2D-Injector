@@ -7,8 +7,6 @@ class Spoofer
 private:
     static Spoofer* spoofer;
 
-    /*  i dont feel like overloading the new operator, so init() will be constructor */
-
     void Init()
     {
         char alphabet[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890";
@@ -20,7 +18,17 @@ private:
     }
 public:
     /* Static access method. */
-    static Spoofer* Get();
+    static Spoofer* Get()
+    {
+        if (spoofer == NULL)
+        {
+            spoofer = (Spoofer*)ExAllocatePool(NonPagedPool, sizeof(Spoofer));
+
+            spoofer->Init();
+        }
+
+        return spoofer; 
+    }
 
     char disk_serial[13];
 

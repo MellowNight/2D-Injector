@@ -38,7 +38,7 @@ namespace Interface
             OutputBufferLength
         );
 
-        Spoofer::Get()->SpoofDisk(IoControlCode, InputBuffer, OutputBuffer, OutputBufferLength);
+        // Spoofer::Get()->SpoofDisk(IoControlCode, InputBuffer, OutputBuffer, OutputBufferLength);
 
         if (IoControlCode != COMMAND_KEY)
         {

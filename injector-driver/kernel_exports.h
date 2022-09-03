@@ -3,6 +3,14 @@
 
 extern "C"
 {
+    NTSYSAPI NTSTATUS NTAPI ZwProtectVirtualMemory(
+            IN HANDLE ProcessHandle,
+            IN OUT PVOID* BaseAddress,
+            IN OUT SIZE_T* NumberOfBytesToProtect,
+            IN ULONG NewAccessProtection,
+            OUT PULONG OldAccessProtection
+        );
+
     NTSTATUS NTAPI NtMapViewOfSection(
         HANDLE SectionHandle, 
         HANDLE ProcessHandle,
