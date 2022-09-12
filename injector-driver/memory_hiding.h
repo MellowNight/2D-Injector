@@ -7,6 +7,7 @@
 uintptr_t hiding_range_start, hiding_range_size;
 uint32_t protect_value;
 uint32_t target_pid;
+bool ntqvm_nothooked = true;
 
 Hooks::JmpRipCode ntqvm_hook;
 
@@ -36,14 +37,19 @@ NTSTATUS NTAPI NtQueryVirtualMemory_Hook(_In_ HANDLE ProcessHandle, _In_opt_ PVO
 
 void HookNTQVM()
 {
-	ULONG nt_size = 0;
-	auto ntoskrnl = (uintptr_t)Utils::GetKernelModule(&nt_size, RTL_CONSTANT_STRING(L"ntoskrnl.exe"));
+	if (ntqvm_nothooked)
+	{
+		ULONG nt_size = 0;
+		auto ntoskrnl = (uintptr_t)Utils::GetKernelModule(&nt_size, RTL_CONSTANT_STRING(L"ntoskrnl.exe"));
 
-	auto reference = Utils::FindPattern(ntoskrnl, nt_size, "\xE8\x00\x00\x00\x00\x8B\xF8\x89\x44\x24\x40\x85\xC0\x78\x3B", 15, 0x00);
+		auto reference = Utils::FindPattern(ntoskrnl, nt_size, "\xE8\x00\x00\x00\x00\x8B\xF8\x89\x44\x24\x40\x85\xC0\x78\x3B", 15, 0x00);
 
-	auto ntqvm = RELATIVE_ADDR(reference, 1, 5);
+		auto ntqvm = RELATIVE_ADDR(reference, 1, 5);
 
-	ntqvm_hook = Hooks::JmpRipCode{ ntqvm, (uintptr_t)NtQueryVirtualMemory_Hook };
+		ntqvm_hook = Hooks::JmpRipCode{ ntqvm, (uintptr_t)NtQueryVirtualMemory_Hook };
 
-	ForteVisor::SetNptHook((uintptr_t)ntqvm, (uint8_t*)ntqvm_hook.hook_code, ntqvm_hook.hook_size, NULL);
+		ForteVisor::SetNptHook((uintptr_t)ntqvm, (uint8_t*)ntqvm_hook.hook_code, ntqvm_hook.hook_size, NULL);
+
+		ntqvm_nothooked = false;
+	}
 }
