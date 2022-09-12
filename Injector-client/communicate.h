@@ -17,13 +17,10 @@ namespace Driver
 		START_THREAD,
 		ALLOC_MEM,
 		WRITE_MEM,
-		READ_MEM,
 		MODULE_BASE,
 		EXIT_CLEANUP,
 		SET_NPT_HOOK,
-		PROCESS_ID,
-		HIDE_MEMORY,
-		PROTECT_MEMORY
+		PROCESS_ID
 	};
 
 	struct Msg
@@ -75,30 +72,10 @@ namespace Driver
 		int size;
 	};
 
-	struct ReadCmd : Msg
+	struct InitMsg : Msg
 	{
 		int proc_id;
-		uintptr_t address;
-		BYTE* buffer;
-		int size;
 	};
-
-	struct ProtectMemoryMsg : Msg
-	{
-		int proc_id;
-		uintptr_t address;
-		ULONG memory_protection;
-		ULONG size;
-	};
-
-	struct HideMemoryCmd : Msg
-	{
-		int32_t target_pid;
-		uintptr_t address;
-		uintptr_t hiding_range_size;
-	};
-
-	void HideMemory(int32_t target_pid, uintptr_t address, uintptr_t hiding_range_size);
 
 	bool SetNptHook(int32_t proc_id, size_t size, uintptr_t hook_address, uint8_t* shellcode);
 
@@ -108,13 +85,11 @@ namespace Driver
 
 	bool WriteMem(int process_id, ULONG64 address, BYTE* buffer, int size);
 
+	void ExitDriver();
+
 	uint64_t GetModuleBase(std::wstring module, int pid);
 
 	int GetProcessId(const wchar_t* process_name);
 
 	void Init();
-
-	void ProtectMemory(int pid, uintptr_t address, DWORD memory_protection, ULONG size);
-
-	bool ReadMem(int process_id, ULONG64 address, uint8_t* buffer, int size);
 }
