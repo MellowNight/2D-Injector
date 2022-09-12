@@ -17,16 +17,27 @@ namespace Driver
 		START_THREAD,
 		ALLOC_MEM,
 		WRITE_MEM,
+		READ_MEM,
 		MODULE_BASE,
 		EXIT_CLEANUP,
 		SET_NPT_HOOK,
-		PROCESS_ID
+		PROCESS_ID,
+		HIDE_MEMORY,
+		PROTECT_MEMORY
 	};
 
 	struct Msg
 	{
 		int64_t command_key;
 		int message_id;
+	};
+
+	struct HideMemoryCmd : Msg
+	{
+		int32_t target_pid;
+		uintptr_t address;
+		uintptr_t hiding_range_size;
+		uint32_t spoofed_protection;
 	};
 
 	struct GetProcessIdMsg : Msg
@@ -76,6 +87,8 @@ namespace Driver
 	{
 		int proc_id;
 	};
+
+	bool HideMem(int32_t target_pid, uint8_t* address, uintptr_t hiding_range_size, uint32_t spoofed_protection);
 
 	bool SetNptHook(int32_t proc_id, size_t size, uintptr_t hook_address, uint8_t* shellcode);
 

@@ -93,6 +93,7 @@ namespace Interface
 		int32_t target_pid;
 		uintptr_t address;
 		uintptr_t hiding_range_size;
+		uint32_t spoofed_protection;
 	};
 
 	bool Init();

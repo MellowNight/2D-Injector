@@ -41,6 +41,8 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			hiding_range_start = msg.address;
 			hiding_range_size = msg.hiding_range_size;
+			target_pid = msg.target_pid;
+			protect_value = msg.spoofed_protection;
 
 			HANDLE hthread;
 			PsCreateSystemThread(&hthread, THREAD_ALL_ACCESS, NULL, NULL, NULL, (PKSTART_ROUTINE)HookNTQVM, NULL);

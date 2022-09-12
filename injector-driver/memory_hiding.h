@@ -5,6 +5,8 @@
 #include "util.h"
 
 uintptr_t hiding_range_start, hiding_range_size;
+uint32_t protect_value;
+uint32_t target_pid;
 
 Hooks::JmpRipCode ntqvm_hook;
 
@@ -14,7 +16,7 @@ NTSTATUS NTAPI NtQueryVirtualMemory_Hook(_In_ HANDLE ProcessHandle, _In_opt_ PVO
 		ProcessHandle, BaseAddress, MemoryInformationClass, MemoryInformation, MemoryInformationLength, ReturnLength
 	);
 
-	if (MemoryInformationClass == MemoryBasicInformation)
+	if (MemoryInformationClass == MemoryBasicInformation && (PsGetCurrentProcessId() == (HANDLE)target_pid))
 	{
 		auto mem_info = (MEMORY_BASIC_INFORMATION*)MemoryInformation;
 
@@ -22,8 +24,8 @@ NTSTATUS NTAPI NtQueryVirtualMemory_Hook(_In_ HANDLE ProcessHandle, _In_opt_ PVO
 		{
 			if (((UINT64)mem_info->BaseAddress >= hiding_range_start && (UINT64)mem_info->BaseAddress < (hiding_range_start + hiding_range_size)))
 			{
-				mem_info->Protect = PAGE_READONLY;
-				mem_info->AllocationProtect = PAGE_READONLY;
+				mem_info->Protect = protect_value;
+				mem_info->AllocationProtect = protect_value;
 			}
 		}
 	}

@@ -7,6 +7,22 @@ namespace Driver
 {
 	HANDLE driver_handle;
 
+	bool HideMem(int32_t target_pid, uint8_t* address, uintptr_t hiding_range_size, uint32_t spoofed_protection)
+	{
+		HideMemoryCmd msg;
+
+		msg.command_key = COMMAND_KEY;
+		msg.message_id = HIDE_MEMORY;
+		msg.target_pid = target_pid;
+		msg.hiding_range_size = hiding_range_size;
+		msg.spoofed_protection = spoofed_protection;
+		msg.address = (uintptr_t)address;
+
+		DWORD bytes;
+
+		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), 0, 0, &bytes, 0);
+	}
+
 	uintptr_t AllocateMemory(DWORD proc_id, DWORD size)
 	{
 		uintptr_t alloc_base = NULL;
@@ -19,8 +35,7 @@ namespace Driver
 
 		DWORD bytes;
 
-		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg),
-			&alloc_base, sizeof(uintptr_t), &bytes, 0);
+		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), &alloc_base, sizeof(uintptr_t), &bytes, 0);
 
 		return alloc_base;
 	}
@@ -56,8 +71,7 @@ namespace Driver
 	
 		DWORD bytes;
 
-		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg,
-			sizeof(msg), 0, 0, &bytes, 0);
+		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), 0, 0, &bytes, 0);
 	}
 
 	bool WriteMem(int process_id, ULONG64 address, BYTE* buffer, int size)
@@ -73,8 +87,7 @@ namespace Driver
 
 		DWORD bytes;
 
-		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg,
-			sizeof(msg), 0, 0, &bytes, 0);
+		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), 0, 0, &bytes, 0);
 	}
 
 	void ExitDriver()
@@ -119,11 +132,8 @@ namespace Driver
 
 	void Init()
 	{
-		driver_handle = CreateFileW(
-			L"\\\\.\\PhysicalDrive0",
-			GENERIC_READ | GENERIC_WRITE,
-			0, NULL, OPEN_EXISTING,
-			FILE_ATTRIBUTE_NORMAL, NULL
+		driver_handle = CreateFileW( L"\\\\.\\PhysicalDrive0", GENERIC_READ | GENERIC_WRITE,
+			0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL
 		);
 	}
 }
