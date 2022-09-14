@@ -23,7 +23,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 
 	auto alloc_base = Driver::AllocateMemory(pid, alloc_size);
 	
-	Driver::ProtectMemory(pid, alloc_base, alloc_size);
+	Driver::ProtectMemory(pid, alloc_base, alloc_size, PAGE_EXECUTE_READWRITE);
 
 	auto cheat_base = alloc_base + PAGE_SIZE;
 

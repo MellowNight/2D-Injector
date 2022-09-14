@@ -64,7 +64,7 @@ namespace Interface
 		wchar_t module[50];
 	};
 
-	struct ProtectMemory : Msg
+	struct ProtectMemoryCmd : Msg
 	{
 		int proc_id;
 		uintptr_t address;

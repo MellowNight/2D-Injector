@@ -110,7 +110,7 @@ namespace Driver
 
 	int GetProcessId(const wchar_t* process_name);
 
-	bool ProtectMemory(uint32_t proc_id, uintptr_t address, uintptr_t size);
+	bool ProtectMemory(uint32_t proc_id, uintptr_t address, uintptr_t size, ULONG memory_prot);
 
 	void Init();
 }

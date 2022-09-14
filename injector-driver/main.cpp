@@ -51,7 +51,7 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 		}
 		case Interface::PROTECT_MEMORY:
 		{
-			auto msg = *(ProtectMemory*)system_buffer;
+			auto msg = *(ProtectMemoryCmd*)system_buffer;
 
 			auto apc = Utils::AttachToProcess(msg.proc_id);
 

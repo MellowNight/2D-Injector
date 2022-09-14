@@ -1,6 +1,4 @@
-﻿  communicate.cpp
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\communicate.cpp(125,10): warning C4244: 'return': conversion from 'uintptr_t' to 'int', possible loss of data
-  main.cpp
+﻿  main.cpp
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\security.h(26,56): warning C4244: 'argument': conversion from 'uint64_t' to 'ULONG', possible loss of data
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\security.h(26,51): warning C4244: 'argument': conversion from 'uint64_t' to 'ULONG', possible loss of data
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\security.h(34,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
@@ -11,6 +9,5 @@ C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\manual_map.
   utils.cpp
   Generating Code...
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\manual_map.cpp(221): warning C4715: 'PE::GetExport': not all control paths return a value
-  LINK : C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\x64\Debug\Injector-client.exe not found or not built by the last incremental link; performing full link
      Creating library C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\x64\Debug\Injector-client.lib and object C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\x64\Debug\Injector-client.exp
   Injector-client.vcxproj -> C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\x64\Debug\Injector-client.exe

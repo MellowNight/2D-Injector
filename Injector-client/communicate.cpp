@@ -40,7 +40,7 @@ namespace Driver
 		return alloc_base;
 	}
 
-	bool ProtectMemory(uint32_t proc_id, uintptr_t address, uintptr_t size)
+	bool ProtectMemory(uint32_t proc_id, uintptr_t address, uintptr_t size, ULONG memory_prot)
 	{
 		ProtectMemoryCmd msg;
 
@@ -49,6 +49,7 @@ namespace Driver
 		msg.proc_id = proc_id;
 		msg.size = size;
 		msg.address = address;
+		msg.memory_protection = memory_prot;
 
 		DWORD bytes;
 

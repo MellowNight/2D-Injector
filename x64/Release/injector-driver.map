@@ -1,12 +1,12 @@
  injector-driver
 
- Timestamp is 63213515 (Tue Sep 13 21:57:41 2022)
+ Timestamp is 63213abb (Tue Sep 13 22:21:47 2022)
 
  Preferred load address is 0000000140000000
 
  Start         Length     Name                   Class
- 0001:00000000 00004c70H .text$mn                CODE
- 0001:00004c70 00000050H .text$mn$00             CODE
+ 0001:00000000 00004c80H .text$mn                CODE
+ 0001:00004c80 00000040H .text$mn$00             CODE
  0001:00004cc0 000004c0H .text$mn$21             CODE
  0001:00005180 000003eaH .text$s                 CODE
  0002:00000000 000000b0H .idata$5                DATA
@@ -71,42 +71,42 @@
  0001:00000a70       ?HookNTQVM@@YAXXZ          0000000140001a70 f   main.obj
  0001:00000b30       ?MapperEntry@@YAJ_K0@Z     0000000140001b30 f   main.obj
  0001:00000b40       ?NtQueryVirtualMemory_Hook@@YAJPEAX0W4_MEMORY_INFORMATION_CLASS@@0_KPEA_K@Z 0000000140001b40 f   main.obj
- 0001:00000bd8       ?AttachToProcess@Utils@@YA?AU_KAPC_STATE@@H@Z 0000000140001bd8 f   util.obj
- 0001:00000c08       ?FindPattern@Utils@@YA_K_K0PEBD0D@Z 0000000140001c08 f   util.obj
- 0001:00000c70       ?GetKernelModule@Utils@@YAPEAXPEAKU_UNICODE_STRING@@@Z 0000000140001c70 f   util.obj
- 0001:00000d0c       ?GetUserModule@Utils@@YAPEAXPEAU_KPROCESS@@PEAU_UNICODE_STRING@@@Z 0000000140001d0c f   util.obj
- 0001:00000d98       ?Random@Utils@@YAIXZ       0000000140001d98 f   util.obj
- 0001:00000dc0       ?ReadMem@Utils@@YAJH_KPEAX0@Z 0000000140001dc0 f   util.obj
- 0001:00000e24       ?SwapEndianess@Utils@@YAXPEAD0@Z 0000000140001e24 f   util.obj
- 0001:00000e60       ?WriteMem@Utils@@YAJH_KPEAX0@Z 0000000140001e60 f   util.obj
- 0001:00000ec4       ?ZwGetRunningSystemProcess@Utils@@YAHPEAG@Z 0000000140001ec4 f   util.obj
- 0001:000022c4       ZydisDecodeOperands        00000001400032c4 f   Zydis:Decoder.obj
- 0001:00002e48       ZydisDecoderDecodeFull     0000000140003e48 f   Zydis:Decoder.obj
- 0001:00002f38       ZydisDecoderDecodeInstruction 0000000140003f38 f   Zydis:Decoder.obj
- 0001:00003048       ZydisDecoderDecodeOperands 0000000140004048 f   Zydis:Decoder.obj
- 0001:000030b4       ZydisDecoderInit           00000001400040b4 f   Zydis:Decoder.obj
- 0001:00004610       ZydisRegisterEncode        0000000140005610 f   Zydis:Register.obj
- 0001:0000464c       ZydisRegisterGetWidth      000000014000564c f   Zydis:Register.obj
- 0001:0000467c       ZydisDecoderTreeGetChildNode 000000014000567c f   Zydis:DecoderData.obj
- 0001:0000498c       ZydisGetInstructionEncodingInfo 000000014000598c f   Zydis:DecoderData.obj
- 0001:000049a4       ZydisGetAccessedFlags      00000001400059a4 f   Zydis:SharedData.obj
- 0001:000049c8       ZydisGetElementInfo        00000001400059c8 f   Zydis:SharedData.obj
- 0001:000049e4       ZydisGetInstructionDefinition 00000001400059e4 f   Zydis:SharedData.obj
- 0001:00004a5c       ZydisGetOperandDefinitions 0000000140005a5c f   Zydis:SharedData.obj
- 0001:00004a80       ?SetNptHook@ForteVisor@@YAH_KPEAE0H@Z 0000000140005a80 f   ForteVisorKernelApi:forte_api_kernel.obj
- 0001:00004ad0       svm_vmmcall                0000000140005ad0 f   ForteVisorKernelApi:vmmcall.obj
- 0001:00004af0       __security_check_cookie    0000000140005af0 f   BufferOverflowFastFailK:amdsecgs.obj
- 0001:00004b10       _guard_check_icall_nop     0000000140005b10 f i BufferOverflowFastFailK:guard_check.obj
- 0001:00004b20       __report_gsfailure         0000000140005b20 f   BufferOverflowFastFailK:gs_report.obj
- 0001:00004b27       DbgPrint                   0000000140005b27 f   ntoskrnl:ntoskrnl.exe
- 0001:00004b30       __chkstk                   0000000140005b30 f   ntoskrnl:ntoskrnl.exe
- 0001:00004b40       ZwQuerySystemInformation   0000000140005b40 f   ntoskrnl:ntoskrnl.exe
- 0001:00004b46       MmCopyVirtualMemory        0000000140005b46 f   ntoskrnl:ntoskrnl.exe
- 0001:00004b4c       __GSHandlerCheck           0000000140005b4c f   ntoskrnl:gshandler.obj
- 0001:00004b6c       __GSHandlerCheckCommon     0000000140005b6c f   ntoskrnl:gshandler.obj
- 0001:00004bd0       __cpu_features_init        0000000140005bd0 f   ntoskrnl:cpuinfo.obj
- 0001:00004c80       _guard_dispatch_icall_nop  0000000140005c80 f   BufferOverflowFastFailK:guard_dispatch.obj
- 0001:00004ca0       _guard_xfg_dispatch_icall_nop 0000000140005ca0 f   BufferOverflowFastFailK:guard_xfg_dispatch.obj
+ 0001:00000be0       ?AttachToProcess@Utils@@YA?AU_KAPC_STATE@@H@Z 0000000140001be0 f   util.obj
+ 0001:00000c10       ?FindPattern@Utils@@YA_K_K0PEBD0D@Z 0000000140001c10 f   util.obj
+ 0001:00000c78       ?GetKernelModule@Utils@@YAPEAXPEAKU_UNICODE_STRING@@@Z 0000000140001c78 f   util.obj
+ 0001:00000d14       ?GetUserModule@Utils@@YAPEAXPEAU_KPROCESS@@PEAU_UNICODE_STRING@@@Z 0000000140001d14 f   util.obj
+ 0001:00000da0       ?Random@Utils@@YAIXZ       0000000140001da0 f   util.obj
+ 0001:00000dc8       ?ReadMem@Utils@@YAJH_KPEAX0@Z 0000000140001dc8 f   util.obj
+ 0001:00000e2c       ?SwapEndianess@Utils@@YAXPEAD0@Z 0000000140001e2c f   util.obj
+ 0001:00000e68       ?WriteMem@Utils@@YAJH_KPEAX0@Z 0000000140001e68 f   util.obj
+ 0001:00000ecc       ?ZwGetRunningSystemProcess@Utils@@YAHPEAG@Z 0000000140001ecc f   util.obj
+ 0001:000022cc       ZydisDecodeOperands        00000001400032cc f   Zydis:Decoder.obj
+ 0001:00002e50       ZydisDecoderDecodeFull     0000000140003e50 f   Zydis:Decoder.obj
+ 0001:00002f40       ZydisDecoderDecodeInstruction 0000000140003f40 f   Zydis:Decoder.obj
+ 0001:00003050       ZydisDecoderDecodeOperands 0000000140004050 f   Zydis:Decoder.obj
+ 0001:000030bc       ZydisDecoderInit           00000001400040bc f   Zydis:Decoder.obj
+ 0001:00004618       ZydisRegisterEncode        0000000140005618 f   Zydis:Register.obj
+ 0001:00004654       ZydisRegisterGetWidth      0000000140005654 f   Zydis:Register.obj
+ 0001:00004684       ZydisDecoderTreeGetChildNode 0000000140005684 f   Zydis:DecoderData.obj
+ 0001:00004994       ZydisGetInstructionEncodingInfo 0000000140005994 f   Zydis:DecoderData.obj
+ 0001:000049ac       ZydisGetAccessedFlags      00000001400059ac f   Zydis:SharedData.obj
+ 0001:000049d0       ZydisGetElementInfo        00000001400059d0 f   Zydis:SharedData.obj
+ 0001:000049ec       ZydisGetInstructionDefinition 00000001400059ec f   Zydis:SharedData.obj
+ 0001:00004a64       ZydisGetOperandDefinitions 0000000140005a64 f   Zydis:SharedData.obj
+ 0001:00004a90       ?SetNptHook@ForteVisor@@YAH_KPEAE0H@Z 0000000140005a90 f   ForteVisorKernelApi:forte_api_kernel.obj
+ 0001:00004ae0       svm_vmmcall                0000000140005ae0 f   ForteVisorKernelApi:vmmcall.obj
+ 0001:00004b00       __security_check_cookie    0000000140005b00 f   BufferOverflowFastFailK:amdsecgs.obj
+ 0001:00004b20       _guard_check_icall_nop     0000000140005b20 f i BufferOverflowFastFailK:guard_check.obj
+ 0001:00004b30       __report_gsfailure         0000000140005b30 f   BufferOverflowFastFailK:gs_report.obj
+ 0001:00004b37       DbgPrint                   0000000140005b37 f   ntoskrnl:ntoskrnl.exe
+ 0001:00004b40       __chkstk                   0000000140005b40 f   ntoskrnl:ntoskrnl.exe
+ 0001:00004b50       ZwQuerySystemInformation   0000000140005b50 f   ntoskrnl:ntoskrnl.exe
+ 0001:00004b56       MmCopyVirtualMemory        0000000140005b56 f   ntoskrnl:ntoskrnl.exe
+ 0001:00004b5c       __GSHandlerCheck           0000000140005b5c f   ntoskrnl:gshandler.obj
+ 0001:00004b7c       __GSHandlerCheckCommon     0000000140005b7c f   ntoskrnl:gshandler.obj
+ 0001:00004be0       __cpu_features_init        0000000140005be0 f   ntoskrnl:cpuinfo.obj
+ 0001:00004c90       _guard_dispatch_icall_nop  0000000140005c90 f   BufferOverflowFastFailK:guard_dispatch.obj
+ 0001:00004cb0       _guard_xfg_dispatch_icall_nop 0000000140005cb0 f   BufferOverflowFastFailK:guard_xfg_dispatch.obj
  0001:00004cc0       memcpy                     0000000140005cc0 f   ntoskrnl:memcpy.obj
  0001:00004cc0       memmove                    0000000140005cc0 f   ntoskrnl:memcpy.obj
  0001:00004f80       memset                     0000000140005f80 f   ntoskrnl:memset.obj
@@ -260,31 +260,31 @@
  0000:fffa4000       .debug$S                   0000000140000000     ntoskrnl:ntoskrnl.exe
  0000:fffa4000       .debug$S                   0000000140000000     ntoskrnl:ntoskrnl.exe
  0002:ffff9000       __guard_fids_??B<lambda_76499ed27f46bdfb8a07f8750d817a64>@@QEBAP6AXPEAX@ZXZ 0000000140000000     ForteVisorKernelApi:forte_api_kernel.obj
- 0001:00000f80       ZydisCalcRegisterId        0000000140001f80 f   Zydis:Decoder.obj
- 0001:00001040       ZydisCheckErrorConditions  0000000140002040 f   Zydis:Decoder.obj
- 0001:00001304       ZydisCollectOptionalPrefixes 0000000140002304 f   Zydis:Decoder.obj
- 0001:0000153c       ZydisDecodeEVEX            000000014000253c f   Zydis:Decoder.obj
- 0001:00001710       ZydisDecodeInstruction     0000000140002710 f   Zydis:Decoder.obj
- 0001:00001ee8       ZydisDecodeMVEX            0000000140002ee8 f   Zydis:Decoder.obj
- 0001:0000202c       ZydisDecodeOperandMemory   000000014000302c f   Zydis:Decoder.obj
- 0001:00002278       ZydisDecodeOperandRegister 0000000140003278 f   Zydis:Decoder.obj
- 0001:000029d0       ZydisDecodeOptionalInstructionParts 00000001400039d0 f   Zydis:Decoder.obj
- 0001:00002c10       ZydisDecodeVEX             0000000140003c10 f   Zydis:Decoder.obj
- 0001:00002d50       ZydisDecodeXOP             0000000140003d50 f   Zydis:Decoder.obj
- 0001:00003120       ZydisInputNext             0000000140004120 f   Zydis:Decoder.obj
- 0001:00003158       ZydisInputNextBytes        0000000140004158 f   Zydis:Decoder.obj
- 0001:000031c8       ZydisNodeHandlerModrmMod   00000001400041c8 f   Zydis:Decoder.obj
- 0001:00003230       ZydisNodeHandlerOpcode     0000000140004230 f   Zydis:Decoder.obj
- 0001:00003548       ZydisPopulateRegisterIds   0000000140004548 f   Zydis:Decoder.obj
- 0001:00003770       ZydisReadDisplacement      0000000140004770 f   Zydis:Decoder.obj
- 0001:00003810       ZydisReadImmediate         0000000140004810 f   Zydis:Decoder.obj
- 0001:00003910       ZydisSetAVXInformation     0000000140004910 f   Zydis:Decoder.obj
- 0001:00003f7c       ZydisSetAttributes         0000000140004f7c f   Zydis:Decoder.obj
- 0001:00004334       ZydisSetOperandSizeAndElementInfo 0000000140005334 f   Zydis:Decoder.obj
- 0001:00004ad0       $$000000                   0000000140005ad0     ForteVisorKernelApi:vmmcall.obj
- 0001:00004ae0       $$000000                   0000000140005ae0     BufferOverflowFastFailK:amdsecgs.obj
- 0001:00004c70       $$000000                   0000000140005c70     BufferOverflowFastFailK:guard_dispatch.obj
- 0001:00004c90       $$000000                   0000000140005c90     BufferOverflowFastFailK:guard_xfg_dispatch.obj
+ 0001:00000f88       ZydisCalcRegisterId        0000000140001f88 f   Zydis:Decoder.obj
+ 0001:00001048       ZydisCheckErrorConditions  0000000140002048 f   Zydis:Decoder.obj
+ 0001:0000130c       ZydisCollectOptionalPrefixes 000000014000230c f   Zydis:Decoder.obj
+ 0001:00001544       ZydisDecodeEVEX            0000000140002544 f   Zydis:Decoder.obj
+ 0001:00001718       ZydisDecodeInstruction     0000000140002718 f   Zydis:Decoder.obj
+ 0001:00001ef0       ZydisDecodeMVEX            0000000140002ef0 f   Zydis:Decoder.obj
+ 0001:00002034       ZydisDecodeOperandMemory   0000000140003034 f   Zydis:Decoder.obj
+ 0001:00002280       ZydisDecodeOperandRegister 0000000140003280 f   Zydis:Decoder.obj
+ 0001:000029d8       ZydisDecodeOptionalInstructionParts 00000001400039d8 f   Zydis:Decoder.obj
+ 0001:00002c18       ZydisDecodeVEX             0000000140003c18 f   Zydis:Decoder.obj
+ 0001:00002d58       ZydisDecodeXOP             0000000140003d58 f   Zydis:Decoder.obj
+ 0001:00003128       ZydisInputNext             0000000140004128 f   Zydis:Decoder.obj
+ 0001:00003160       ZydisInputNextBytes        0000000140004160 f   Zydis:Decoder.obj
+ 0001:000031d0       ZydisNodeHandlerModrmMod   00000001400041d0 f   Zydis:Decoder.obj
+ 0001:00003238       ZydisNodeHandlerOpcode     0000000140004238 f   Zydis:Decoder.obj
+ 0001:00003550       ZydisPopulateRegisterIds   0000000140004550 f   Zydis:Decoder.obj
+ 0001:00003778       ZydisReadDisplacement      0000000140004778 f   Zydis:Decoder.obj
+ 0001:00003818       ZydisReadImmediate         0000000140004818 f   Zydis:Decoder.obj
+ 0001:00003918       ZydisSetAVXInformation     0000000140004918 f   Zydis:Decoder.obj
+ 0001:00003f84       ZydisSetAttributes         0000000140004f84 f   Zydis:Decoder.obj
+ 0001:0000433c       ZydisSetOperandSizeAndElementInfo 000000014000533c f   Zydis:Decoder.obj
+ 0001:00004ae0       $$000000                   0000000140005ae0     ForteVisorKernelApi:vmmcall.obj
+ 0001:00004af0       $$000000                   0000000140005af0     BufferOverflowFastFailK:amdsecgs.obj
+ 0001:00004c80       $$000000                   0000000140005c80     BufferOverflowFastFailK:guard_dispatch.obj
+ 0001:00004ca0       $$000000                   0000000140005ca0     BufferOverflowFastFailK:guard_xfg_dispatch.obj
  0001:00004cc0       $$000000                   0000000140005cc0     ntoskrnl:memcpy.obj
  0001:00004ce0       mcpy00                     0000000140005ce0     ntoskrnl:memcpy.obj
  0001:00004d00       mcpy10                     0000000140005d00     ntoskrnl:memcpy.obj
