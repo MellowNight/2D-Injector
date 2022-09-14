@@ -1,6 +1,6 @@
  injector-driver
 
- Timestamp is 631fb6c9 (Mon Sep 12 18:46:33 2022)
+ Timestamp is 63213515 (Tue Sep 13 21:57:41 2022)
 
  Preferred load address is 0000000140000000
 
@@ -67,8 +67,8 @@
  0001:00000394       ?Init@Disasm@@YAHXZ        0000000140001394 f   disassembly.obj
  0001:000003a8       ?LengthOfInstructions@Disasm@@YAHPEAXH@Z 00000001400013a8 f   disassembly.obj
  0001:00000494       ?CommandHandler@@YAXPEAX0@Z 0000000140001494 f   main.obj
- 0001:00000a2c       ?DriverEntry@@YAJ_K0@Z     0000000140001a2c f   main.obj
- 0001:00000a80       ?HookNTQVM@@YAXXZ          0000000140001a80 f   main.obj
+ 0001:00000a1c       ?DriverEntry@@YAJ_K0@Z     0000000140001a1c f   main.obj
+ 0001:00000a70       ?HookNTQVM@@YAXXZ          0000000140001a70 f   main.obj
  0001:00000b30       ?MapperEntry@@YAJ_K0@Z     0000000140001b30 f   main.obj
  0001:00000b40       ?NtQueryVirtualMemory_Hook@@YAJPEAX0W4_MEMORY_INFORMATION_CLASS@@0_KPEA_K@Z 0000000140001b40 f   main.obj
  0001:00000bd8       ?AttachToProcess@Utils@@YA?AU_KAPC_STATE@@H@Z 0000000140001bd8 f   util.obj
@@ -202,7 +202,8 @@
  0002:00036000       ISTR_DEFINITIONS_MVEX      000000014003d000     Zydis:SharedData.obj
  0002:00037b10       OPERAND_DEFINITIONS        000000014003eb10     Zydis:SharedData.obj
  0002:00050090       _load_config_used          0000000140057090     BufferOverflowFastFailK:loadcfg.obj
- 0003:00000020       __security_cookie          0000000140058020     BufferOverflowFastFailK:gs_support.obj
+ 0003:00000000       ?ntqvm_nothooked@@3_NA     0000000140058000     main.obj
+ 0003:00000030       __security_cookie          0000000140058030     BufferOverflowFastFailK:gs_support.obj
  0003:00000040       __isa_info                 0000000140058040     ntoskrnl:cpuinfo.obj
  0003:00000050       ?spoofer@Spoofer@@0PEAV1@EA 0000000140058050     disk_spoof.obj
  0003:00000058       ?ioctl_hk@Interface@@3UJmpRipCode@Hooks@@A 0000000140058058     ioctlhook.obj
@@ -409,6 +410,6 @@
  0002:0005071c       $unwind$__GSHandlerCheck   000000014005771c     ntoskrnl:gshandler.obj
  0002:0005071c       $unwind$__GSHandlerCheckCommon 000000014005771c     ntoskrnl:gshandler.obj
  0002:00050728       $unwind$__cpu_features_init 0000000140057728     ntoskrnl:cpuinfo.obj
- 0003:00000000       ?broadcasts@?5??ZydisSetAVXInformation@@9@9 0000000140058000     Zydis:Decoder.obj
+ 0003:00000008       ?broadcasts@?5??ZydisSetAVXInformation@@9@9 0000000140058008     Zydis:Decoder.obj
  0003:00000078       ?zydis_decoder@Disasm@@3UZydisDecoder_@@A 0000000140058078     disassembly.obj
  0005:000002aa       .idata$6                   000000014005a2aa     ntoskrnl:ntoskrnl.exe

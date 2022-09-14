@@ -22,6 +22,8 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 	auto alloc_size = image_real_size + PAGE_SIZE;
 
 	auto alloc_base = Driver::AllocateMemory(pid, alloc_size);
+	
+	Driver::ProtectMemory(pid, alloc_base, alloc_size);
 
 	auto cheat_base = alloc_base + PAGE_SIZE;
 
@@ -48,9 +50,6 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 	std::cout << std::hex << " entry_point 0x" << entry_point + cheat_base << std::endl;
 
 	Driver::InvokeRemoteFunc(entry_point + cheat_base, pid, alloc_base, image_real_size);
-
-	Driver::ExitDriver();
-
 	return 0;
 }
 

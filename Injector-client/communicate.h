@@ -32,6 +32,14 @@ namespace Driver
 		int message_id;
 	};
 
+	struct ProtectMemoryCmd : Msg
+	{
+		int proc_id;
+		uintptr_t address;
+		ULONG memory_protection;
+		ULONG size;
+	};
+
 	struct HideMemoryCmd : Msg
 	{
 		int32_t target_pid;
@@ -98,11 +106,11 @@ namespace Driver
 
 	bool WriteMem(int process_id, ULONG64 address, BYTE* buffer, int size);
 
-	void ExitDriver();
-
 	uint64_t GetModuleBase(std::wstring module, int pid);
 
 	int GetProcessId(const wchar_t* process_name);
+
+	bool ProtectMemory(uint32_t proc_id, uintptr_t address, uintptr_t size);
 
 	void Init();
 }

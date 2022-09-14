@@ -40,6 +40,21 @@ namespace Driver
 		return alloc_base;
 	}
 
+	bool ProtectMemory(uint32_t proc_id, uintptr_t address, uintptr_t size)
+	{
+		ProtectMemoryCmd msg;
+
+		msg.command_key = COMMAND_KEY;
+		msg.message_id = PROTECT_MEMORY;
+		msg.proc_id = proc_id;
+		msg.size = size;
+		msg.address = address;
+
+		DWORD bytes;
+
+		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), NULL, NULL, &bytes, 0);
+	}
+
 	BOOL InvokeRemoteFunc(ULONG64 start_addr, int proc_id, uintptr_t params_addr, uintptr_t real_image_size)
 	{
 		InvokeRemoteFunctionCmd msg;
@@ -88,11 +103,6 @@ namespace Driver
 		DWORD bytes;
 
 		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), 0, 0, &bytes, 0);
-	}
-
-	void ExitDriver()
-	{
-		auto msg = EXIT_CLEANUP;
 	}
 
 	uint64_t GetModuleBase(std::wstring module, int pid)

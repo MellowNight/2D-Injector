@@ -12,7 +12,7 @@ struct DllParams
 	size_t dll_size;
 	uintptr_t swapchain_present_address;
 	uintptr_t original_function_address;
-	uintptr_t RtlAddFunctionTable_fn;
+	uintptr_t module_base;
 };
 
 enum INJECTOR_CONSTANTS
@@ -96,7 +96,6 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 			dll_params->dll_size = msg.image_size;
 			dll_params->header = mapped_dll_header;
 			dll_params->swapchain_present_address = present_address;
-			dll_params->RtlAddFunctionTable_fn = msg.RtlAddFunctionTable_address;
 
 			// NPT hook on dxgi.dll!CDXGISwapChain::Present
 			ForteVisor::SetNptHook(present_address, present_hk.hook_code, present_hk.hook_size, entrypoint_npt_hook);
