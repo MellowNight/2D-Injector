@@ -90,6 +90,24 @@ namespace Driver
 		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), 0, 0, &bytes, 0);
 	}
 
+	bool ReadMem(int process_id, ULONG64 address, uint8_t* buffer, int size)
+	{
+		ReadCmd msg;
+
+		msg.command_key = COMMAND_KEY;
+		msg.message_id = READ_MEM;
+		msg.proc_id = process_id;
+		msg.address = address;
+		msg.buffer = buffer;
+		msg.size = size;
+
+		DWORD bytes;
+
+		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg,
+			sizeof(msg), 0, 0, &bytes, 0);
+	}
+
+
 	bool WriteMem(int process_id, ULONG64 address, BYTE* buffer, int size)
 	{
 		WriteCmd msg;

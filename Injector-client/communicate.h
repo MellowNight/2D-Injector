@@ -52,6 +52,13 @@ namespace Driver
 	{
 		wchar_t process_name[50];
 	};
+	struct ReadCmd : Msg
+	{
+		int proc_id;
+		uintptr_t address;
+		BYTE* buffer;
+		int size;
+	};
 
 	struct NptHookMsg : Msg
 	{
@@ -105,6 +112,7 @@ namespace Driver
 	BOOL InvokeRemoteFunc(ULONG64 start_addr, int proc_id, uintptr_t params_addr, uintptr_t real_image_size);
 
 	bool WriteMem(int process_id, ULONG64 address, BYTE* buffer, int size);
+	bool ReadMem(int process_id, ULONG64 address, uint8_t* buffer, int size);
 
 	uint64_t GetModuleBase(std::wstring module, int pid);
 

@@ -88,6 +88,7 @@ namespace Interface
 		int size;
 	};
 
+
 	struct HideMemoryCmd : Msg
 	{
 		int32_t target_pid;

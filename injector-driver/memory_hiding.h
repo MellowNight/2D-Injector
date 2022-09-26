@@ -10,6 +10,7 @@ uint32_t target_pid;
 bool ntqvm_nothooked = true;
 
 Hooks::JmpRipCode ntqvm_hook;
+Hooks::JmpRipCode ntprotect_hook;
 
 NTSTATUS NTAPI NtQueryVirtualMemory_Hook(_In_ HANDLE ProcessHandle, _In_opt_ PVOID BaseAddress, _In_ MEMORY_INFORMATION_CLASS MemoryInformationClass, _Out_writes_bytes_(MemoryInformationLength) PVOID MemoryInformation, _In_ SIZE_T MemoryInformationLength, _Out_opt_ PSIZE_T ReturnLength)
 {
@@ -35,8 +36,33 @@ NTSTATUS NTAPI NtQueryVirtualMemory_Hook(_In_ HANDLE ProcessHandle, _In_opt_ PVO
 	return status;
 }
 
+/*	because byfron forces it to be RW	*/
 
-void HookNTQVM()
+NTSTATUS NTAPI NtProtectVirtualMemory_Hook
+(
+	IN HANDLE ProcessHandle,
+	IN OUT PVOID* BaseAddress,
+	IN OUT SIZE_T* NumberOfBytesToProtect,
+	IN ULONG NewAccessProtection,
+	OUT PULONG OldAccessProtection
+)
+{
+	if (MmIsAddressValid(BaseAddress) && MmIsAddressValid(NumberOfBytesToProtect))
+	{
+		if (((*(uintptr_t*)BaseAddress >= hiding_range_start) && ((*(uintptr_t*)BaseAddress + *(uintptr_t*)NumberOfBytesToProtect) <= (hiding_range_size + hiding_range_start))) && (PsGetCurrentProcessId() == (HANDLE)target_pid))
+		{
+			DbgPrint("caught apex legends trying to change our memory protecton!!! \n");
+
+			return STATUS_SUCCESS;
+		}
+	}
+
+	return static_cast<decltype(&NtProtectVirtualMemory_Hook)>(ntprotect_hook.original_bytes)(
+		ProcessHandle, BaseAddress, NumberOfBytesToProtect, NewAccessProtection, OldAccessProtection
+	);
+}
+
+void HookMemoryProtectionFn()
 {
 	if (ntqvm_nothooked)
 	{
@@ -50,6 +76,15 @@ void HookNTQVM()
 		ntqvm_hook = Hooks::JmpRipCode{ ntqvm, (uintptr_t)NtQueryVirtualMemory_Hook };
 
 		ForteVisor::SetNptHook((uintptr_t)ntqvm, (uint8_t*)ntqvm_hook.hook_code, ntqvm_hook.hook_size, NULL);
+
+
+	/*	auto ntprotect = Utils::FindPattern(ntoskrnl, nt_size, 
+			"\x40\x53\x56\x57\x41\x54\x41\x55\x41\x56\x41\x57\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x84\x24\x00\x00\x00\x00\x45\x8B\xE1\x4C\x89\x44\x24\x00\x4C\x8B\xFA", 
+			48, 0x00);
+
+		ntprotect_hook = Hooks::JmpRipCode{ ntprotect, (uintptr_t)NtProtectVirtualMemory_Hook };
+
+		ForteVisor::SetNptHook((uintptr_t)ntprotect, (uint8_t*)ntprotect_hook.hook_code, ntprotect_hook.hook_size, NULL);*/
 
 		ntqvm_nothooked = false;
 	}

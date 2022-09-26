@@ -1178,9 +1178,9 @@ C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\kernel_stru
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(258,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\hooking.h(26,40): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\hooking.h(32,35): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(117,9): warning C4189: 'status': local variable is initialized but not referenced
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(173,9): warning C4189: 'status': local variable is initialized but not referenced
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(181,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(120,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(176,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(184,9): warning C4189: 'status': local variable is initialized but not referenced
   util.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition
@@ -1476,22 +1476,23 @@ C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\kernel_stru
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(188,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(208,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(258,10): warning C4201: nonstandard extension used: nameless struct/union
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(110,25): warning C4101: 'DrvName': unreferenced local variable
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(178,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(178,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(188,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(265,39): warning C4311: 'type cast': pointer truncation from 'HANDLE' to 'int'
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(265,39): warning C4302: 'type cast': truncation from 'HANDLE' to 'int'
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(236,18): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(295,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(295,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(307,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(330,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(330,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(342,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(342,14): warning C4189: 'status2': local variable is initialized but not referenced
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(18,22): warning C4101: 'final_entry': unreferenced local variable
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(197,25): warning C4101: 'DrvName': unreferenced local variable
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(265,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(265,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(275,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(352,39): warning C4311: 'type cast': pointer truncation from 'HANDLE' to 'int'
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(352,39): warning C4302: 'type cast': truncation from 'HANDLE' to 'int'
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(323,18): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(382,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(382,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(394,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(417,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(417,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(429,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(429,14): warning C4189: 'status2': local variable is initialized but not referenced
   Generating Code...
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(96): warning C4715: 'Utils::GetProcessId': not all control paths return a value
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\util.cpp(183): warning C4715: 'Utils::GetProcessId': not all control paths return a value
 Zydis.lib(Decoder.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Decoder.obj)' or at 'C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
 Zydis.lib(Register.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Register.obj)' or at 'C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
 Zydis.lib(DecoderData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(DecoderData.obj)' or at 'C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info

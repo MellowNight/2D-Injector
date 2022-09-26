@@ -15,6 +15,14 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 		*(int32_t*)dll_raw = 0x5A4D;
 	}
 
+
+	auto present = Driver::GetModuleBase(L"dxgi.dll", pid) + 0x5000;
+	char bufffer[100];
+	//Driver::ReadMem(pid, present, (uint8_t*)bufffer, 10);
+
+	Driver::ProtectMemory(pid, present, 100, PAGE_EXECUTE_READWRITE);
+//	Driver::WriteMem(pid, present, (uint8_t*)"\x48\x89\x5C\x24\x10", 5);
+
 	Driver::Init();
 
 	auto image_real_size = PeHeader(dll_raw)->OptionalHeader.SizeOfImage;
@@ -48,6 +56,9 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 	auto entry_point = (uintptr_t)PE::GetExport((uintptr_t)cheat_mapped, entrypoint_name);
 
 	std::cout << std::hex << " entry_point 0x" << entry_point + cheat_base << std::endl;
+	Driver::ProtectMemory(pid, alloc_base, alloc_size, PAGE_EXECUTE_READWRITE);
+
+//	Driver::ReadMem(pid, Driver::GetModuleBase(L"dxgi.dll", pid) + 0x5000, (uint8_t*)bufffer, 10);
 
 	Driver::InvokeRemoteFunc(entry_point + cheat_base, pid, alloc_base, image_real_size);
 	return 0;
