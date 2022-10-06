@@ -27,10 +27,9 @@ NTSTATUS NTAPI NtQueryVirtualMemory_Hook(_In_ HANDLE ProcessHandle, _In_opt_ PVO
 		{
 			if (((UINT64)mem_info->BaseAddress >= hiding_range_start && (UINT64)mem_info->BaseAddress < (hiding_range_start + hiding_range_size)))
 			{
-				mem_info->RegionSize = 0x5; // make code upload only 5 bytes at a time?
+				// mem_info->RegionSize = 0x5; // make code upload only 5 bytes at a time?
 				mem_info->Protect = protect_value;
 				mem_info->AllocationProtect = protect_value;
-				mem_info->Type = MEM_IMAGE;
 			}
 		}
 	}
