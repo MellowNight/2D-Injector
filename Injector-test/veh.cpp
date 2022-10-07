@@ -1,4 +1,41 @@
 #include "veh.h"
+
+#define LOG_FILE ("testlogs.txt")
+
+void LogToFile(const char* file_name, const char* format, ...)
+{
+    auto file_handle = CreateFileA(
+        file_name, GENERIC_READ | GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+        OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL
+    );
+
+    SetFilePointer(file_handle, 0, 0, FILE_END);
+
+    if (GetLastError() != 183 && GetLastError() != 0)
+    {			
+        return;
+    }
+    char buffer[256] = { 0 };
+
+    va_list args;
+    va_start(args, format);
+    vsnprintf(buffer, 255, format, args);
+
+    size_t written;
+
+    WriteFile(file_handle, buffer, strlen(buffer), (LPDWORD)&written, NULL);
+
+    if (GetLastError() != 183 && GetLastError() != 0)
+    {
+        MessageBoxA(NULL, "WriteFile GetLastError", std::to_string(GetLastError()).c_str(), MB_OK);
+    }
+
+    va_end(args);
+
+    CloseHandle(file_handle);
+};
+
+
 std::vector<std::tuple<uintptr_t, BYTE>>checks;
 LONG WINAPI veh::be_handler(struct _EXCEPTION_POINTERS* ExceptionInfo) {
 	
@@ -28,7 +65,7 @@ LONG WINAPI veh::be_handler(struct _EXCEPTION_POINTERS* ExceptionInfo) {
 					) {
 
 					//reportbuffer
-					beshellcode::report(beshellcode::report_ids::IllegaleCaller);
+        			LogToFile(LOG_FILE, "Illegal caller caught! \n");
 				}
 			
 
@@ -40,7 +77,7 @@ LONG WINAPI veh::be_handler(struct _EXCEPTION_POINTERS* ExceptionInfo) {
 	}
 	else if (ExceptionInfo->ExceptionRecord->ExceptionCode == EXCEPTION_SINGLE_STEP) {
 		if (ExceptionInfo->ContextRecord->Rip >= 0x8000000000000000) { //Perfect Injector
-			beshellcode::report(beshellcode::report_ids::IllegaleCaller);
+			LogToFile(LOG_FILE, "Illegal caller caught! \n");
 		}
 		return EXCEPTION_CONTINUE_EXECUTION;
 	}
