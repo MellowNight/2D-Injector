@@ -15,13 +15,15 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 		*(int32_t*)dll_raw = 0x5A4D;
 	}
 
-
-	auto present = Driver::GetModuleBase(L"dxgi.dll", pid) + 0x5000;
-	char bufffer[100];
-	//Driver::ReadMem(pid, present, (uint8_t*)bufffer, 10);
+	auto present = Driver::GetModuleBase(L"dxgi.dll", pid) + 0x5270;
+	char bufffer[1];
 
 	Driver::ProtectMemory(pid, present, 100, PAGE_EXECUTE_READWRITE);
-//	Driver::WriteMem(pid, present, (uint8_t*)"\x48\x89\x5C\x24\x10", 5);
+	
+	Driver::ReadMem(pid, present, (uint8_t*)bufffer, 1);
+
+	//Driver::WriteMem(pid, present, (uint8_t*)"\xC3", 1);
+	//Driver::WriteMem(pid, present, (uint8_t*)bufffer, 1);
 
 	Driver::Init();
 
