@@ -1179,9 +1179,9 @@ C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\kernel_stru
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\hooking.h(26,40): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\hooking.h(32,35): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(98,70): warning C4267: '=': conversion from 'size_t' to 'int', possible loss of data
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(124,9): warning C4189: 'status': local variable is initialized but not referenced
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(180,9): warning C4189: 'status': local variable is initialized but not referenced
-C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(188,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(122,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(178,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\injector-driver\main.cpp(186,9): warning C4189: 'status': local variable is initialized but not referenced
   util.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition

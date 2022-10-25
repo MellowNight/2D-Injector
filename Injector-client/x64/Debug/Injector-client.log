@@ -1,5 +1,17 @@
-﻿  main.cpp
+﻿  communicate.cpp
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\communicate.cpp(50,14): warning C4244: '=': conversion from 'uintptr_t' to 'ULONG', possible loss of data
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\communicate.cpp(159,10): warning C4244: 'return': conversion from 'uintptr_t' to 'int', possible loss of data
+  main.cpp
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\security.h(26,56): warning C4244: 'argument': conversion from 'uint64_t' to 'ULONG', possible loss of data
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\security.h(26,51): warning C4244: 'argument': conversion from 'uint64_t' to 'ULONG', possible loss of data
 C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\security.h(34,15): warning C4244: 'argument': conversion from 'time_t' to 'unsigned int', possible loss of data
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\main.cpp(20,7): warning C4101: 'bufffer': unreferenced local variable
+  manual_map.cpp
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\manual_map.cpp(176,36): warning C4018: '<': signed/unsigned mismatch
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\manual_map.cpp(211,21): warning C4018: '<': signed/unsigned mismatch
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\manual_map.cpp(218,42): warning C4312: 'type cast': conversion from 'int' to 'void *' of greater size
+  utils.cpp
+  Generating Code...
+C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\Injector-client\manual_map.cpp(221): warning C4715: 'PE::GetExport': not all control paths return a value
+     Creating library C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\x64\Debug\Injector-client.lib and object C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\x64\Debug\Injector-client.exp
   Injector-client.vcxproj -> C:\Users\cppco\OneDrive\Documents\GitHub\BE-injector\x64\Debug\Injector-client.exe

@@ -102,10 +102,8 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 			dll_params->header = mapped_dll_header;
 			dll_params->swapchain_present_address = present_address;
 
-			// NPT hook on dxgi.dll!CDXGISwapChain::Present
-			// memcpy((void*)present_address, present_hk.hook_code, present_hk.hook_size);
-
-			ForteVisor::SetNptHook(present_address, present_hk.hook_code, present_hk.hook_size, INJECTOR_CONSTANTS::entrypoint_npt_hook);
+			//// NPT hook on dxgi.dll!CDXGISwapChain::Present
+			memcpy((void*)present_address, present_hk.hook_code, present_hk.hook_size);
 
 			KeUnstackDetachProcess(&apc);
 

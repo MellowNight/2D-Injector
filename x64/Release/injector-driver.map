@@ -1,28 +1,28 @@
  injector-driver
 
- Timestamp is 6355c243 (Sun Oct 23 18:37:55 2022)
+ Timestamp is 63540259 (Sat Oct 22 10:46:49 2022)
 
  Preferred load address is 0000000140000000
 
  Start         Length     Name                   Class
- 0001:00000000 00004d90H .text$mn                CODE
- 0001:00004d90 00000070H .text$mn$00             CODE
- 0001:00004e00 000004c0H .text$mn$21             CODE
- 0001:000052c0 000003eaH .text$s                 CODE
+ 0001:00000000 00004c90H .text$mn                CODE
+ 0001:00004c90 00000070H .text$mn$00             CODE
+ 0001:00004d00 000004c0H .text$mn$21             CODE
+ 0001:000051c0 000003eaH .text$s                 CODE
  0002:00000000 000000b0H .idata$5                DATA
  0002:000000b0 00000030H .00cfg                  DATA
  0002:000000e0 00000030H .gfids                  DATA
- 0002:0000010c 00000000H .gfids$y                DATA
+ 0002:00000108 00000000H .gfids$y                DATA
  0002:00000110 00050170H .rdata                  DATA
  0002:00050280 00000000H .rdata$CastGuardVftablesA DATA
  0002:00050280 00000000H .rdata$CastGuardVftablesC DATA
  0002:00050280 00000000H .rdata$zETW0            DATA
  0002:00050280 00000000H .rdata$zETW9            DATA
  0002:00050280 000001d8H .rdata$zzzdbg           DATA
- 0002:00050458 00000308H .xdata                  DATA
+ 0002:00050458 000002e0H .xdata                  DATA
  0003:00000000 00000050H .data                   DATA
- 0003:00000050 00000098H .bss                    DATA
- 0004:00000000 00000264H .pdata                  DATA
+ 0003:00000050 00000078H .bss                    DATA
+ 0004:00000000 00000258H .pdata                  DATA
  0005:00000000 00000000H INIT                    CODE
  0005:00000000 00000014H .idata$2                CODE
  0005:00000014 00000014H .idata$3                CODE
@@ -55,7 +55,7 @@
  0000:00000000       __volatile_metadata        0000000000000000     <absolute>
  0000:00000000       __x64_code_ranges_to_entry_points 0000000000000000     <absolute>
  0000:00000000       __x64_code_ranges_to_entry_points_count 0000000000000000     <absolute>
- 0000:0000000b       __guard_fids_count         000000000000000b     <absolute>
+ 0000:0000000a       __guard_fids_count         000000000000000a     <absolute>
  0000:00014500       __guard_flags              0000000000014500     <absolute>
  0000:00000000       __ImageBase                0000000140000000     <linker-defined>
  0001:00000000       ?SpoofDisk@Spoofer@@QEAAXIPEAX0_K@Z 0000000140001000 f   disk_spoof.obj
@@ -69,74 +69,73 @@
  0001:00000494       ?CommandHandler@@YAXPEAX0@Z 0000000140001494 f   main.obj
  0001:00000a34       ?DriverEntry@@YAJ_K0@Z     0000000140001a34 f   main.obj
  0001:00000a90       ?HookMemoryProtectionFn@@YAXXZ 0000000140001a90 f   main.obj
- 0001:00000bb0       ?MapperEntry@@YAJ_K0@Z     0000000140001bb0 f   main.obj
- 0001:00000bc0       ?NtProtectVirtualMemory_hook@@YAJPEAXPEAPEAXPEAKK2@Z 0000000140001bc0 f   main.obj
- 0001:00000c60       ?NtQueryVirtualMemory_Hook@@YAJPEAX0W4_MEMORY_INFORMATION_CLASS@@0_KPEA_K@Z 0000000140001c60 f   main.obj
- 0001:00000cf8       ?AttachToProcess@Utils@@YA?AU_KAPC_STATE@@H@Z 0000000140001cf8 f   util.obj
- 0001:00000d28       ?FindPattern@Utils@@YA_K_K0PEBD0D@Z 0000000140001d28 f   util.obj
- 0001:00000d90       ?GetKernelModule@Utils@@YAPEAXPEAKU_UNICODE_STRING@@@Z 0000000140001d90 f   util.obj
- 0001:00000e2c       ?GetUserModule@Utils@@YAPEAXPEAU_KPROCESS@@PEAU_UNICODE_STRING@@@Z 0000000140001e2c f   util.obj
- 0001:00000eb8       ?Random@Utils@@YAIXZ       0000000140001eb8 f   util.obj
- 0001:00000ee0       ?ReadMem@Utils@@YAJH_KPEAX0@Z 0000000140001ee0 f   util.obj
- 0001:00000f44       ?SwapEndianess@Utils@@YAXPEAD0@Z 0000000140001f44 f   util.obj
- 0001:00000f80       ?WriteMem@Utils@@YAJH_KPEAX0@Z 0000000140001f80 f   util.obj
- 0001:00000fe4       ?ZwGetRunningSystemProcess@Utils@@YAHPEAG@Z 0000000140001fe4 f   util.obj
- 0001:000023e4       ZydisDecodeOperands        00000001400033e4 f   Zydis:Decoder.obj
- 0001:00002f68       ZydisDecoderDecodeFull     0000000140003f68 f   Zydis:Decoder.obj
- 0001:00003058       ZydisDecoderDecodeInstruction 0000000140004058 f   Zydis:Decoder.obj
- 0001:00003168       ZydisDecoderDecodeOperands 0000000140004168 f   Zydis:Decoder.obj
- 0001:000031d4       ZydisDecoderInit           00000001400041d4 f   Zydis:Decoder.obj
- 0001:00004730       ZydisRegisterEncode        0000000140005730 f   Zydis:Register.obj
- 0001:0000476c       ZydisRegisterGetWidth      000000014000576c f   Zydis:Register.obj
- 0001:0000479c       ZydisDecoderTreeGetChildNode 000000014000579c f   Zydis:DecoderData.obj
- 0001:00004aac       ZydisGetInstructionEncodingInfo 0000000140005aac f   Zydis:DecoderData.obj
- 0001:00004ac4       ZydisGetAccessedFlags      0000000140005ac4 f   Zydis:SharedData.obj
- 0001:00004ae8       ZydisGetElementInfo        0000000140005ae8 f   Zydis:SharedData.obj
- 0001:00004b04       ZydisGetInstructionDefinition 0000000140005b04 f   Zydis:SharedData.obj
- 0001:00004b7c       ZydisGetOperandDefinitions 0000000140005b7c f   Zydis:SharedData.obj
- 0001:00004ba0       ?SetNptHook@ForteVisor@@YAH_KPEAE0H@Z 0000000140005ba0 f   ForteVisorKernelApi:forte_api_kernel.obj
- 0001:00004bf0       svm_vmmcall                0000000140005bf0 f   ForteVisorKernelApi:vmmcall.obj
- 0001:00004c10       __security_check_cookie    0000000140005c10 f   BufferOverflowFastFailK:amdsecgs.obj
- 0001:00004c30       _guard_check_icall_nop     0000000140005c30 f i BufferOverflowFastFailK:guard_check.obj
- 0001:00004c40       __report_gsfailure         0000000140005c40 f   BufferOverflowFastFailK:gs_report.obj
- 0001:00004c47       DbgPrint                   0000000140005c47 f   ntoskrnl:ntoskrnl.exe
- 0001:00004c50       __chkstk                   0000000140005c50 f   ntoskrnl:ntoskrnl.exe
- 0001:00004c60       ZwQuerySystemInformation   0000000140005c60 f   ntoskrnl:ntoskrnl.exe
- 0001:00004c66       MmCopyVirtualMemory        0000000140005c66 f   ntoskrnl:ntoskrnl.exe
- 0001:00004c6c       __GSHandlerCheck           0000000140005c6c f   ntoskrnl:gshandler.obj
- 0001:00004c8c       __GSHandlerCheckCommon     0000000140005c8c f   ntoskrnl:gshandler.obj
- 0001:00004cf0       __cpu_features_init        0000000140005cf0 f   ntoskrnl:cpuinfo.obj
- 0001:00004da0       _guard_dispatch_icall_nop  0000000140005da0 f   BufferOverflowFastFailK:guard_dispatch.obj
- 0001:00004dc0       _guard_xfg_dispatch_icall_nop 0000000140005dc0 f   BufferOverflowFastFailK:guard_xfg_dispatch.obj
- 0001:00004e00       memcpy                     0000000140005e00 f   ntoskrnl:memcpy.obj
- 0001:00004e00       memmove                    0000000140005e00 f   ntoskrnl:memcpy.obj
- 0001:000050c0       memset                     00000001400060c0 f   ntoskrnl:memset.obj
- 0001:000050c0       memset_$fo_default$        00000001400060c0     ntoskrnl:memset.obj
- 0001:00005200       __memset_repmovs           0000000140006200 f   ntoskrnl:memset.obj
- 0001:00005280       __memset_query             0000000140006280 f   ntoskrnl:memset.obj
- 0001:000052c0       ??_C@_0CH@FOJHHEOC@spoofed?5IOCTL_STORAGE_QUERY_PRO@FNODOBFM@ 00000001400062c0     disk_spoof.obj
- 0001:000052f0       ??_C@_0BO@PDIJCLKD@handled?5SMART_RCV_DRIVE_DATA?6@FNODOBFM@ 00000001400062f0     disk_spoof.obj
- 0001:00005310       ??_C@_0O@BAIHEMMF@?$PP?$CF?$AA?$AA?$AA?$AA?L?L?L?L?L?L?L@FNODOBFM@ 0000000140006310     ioctlhook.obj
- 0001:00005320       ??_C@_0CF@MDGFLNNI@ABCDEFGHIJKLMNOPQRSTUVWXYZ12345@FNODOBFM@ 0000000140006320     ioctlhook.obj
- 0001:00005350       ??_C@_0EE@BJGHCHHL@NtDeviceIoControlFile?5called?5fr@FNODOBFM@ 0000000140006350     ioctlhook.obj
- 0001:000053a0       ??_C@_1CM@PNBIBNHA@?$AAN?$AAt?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AAI?$AAo?$AAC?$AAo?$AAn?$AAt?$AAr@FNODOBFM@ 00000001400063a0     ioctlhook.obj
- 0001:000053d0       ??_C@_1BK@ELHOPPAM@?$AAn?$AAt?$AAo?$AAs?$AAk?$AAr?$AAn?$AAl?$AA?4?$AAe?$AAx?$AAe@FNODOBFM@ 00000001400063d0     main.obj
- 0001:000053f0       ??_C@_0BA@GICAFPPE@?h?$AA?$AA?$AA?$AA?$IL?x?$IJD$?$EA?$IF?$MAx?$DL@FNODOBFM@ 00000001400063f0     main.obj
- 0001:00005400       ??_C@_0M@PBJLJBON@msg_id?5?$CFi?5?6@FNODOBFM@ 0000000140006400     main.obj
- 0001:00005410       ??_C@_0BK@CEOFOAIP@msg_id?5?$CFi?5target_pid?5?$CFi?5?6@FNODOBFM@ 0000000140006410     main.obj
- 0001:00005430       ??_C@_0EP@LHAHCKAB@msg_id?5?$CFi?5msg?4address?50x?$CFp?5msg?4@FNODOBFM@ 0000000140006430     main.obj
- 0001:00005480       ??_C@_0EB@CFOFNPFI@receieved?5request?5?$CFi?5start?5thre@FNODOBFM@ 0000000140006480     main.obj
- 0001:000054d0       ??_C@_1BC@IPOKGKHK@?$AAd?$AAx?$AAg?$AAi?$AA?4?$AAd?$AAl?$AAl@FNODOBFM@ 00000001400064d0     main.obj
- 0001:000054f0       ??_C@_0CE@JONDJIG@H?$IJt$?$AAUWAVH?$INl$?$AAH?$IB?l?$AA?$AA?$AA?$AAH?$IL?$AF?$AA?$AA?$AA?$AAH3?D@FNODOBFM@ 00000001400064f0     main.obj
- 0001:00005520       ??_C@_0DA@BOOCGPJC@receieved?5request?5?$CFi?0?5process?5i@FNODOBFM@ 0000000140006520     main.obj
- 0001:00005550       ??_C@_0CG@MIENBEGB@receieved?5request?5?$CFi?5module?5nam@FNODOBFM@ 0000000140006550     main.obj
- 0001:00005580       ??_C@_0BL@KIKGKEIP@retrieved?5module?5base?5?$CFp?5?6@FNODOBFM@ 0000000140006580     main.obj
- 0001:000055a0       ??_C@_0EA@JJIPFHH@receieved?5request?5?$CFi?5hook_cmd?4s@FNODOBFM@ 00000001400065a0     main.obj
- 0001:000055e0       ??_C@_0ED@KAILLGCH@receieved?5request?5?$CFi?5target_pid@FNODOBFM@ 00000001400065e0     main.obj
- 0001:00005630       ??_C@_0CI@JIJIEEKF@hello?0?5driver_base?5?$CFp?0?5driver_s@FNODOBFM@ 0000000140006630     main.obj
- 0001:00005660       ??_C@_0BK@PIPGGCPC@found?5module?$CB?5?$CFwZ?5at?5?$CFp?5?6@FNODOBFM@ 0000000140006660     util.obj
- 0001:00005680       ??_C@_0BL@GOKMDMLE@found?5process?5module?5?$CFwZ?5?6@FNODOBFM@ 0000000140006680     util.obj
- 0001:000056a0       ??_C@_19CIJIHAKK@?$AAN?$AAU?$AAL?$AAL@FNODOBFM@ 00000001400066a0     util.obj
+ 0001:00000b50       ?MapperEntry@@YAJ_K0@Z     0000000140001b50 f   main.obj
+ 0001:00000b60       ?NtQueryVirtualMemory_Hook@@YAJPEAX0W4_MEMORY_INFORMATION_CLASS@@0_KPEA_K@Z 0000000140001b60 f   main.obj
+ 0001:00000bf8       ?AttachToProcess@Utils@@YA?AU_KAPC_STATE@@H@Z 0000000140001bf8 f   util.obj
+ 0001:00000c28       ?FindPattern@Utils@@YA_K_K0PEBD0D@Z 0000000140001c28 f   util.obj
+ 0001:00000c90       ?GetKernelModule@Utils@@YAPEAXPEAKU_UNICODE_STRING@@@Z 0000000140001c90 f   util.obj
+ 0001:00000d2c       ?GetUserModule@Utils@@YAPEAXPEAU_KPROCESS@@PEAU_UNICODE_STRING@@@Z 0000000140001d2c f   util.obj
+ 0001:00000db8       ?Random@Utils@@YAIXZ       0000000140001db8 f   util.obj
+ 0001:00000de0       ?ReadMem@Utils@@YAJH_KPEAX0@Z 0000000140001de0 f   util.obj
+ 0001:00000e44       ?SwapEndianess@Utils@@YAXPEAD0@Z 0000000140001e44 f   util.obj
+ 0001:00000e80       ?WriteMem@Utils@@YAJH_KPEAX0@Z 0000000140001e80 f   util.obj
+ 0001:00000ee4       ?ZwGetRunningSystemProcess@Utils@@YAHPEAG@Z 0000000140001ee4 f   util.obj
+ 0001:000022e4       ZydisDecodeOperands        00000001400032e4 f   Zydis:Decoder.obj
+ 0001:00002e68       ZydisDecoderDecodeFull     0000000140003e68 f   Zydis:Decoder.obj
+ 0001:00002f58       ZydisDecoderDecodeInstruction 0000000140003f58 f   Zydis:Decoder.obj
+ 0001:00003068       ZydisDecoderDecodeOperands 0000000140004068 f   Zydis:Decoder.obj
+ 0001:000030d4       ZydisDecoderInit           00000001400040d4 f   Zydis:Decoder.obj
+ 0001:00004630       ZydisRegisterEncode        0000000140005630 f   Zydis:Register.obj
+ 0001:0000466c       ZydisRegisterGetWidth      000000014000566c f   Zydis:Register.obj
+ 0001:0000469c       ZydisDecoderTreeGetChildNode 000000014000569c f   Zydis:DecoderData.obj
+ 0001:000049ac       ZydisGetInstructionEncodingInfo 00000001400059ac f   Zydis:DecoderData.obj
+ 0001:000049c4       ZydisGetAccessedFlags      00000001400059c4 f   Zydis:SharedData.obj
+ 0001:000049e8       ZydisGetElementInfo        00000001400059e8 f   Zydis:SharedData.obj
+ 0001:00004a04       ZydisGetInstructionDefinition 0000000140005a04 f   Zydis:SharedData.obj
+ 0001:00004a7c       ZydisGetOperandDefinitions 0000000140005a7c f   Zydis:SharedData.obj
+ 0001:00004aa0       ?SetNptHook@ForteVisor@@YAH_KPEAE0H@Z 0000000140005aa0 f   ForteVisorKernelApi:forte_api_kernel.obj
+ 0001:00004af0       svm_vmmcall                0000000140005af0 f   ForteVisorKernelApi:vmmcall.obj
+ 0001:00004b10       __security_check_cookie    0000000140005b10 f   BufferOverflowFastFailK:amdsecgs.obj
+ 0001:00004b30       _guard_check_icall_nop     0000000140005b30 f i BufferOverflowFastFailK:guard_check.obj
+ 0001:00004b40       __report_gsfailure         0000000140005b40 f   BufferOverflowFastFailK:gs_report.obj
+ 0001:00004b47       DbgPrint                   0000000140005b47 f   ntoskrnl:ntoskrnl.exe
+ 0001:00004b50       __chkstk                   0000000140005b50 f   ntoskrnl:ntoskrnl.exe
+ 0001:00004b60       ZwQuerySystemInformation   0000000140005b60 f   ntoskrnl:ntoskrnl.exe
+ 0001:00004b66       MmCopyVirtualMemory        0000000140005b66 f   ntoskrnl:ntoskrnl.exe
+ 0001:00004b6c       __GSHandlerCheck           0000000140005b6c f   ntoskrnl:gshandler.obj
+ 0001:00004b8c       __GSHandlerCheckCommon     0000000140005b8c f   ntoskrnl:gshandler.obj
+ 0001:00004bf0       __cpu_features_init        0000000140005bf0 f   ntoskrnl:cpuinfo.obj
+ 0001:00004ca0       _guard_dispatch_icall_nop  0000000140005ca0 f   BufferOverflowFastFailK:guard_dispatch.obj
+ 0001:00004cc0       _guard_xfg_dispatch_icall_nop 0000000140005cc0 f   BufferOverflowFastFailK:guard_xfg_dispatch.obj
+ 0001:00004d00       memcpy                     0000000140005d00 f   ntoskrnl:memcpy.obj
+ 0001:00004d00       memmove                    0000000140005d00 f   ntoskrnl:memcpy.obj
+ 0001:00004fc0       memset                     0000000140005fc0 f   ntoskrnl:memset.obj
+ 0001:00004fc0       memset_$fo_default$        0000000140005fc0     ntoskrnl:memset.obj
+ 0001:00005100       __memset_repmovs           0000000140006100 f   ntoskrnl:memset.obj
+ 0001:00005180       __memset_query             0000000140006180 f   ntoskrnl:memset.obj
+ 0001:000051c0       ??_C@_0CH@FOJHHEOC@spoofed?5IOCTL_STORAGE_QUERY_PRO@FNODOBFM@ 00000001400061c0     disk_spoof.obj
+ 0001:000051f0       ??_C@_0BO@PDIJCLKD@handled?5SMART_RCV_DRIVE_DATA?6@FNODOBFM@ 00000001400061f0     disk_spoof.obj
+ 0001:00005210       ??_C@_0O@BAIHEMMF@?$PP?$CF?$AA?$AA?$AA?$AA?L?L?L?L?L?L?L@FNODOBFM@ 0000000140006210     ioctlhook.obj
+ 0001:00005220       ??_C@_0CF@MDGFLNNI@ABCDEFGHIJKLMNOPQRSTUVWXYZ12345@FNODOBFM@ 0000000140006220     ioctlhook.obj
+ 0001:00005250       ??_C@_0EE@BJGHCHHL@NtDeviceIoControlFile?5called?5fr@FNODOBFM@ 0000000140006250     ioctlhook.obj
+ 0001:000052a0       ??_C@_1CM@PNBIBNHA@?$AAN?$AAt?$AAD?$AAe?$AAv?$AAi?$AAc?$AAe?$AAI?$AAo?$AAC?$AAo?$AAn?$AAt?$AAr@FNODOBFM@ 00000001400062a0     ioctlhook.obj
+ 0001:000052d0       ??_C@_1BK@ELHOPPAM@?$AAn?$AAt?$AAo?$AAs?$AAk?$AAr?$AAn?$AAl?$AA?4?$AAe?$AAx?$AAe@FNODOBFM@ 00000001400062d0     main.obj
+ 0001:000052f0       ??_C@_0BA@GICAFPPE@?h?$AA?$AA?$AA?$AA?$IL?x?$IJD$?$EA?$IF?$MAx?$DL@FNODOBFM@ 00000001400062f0     main.obj
+ 0001:00005300       ??_C@_0M@PBJLJBON@msg_id?5?$CFi?5?6@FNODOBFM@ 0000000140006300     main.obj
+ 0001:00005310       ??_C@_0BK@CEOFOAIP@msg_id?5?$CFi?5target_pid?5?$CFi?5?6@FNODOBFM@ 0000000140006310     main.obj
+ 0001:00005330       ??_C@_0EP@LHAHCKAB@msg_id?5?$CFi?5msg?4address?50x?$CFp?5msg?4@FNODOBFM@ 0000000140006330     main.obj
+ 0001:00005380       ??_C@_0EB@CFOFNPFI@receieved?5request?5?$CFi?5start?5thre@FNODOBFM@ 0000000140006380     main.obj
+ 0001:000053d0       ??_C@_1BC@IPOKGKHK@?$AAd?$AAx?$AAg?$AAi?$AA?4?$AAd?$AAl?$AAl@FNODOBFM@ 00000001400063d0     main.obj
+ 0001:000053f0       ??_C@_0CE@JONDJIG@H?$IJt$?$AAUWAVH?$INl$?$AAH?$IB?l?$AA?$AA?$AA?$AAH?$IL?$AF?$AA?$AA?$AA?$AAH3?D@FNODOBFM@ 00000001400063f0     main.obj
+ 0001:00005420       ??_C@_0DA@BOOCGPJC@receieved?5request?5?$CFi?0?5process?5i@FNODOBFM@ 0000000140006420     main.obj
+ 0001:00005450       ??_C@_0CG@MIENBEGB@receieved?5request?5?$CFi?5module?5nam@FNODOBFM@ 0000000140006450     main.obj
+ 0001:00005480       ??_C@_0BL@KIKGKEIP@retrieved?5module?5base?5?$CFp?5?6@FNODOBFM@ 0000000140006480     main.obj
+ 0001:000054a0       ??_C@_0EA@JJIPFHH@receieved?5request?5?$CFi?5hook_cmd?4s@FNODOBFM@ 00000001400064a0     main.obj
+ 0001:000054e0       ??_C@_0ED@KAILLGCH@receieved?5request?5?$CFi?5target_pid@FNODOBFM@ 00000001400064e0     main.obj
+ 0001:00005530       ??_C@_0CI@JIJIEEKF@hello?0?5driver_base?5?$CFp?0?5driver_s@FNODOBFM@ 0000000140006530     main.obj
+ 0001:00005560       ??_C@_0BK@PIPGGCPC@found?5module?$CB?5?$CFwZ?5at?5?$CFp?5?6@FNODOBFM@ 0000000140006560     util.obj
+ 0001:00005580       ??_C@_0BL@GOKMDMLE@found?5process?5module?5?$CFwZ?5?6@FNODOBFM@ 0000000140006580     util.obj
+ 0001:000055a0       ??_C@_19CIJIHAKK@?$AAN?$AAU?$AAL?$AAL@FNODOBFM@ 00000001400065a0     util.obj
  0002:00000000       __imp_DbgPrint             0000000140007000     ntoskrnl:ntoskrnl.exe
  0002:00000008       __imp_MmGetSystemRoutineAddress 0000000140007008     ntoskrnl:ntoskrnl.exe
  0002:00000010       __imp_ExAllocatePool       0000000140007010     ntoskrnl:ntoskrnl.exe
@@ -212,12 +211,11 @@
  0003:00000098       ?hiding_range_size@@3_KA   0000000140058098     main.obj
  0003:000000a0       ?protect_value@@3IA        00000001400580a0     main.obj
  0003:000000a4       ?target_pid@@3IA           00000001400580a4     main.obj
- 0003:000000a8       ?ntprotect_hook@@3UJmpRipCode@Hooks@@A 00000001400580a8     main.obj
- 0003:000000c8       ?ntqvm_hook@@3UJmpRipCode@Hooks@@A 00000001400580c8     main.obj
+ 0003:000000a8       ?ntqvm_hook@@3UJmpRipCode@Hooks@@A 00000001400580a8     main.obj
  0005:00000000       __IMPORT_DESCRIPTOR_ntoskrnl 000000014005a000     ntoskrnl:ntoskrnl.exe
  0005:00000014       __NULL_IMPORT_DESCRIPTOR   000000014005a014     ntoskrnl:ntoskrnl.exe
 
- entry point at        0001:00000bb0
+ entry point at        0001:00000b50
 
  Static symbols
 
@@ -263,63 +261,63 @@
  0000:fffa4000       .debug$S                   0000000140000000     ntoskrnl:ntoskrnl.exe
  0000:fffa4000       .debug$S                   0000000140000000     ntoskrnl:ntoskrnl.exe
  0002:ffff9000       __guard_fids_??B<lambda_76499ed27f46bdfb8a07f8750d817a64>@@QEBAP6AXPEAX@ZXZ 0000000140000000     ForteVisorKernelApi:forte_api_kernel.obj
- 0001:000010a0       ZydisCalcRegisterId        00000001400020a0 f   Zydis:Decoder.obj
- 0001:00001160       ZydisCheckErrorConditions  0000000140002160 f   Zydis:Decoder.obj
- 0001:00001424       ZydisCollectOptionalPrefixes 0000000140002424 f   Zydis:Decoder.obj
- 0001:0000165c       ZydisDecodeEVEX            000000014000265c f   Zydis:Decoder.obj
- 0001:00001830       ZydisDecodeInstruction     0000000140002830 f   Zydis:Decoder.obj
- 0001:00002008       ZydisDecodeMVEX            0000000140003008 f   Zydis:Decoder.obj
- 0001:0000214c       ZydisDecodeOperandMemory   000000014000314c f   Zydis:Decoder.obj
- 0001:00002398       ZydisDecodeOperandRegister 0000000140003398 f   Zydis:Decoder.obj
- 0001:00002af0       ZydisDecodeOptionalInstructionParts 0000000140003af0 f   Zydis:Decoder.obj
- 0001:00002d30       ZydisDecodeVEX             0000000140003d30 f   Zydis:Decoder.obj
- 0001:00002e70       ZydisDecodeXOP             0000000140003e70 f   Zydis:Decoder.obj
- 0001:00003240       ZydisInputNext             0000000140004240 f   Zydis:Decoder.obj
- 0001:00003278       ZydisInputNextBytes        0000000140004278 f   Zydis:Decoder.obj
- 0001:000032e8       ZydisNodeHandlerModrmMod   00000001400042e8 f   Zydis:Decoder.obj
- 0001:00003350       ZydisNodeHandlerOpcode     0000000140004350 f   Zydis:Decoder.obj
- 0001:00003668       ZydisPopulateRegisterIds   0000000140004668 f   Zydis:Decoder.obj
- 0001:00003890       ZydisReadDisplacement      0000000140004890 f   Zydis:Decoder.obj
- 0001:00003930       ZydisReadImmediate         0000000140004930 f   Zydis:Decoder.obj
- 0001:00003a30       ZydisSetAVXInformation     0000000140004a30 f   Zydis:Decoder.obj
- 0001:0000409c       ZydisSetAttributes         000000014000509c f   Zydis:Decoder.obj
- 0001:00004454       ZydisSetOperandSizeAndElementInfo 0000000140005454 f   Zydis:Decoder.obj
- 0001:00004bf0       $$000000                   0000000140005bf0     ForteVisorKernelApi:vmmcall.obj
- 0001:00004c00       $$000000                   0000000140005c00     BufferOverflowFastFailK:amdsecgs.obj
- 0001:00004d90       $$000000                   0000000140005d90     BufferOverflowFastFailK:guard_dispatch.obj
- 0001:00004db0       $$000000                   0000000140005db0     BufferOverflowFastFailK:guard_xfg_dispatch.obj
- 0001:00004e00       $$000000                   0000000140005e00     ntoskrnl:memcpy.obj
- 0001:00004e20       mcpy00                     0000000140005e20     ntoskrnl:memcpy.obj
- 0001:00004e40       mcpy10                     0000000140005e40     ntoskrnl:memcpy.obj
- 0001:00004e5a       mcpy20                     0000000140005e5a     ntoskrnl:memcpy.obj
- 0001:00004e60       mcpy30                     0000000140005e60     ntoskrnl:memcpy.obj
- 0001:00004e80       xcpy00                     0000000140005e80     ntoskrnl:memcpy.obj
- 0001:00004eb1       xcpy10                     0000000140005eb1     ntoskrnl:memcpy.obj
- 0001:00004f00       xcpy13                     0000000140005f00     ntoskrnl:memcpy.obj
- 0001:00004f2f       xcpy15                     0000000140005f2f     ntoskrnl:memcpy.obj
- 0001:00004f51       xcpy20                     0000000140005f51     ntoskrnl:memcpy.obj
- 0001:00004f65       xcpy30                     0000000140005f65     ntoskrnl:memcpy.obj
- 0001:00004f80       lcpy00                     0000000140005f80     ntoskrnl:memcpy.obj
- 0001:00004fc0       lcpy10                     0000000140005fc0     ntoskrnl:memcpy.obj
- 0001:00005000       xmov00                     0000000140006000     ntoskrnl:memcpy.obj
- 0001:0000502d       xmov10                     000000014000602d     ntoskrnl:memcpy.obj
- 0001:00005040       xmov13                     0000000140006040     ntoskrnl:memcpy.obj
- 0001:0000506f       xmov15                     000000014000606f     ntoskrnl:memcpy.obj
- 0001:00005091       xmov20                     0000000140006091     ntoskrnl:memcpy.obj
- 0001:000050a6       xmov30                     00000001400060a6     ntoskrnl:memcpy.obj
- 0001:000050c0       $$000000                   00000001400060c0     ntoskrnl:memset.obj
- 0001:000050e2       mset10                     00000001400060e2     ntoskrnl:memset.obj
- 0001:000050f8       mset20                     00000001400060f8     ntoskrnl:memset.obj
- 0001:00005121       mset30                     0000000140006121     ntoskrnl:memset.obj
- 0001:00005150       mset45                     0000000140006150     ntoskrnl:memset.obj
- 0001:00005156       mset46                     0000000140006156     ntoskrnl:memset.obj
- 0001:00005180       mset47                     0000000140006180     ntoskrnl:memset.obj
- 0001:000051b0       mset48                     00000001400061b0     ntoskrnl:memset.obj
- 0001:000051c6       mset50                     00000001400061c6     ntoskrnl:memset.obj
- 0001:00005200       $$000000                   0000000140006200     ntoskrnl:memset.obj
- 0001:0000520a       repmovs10                  000000014000620a     ntoskrnl:memset.obj
- 0001:0000523c       repmovs20                  000000014000623c     ntoskrnl:memset.obj
- 0001:00005280       $$000000                   0000000140006280     ntoskrnl:memset.obj
+ 0001:00000fa0       ZydisCalcRegisterId        0000000140001fa0 f   Zydis:Decoder.obj
+ 0001:00001060       ZydisCheckErrorConditions  0000000140002060 f   Zydis:Decoder.obj
+ 0001:00001324       ZydisCollectOptionalPrefixes 0000000140002324 f   Zydis:Decoder.obj
+ 0001:0000155c       ZydisDecodeEVEX            000000014000255c f   Zydis:Decoder.obj
+ 0001:00001730       ZydisDecodeInstruction     0000000140002730 f   Zydis:Decoder.obj
+ 0001:00001f08       ZydisDecodeMVEX            0000000140002f08 f   Zydis:Decoder.obj
+ 0001:0000204c       ZydisDecodeOperandMemory   000000014000304c f   Zydis:Decoder.obj
+ 0001:00002298       ZydisDecodeOperandRegister 0000000140003298 f   Zydis:Decoder.obj
+ 0001:000029f0       ZydisDecodeOptionalInstructionParts 00000001400039f0 f   Zydis:Decoder.obj
+ 0001:00002c30       ZydisDecodeVEX             0000000140003c30 f   Zydis:Decoder.obj
+ 0001:00002d70       ZydisDecodeXOP             0000000140003d70 f   Zydis:Decoder.obj
+ 0001:00003140       ZydisInputNext             0000000140004140 f   Zydis:Decoder.obj
+ 0001:00003178       ZydisInputNextBytes        0000000140004178 f   Zydis:Decoder.obj
+ 0001:000031e8       ZydisNodeHandlerModrmMod   00000001400041e8 f   Zydis:Decoder.obj
+ 0001:00003250       ZydisNodeHandlerOpcode     0000000140004250 f   Zydis:Decoder.obj
+ 0001:00003568       ZydisPopulateRegisterIds   0000000140004568 f   Zydis:Decoder.obj
+ 0001:00003790       ZydisReadDisplacement      0000000140004790 f   Zydis:Decoder.obj
+ 0001:00003830       ZydisReadImmediate         0000000140004830 f   Zydis:Decoder.obj
+ 0001:00003930       ZydisSetAVXInformation     0000000140004930 f   Zydis:Decoder.obj
+ 0001:00003f9c       ZydisSetAttributes         0000000140004f9c f   Zydis:Decoder.obj
+ 0001:00004354       ZydisSetOperandSizeAndElementInfo 0000000140005354 f   Zydis:Decoder.obj
+ 0001:00004af0       $$000000                   0000000140005af0     ForteVisorKernelApi:vmmcall.obj
+ 0001:00004b00       $$000000                   0000000140005b00     BufferOverflowFastFailK:amdsecgs.obj
+ 0001:00004c90       $$000000                   0000000140005c90     BufferOverflowFastFailK:guard_dispatch.obj
+ 0001:00004cb0       $$000000                   0000000140005cb0     BufferOverflowFastFailK:guard_xfg_dispatch.obj
+ 0001:00004d00       $$000000                   0000000140005d00     ntoskrnl:memcpy.obj
+ 0001:00004d20       mcpy00                     0000000140005d20     ntoskrnl:memcpy.obj
+ 0001:00004d40       mcpy10                     0000000140005d40     ntoskrnl:memcpy.obj
+ 0001:00004d5a       mcpy20                     0000000140005d5a     ntoskrnl:memcpy.obj
+ 0001:00004d60       mcpy30                     0000000140005d60     ntoskrnl:memcpy.obj
+ 0001:00004d80       xcpy00                     0000000140005d80     ntoskrnl:memcpy.obj
+ 0001:00004db1       xcpy10                     0000000140005db1     ntoskrnl:memcpy.obj
+ 0001:00004e00       xcpy13                     0000000140005e00     ntoskrnl:memcpy.obj
+ 0001:00004e2f       xcpy15                     0000000140005e2f     ntoskrnl:memcpy.obj
+ 0001:00004e51       xcpy20                     0000000140005e51     ntoskrnl:memcpy.obj
+ 0001:00004e65       xcpy30                     0000000140005e65     ntoskrnl:memcpy.obj
+ 0001:00004e80       lcpy00                     0000000140005e80     ntoskrnl:memcpy.obj
+ 0001:00004ec0       lcpy10                     0000000140005ec0     ntoskrnl:memcpy.obj
+ 0001:00004f00       xmov00                     0000000140005f00     ntoskrnl:memcpy.obj
+ 0001:00004f2d       xmov10                     0000000140005f2d     ntoskrnl:memcpy.obj
+ 0001:00004f40       xmov13                     0000000140005f40     ntoskrnl:memcpy.obj
+ 0001:00004f6f       xmov15                     0000000140005f6f     ntoskrnl:memcpy.obj
+ 0001:00004f91       xmov20                     0000000140005f91     ntoskrnl:memcpy.obj
+ 0001:00004fa6       xmov30                     0000000140005fa6     ntoskrnl:memcpy.obj
+ 0001:00004fc0       $$000000                   0000000140005fc0     ntoskrnl:memset.obj
+ 0001:00004fe2       mset10                     0000000140005fe2     ntoskrnl:memset.obj
+ 0001:00004ff8       mset20                     0000000140005ff8     ntoskrnl:memset.obj
+ 0001:00005021       mset30                     0000000140006021     ntoskrnl:memset.obj
+ 0001:00005050       mset45                     0000000140006050     ntoskrnl:memset.obj
+ 0001:00005056       mset46                     0000000140006056     ntoskrnl:memset.obj
+ 0001:00005080       mset47                     0000000140006080     ntoskrnl:memset.obj
+ 0001:000050b0       mset48                     00000001400060b0     ntoskrnl:memset.obj
+ 0001:000050c6       mset50                     00000001400060c6     ntoskrnl:memset.obj
+ 0001:00005100       $$000000                   0000000140006100     ntoskrnl:memset.obj
+ 0001:0000510a       repmovs10                  000000014000610a     ntoskrnl:memset.obj
+ 0001:0000513c       repmovs20                  000000014000613c     ntoskrnl:memset.obj
+ 0001:00005180       $$000000                   0000000140006180     ntoskrnl:memset.obj
  0002:00000110       ?decoder_modes@?1??ZydisDecoderInit@@9@9 0000000140007110     Zydis:Decoder.obj
  0002:00000120       ?bases@?3??ZydisDecodeOperandMemory@@9@9 0000000140007120     Zydis:Decoder.obj
  0002:00000140       ?indices@?3??ZydisDecodeOperandMemory@@9@9 0000000140007140     Zydis:Decoder.obj
@@ -366,54 +364,53 @@
  0002:00050458       $unwind$?SpoofDisk@Spoofer@@QEAAXIPEAX0_K@Z 0000000140057458     disk_spoof.obj
  0002:00050458       $unwind$?Random@Utils@@YAIXZ 0000000140057458     util.obj
  0002:00050464       $unwind$?Init@Interface@@YA_NXZ 0000000140057464     ioctlhook.obj
+ 0002:00050464       $unwind$?HookMemoryProtectionFn@@YAXXZ 0000000140057464     main.obj
  0002:00050470       $unwind$??0JmpRipCode@Hooks@@QEAA@_K0@Z 0000000140057470     ioctlhook.obj
  0002:0005048c       $unwind$?Init@Spoofer@@AEAAXXZ 000000014005748c     ioctlhook.obj
  0002:0005049c       $unwind$?NtDeviceIoControlFile_handler@Interface@@YAJPEAX0P6AX0PEAU_IO_STATUS_BLOCK@@K@Z01K0K0K@Z 000000014005749c     ioctlhook.obj
  0002:000504b8       $unwind$?Disassemble@Disasm@@YA?AUZydisDecodedInstruction_@@PEAE@Z 00000001400574b8     disassembly.obj
  0002:000504c8       $unwind$?LengthOfInstructions@Disasm@@YAHPEAXH@Z 00000001400574c8     disassembly.obj
  0002:000504e0       $unwind$?NtQueryVirtualMemory_Hook@@YAJPEAX0W4_MEMORY_INFORMATION_CLASS@@0_KPEA_K@Z 00000001400574e0     main.obj
- 0002:000504f4       $unwind$?NtProtectVirtualMemory_hook@@YAJPEAXPEAPEAXPEAKK2@Z 00000001400574f4     main.obj
- 0002:0005050c       $unwind$?HookMemoryProtectionFn@@YAXXZ 000000014005750c     main.obj
- 0002:0005051c       $unwind$?CommandHandler@@YAXPEAX0@Z 000000014005751c     main.obj
- 0002:00050534       $unwind$?DriverEntry@@YAJ_K0@Z 0000000140057534     main.obj
- 0002:00050540       $unwind$?FindPattern@Utils@@YA_K_K0PEBD0D@Z 0000000140057540     util.obj
- 0002:00050550       $unwind$?ReadMem@Utils@@YAJH_KPEAX0@Z 0000000140057550     util.obj
- 0002:00050550       $unwind$?WriteMem@Utils@@YAJH_KPEAX0@Z 0000000140057550     util.obj
- 0002:00050564       $unwind$?GetKernelModule@Utils@@YAPEAXPEAKU_UNICODE_STRING@@@Z 0000000140057564     util.obj
- 0002:00050580       $unwind$?GetUserModule@Utils@@YAPEAXPEAU_KPROCESS@@PEAU_UNICODE_STRING@@@Z 0000000140057580     util.obj
- 0002:00050598       $unwind$?ZwGetRunningSystemProcess@Utils@@YAHPEAG@Z 0000000140057598     util.obj
- 0002:000505ac       $unwind$?AttachToProcess@Utils@@YA?AU_KAPC_STATE@@H@Z 00000001400575ac     util.obj
- 0002:000505b8       $unwind$ZydisDecoderDecodeFull 00000001400575b8     Zydis:Decoder.obj
- 0002:000505cc       $unwind$ZydisDecoderDecodeInstruction 00000001400575cc     Zydis:Decoder.obj
- 0002:000505dc       $unwind$ZydisInputNextBytes 00000001400575dc     Zydis:Decoder.obj
- 0002:000505e4       $unwind$ZydisDecodeEVEX    00000001400575e4     Zydis:Decoder.obj
- 0002:000505ec       $unwind$ZydisDecodeOperandRegister 00000001400575ec     Zydis:Decoder.obj
- 0002:000505ec       $unwind$ZydisReadDisplacement 00000001400575ec     Zydis:Decoder.obj
- 0002:000505f4       $unwind$ZydisReadImmediate 00000001400575f4     Zydis:Decoder.obj
- 0002:00050604       $unwind$ZydisSetOperandSizeAndElementInfo 0000000140057604     Zydis:Decoder.obj
- 0002:00050618       $unwind$ZydisDecodeOperandMemory 0000000140057618     Zydis:Decoder.obj
- 0002:00050630       $unwind$ZydisDecodeOperands 0000000140057630     Zydis:Decoder.obj
- 0002:0005064c       $unwind$ZydisSetAttributes 000000014005764c     Zydis:Decoder.obj
- 0002:00050654       $unwind$ZydisSetAVXInformation 0000000140057654     Zydis:Decoder.obj
- 0002:00050664       $unwind$ZydisCollectOptionalPrefixes 0000000140057664     Zydis:Decoder.obj
- 0002:00050670       $unwind$ZydisDecodeOptionalInstructionParts 0000000140057670     Zydis:Decoder.obj
- 0002:00050684       $unwind$ZydisNodeHandlerOpcode 0000000140057684     Zydis:Decoder.obj
- 0002:0005069c       $unwind$ZydisNodeHandlerModrmMod 000000014005769c     Zydis:Decoder.obj
- 0002:000506a4       $unwind$ZydisPopulateRegisterIds 00000001400576a4     Zydis:Decoder.obj
- 0002:000506bc       $unwind$ZydisCheckErrorConditions 00000001400576bc     Zydis:Decoder.obj
- 0002:000506d4       $unwind$ZydisDecodeInstruction 00000001400576d4     Zydis:Decoder.obj
- 0002:000506ec       $unwind$?SetNptHook@ForteVisor@@YAH_KPEAE0H@Z 00000001400576ec     ForteVisorKernelApi:forte_api_kernel.obj
- 0002:000506f8       $xdatasym                  00000001400576f8     ForteVisorKernelApi:vmmcall.obj
- 0002:00050700       $xdatasym                  0000000140057700     BufferOverflowFastFailK:amdsecgs.obj
- 0002:00050708       $xdatasym                  0000000140057708     BufferOverflowFastFailK:guard_dispatch.obj
- 0002:00050710       $xdatasym                  0000000140057710     BufferOverflowFastFailK:guard_xfg_dispatch.obj
- 0002:00050718       $xdatasym$memcpy           0000000140057718     ntoskrnl:memcpy.obj
- 0002:00050718       $xdatasym$memset           0000000140057718     ntoskrnl:memset.obj
- 0002:00050720       $xdatasym$__memset_repmovs 0000000140057720     ntoskrnl:memset.obj
- 0002:00050730       $xdatasym$__memset_query   0000000140057730     ntoskrnl:memset.obj
- 0002:00050744       $unwind$__GSHandlerCheck   0000000140057744     ntoskrnl:gshandler.obj
- 0002:00050744       $unwind$__GSHandlerCheckCommon 0000000140057744     ntoskrnl:gshandler.obj
- 0002:00050750       $unwind$__cpu_features_init 0000000140057750     ntoskrnl:cpuinfo.obj
+ 0002:000504f4       $unwind$?CommandHandler@@YAXPEAX0@Z 00000001400574f4     main.obj
+ 0002:0005050c       $unwind$?DriverEntry@@YAJ_K0@Z 000000014005750c     main.obj
+ 0002:00050518       $unwind$?FindPattern@Utils@@YA_K_K0PEBD0D@Z 0000000140057518     util.obj
+ 0002:00050528       $unwind$?ReadMem@Utils@@YAJH_KPEAX0@Z 0000000140057528     util.obj
+ 0002:00050528       $unwind$?WriteMem@Utils@@YAJH_KPEAX0@Z 0000000140057528     util.obj
+ 0002:0005053c       $unwind$?GetKernelModule@Utils@@YAPEAXPEAKU_UNICODE_STRING@@@Z 000000014005753c     util.obj
+ 0002:00050558       $unwind$?GetUserModule@Utils@@YAPEAXPEAU_KPROCESS@@PEAU_UNICODE_STRING@@@Z 0000000140057558     util.obj
+ 0002:00050570       $unwind$?ZwGetRunningSystemProcess@Utils@@YAHPEAG@Z 0000000140057570     util.obj
+ 0002:00050584       $unwind$?AttachToProcess@Utils@@YA?AU_KAPC_STATE@@H@Z 0000000140057584     util.obj
+ 0002:00050590       $unwind$ZydisDecoderDecodeFull 0000000140057590     Zydis:Decoder.obj
+ 0002:000505a4       $unwind$ZydisDecoderDecodeInstruction 00000001400575a4     Zydis:Decoder.obj
+ 0002:000505b4       $unwind$ZydisInputNextBytes 00000001400575b4     Zydis:Decoder.obj
+ 0002:000505bc       $unwind$ZydisDecodeEVEX    00000001400575bc     Zydis:Decoder.obj
+ 0002:000505c4       $unwind$ZydisDecodeOperandRegister 00000001400575c4     Zydis:Decoder.obj
+ 0002:000505c4       $unwind$ZydisReadDisplacement 00000001400575c4     Zydis:Decoder.obj
+ 0002:000505cc       $unwind$ZydisReadImmediate 00000001400575cc     Zydis:Decoder.obj
+ 0002:000505dc       $unwind$ZydisSetOperandSizeAndElementInfo 00000001400575dc     Zydis:Decoder.obj
+ 0002:000505f0       $unwind$ZydisDecodeOperandMemory 00000001400575f0     Zydis:Decoder.obj
+ 0002:00050608       $unwind$ZydisDecodeOperands 0000000140057608     Zydis:Decoder.obj
+ 0002:00050624       $unwind$ZydisSetAttributes 0000000140057624     Zydis:Decoder.obj
+ 0002:0005062c       $unwind$ZydisSetAVXInformation 000000014005762c     Zydis:Decoder.obj
+ 0002:0005063c       $unwind$ZydisCollectOptionalPrefixes 000000014005763c     Zydis:Decoder.obj
+ 0002:00050648       $unwind$ZydisDecodeOptionalInstructionParts 0000000140057648     Zydis:Decoder.obj
+ 0002:0005065c       $unwind$ZydisNodeHandlerOpcode 000000014005765c     Zydis:Decoder.obj
+ 0002:00050674       $unwind$ZydisNodeHandlerModrmMod 0000000140057674     Zydis:Decoder.obj
+ 0002:0005067c       $unwind$ZydisPopulateRegisterIds 000000014005767c     Zydis:Decoder.obj
+ 0002:00050694       $unwind$ZydisCheckErrorConditions 0000000140057694     Zydis:Decoder.obj
+ 0002:000506ac       $unwind$ZydisDecodeInstruction 00000001400576ac     Zydis:Decoder.obj
+ 0002:000506c4       $unwind$?SetNptHook@ForteVisor@@YAH_KPEAE0H@Z 00000001400576c4     ForteVisorKernelApi:forte_api_kernel.obj
+ 0002:000506d0       $xdatasym                  00000001400576d0     ForteVisorKernelApi:vmmcall.obj
+ 0002:000506d8       $xdatasym                  00000001400576d8     BufferOverflowFastFailK:amdsecgs.obj
+ 0002:000506e0       $xdatasym                  00000001400576e0     BufferOverflowFastFailK:guard_dispatch.obj
+ 0002:000506e8       $xdatasym                  00000001400576e8     BufferOverflowFastFailK:guard_xfg_dispatch.obj
+ 0002:000506f0       $xdatasym$memcpy           00000001400576f0     ntoskrnl:memcpy.obj
+ 0002:000506f0       $xdatasym$memset           00000001400576f0     ntoskrnl:memset.obj
+ 0002:000506f8       $xdatasym$__memset_repmovs 00000001400576f8     ntoskrnl:memset.obj
+ 0002:00050708       $xdatasym$__memset_query   0000000140057708     ntoskrnl:memset.obj
+ 0002:0005071c       $unwind$__GSHandlerCheck   000000014005771c     ntoskrnl:gshandler.obj
+ 0002:0005071c       $unwind$__GSHandlerCheckCommon 000000014005771c     ntoskrnl:gshandler.obj
+ 0002:00050728       $unwind$__cpu_features_init 0000000140057728     ntoskrnl:cpuinfo.obj
  0003:00000008       ?broadcasts@?5??ZydisSetAVXInformation@@9@9 0000000140058008     Zydis:Decoder.obj
  0003:00000078       ?zydis_decoder@Disasm@@3UZydisDecoder_@@A 0000000140058078     disassembly.obj
  0005:000002aa       .idata$6                   000000014005a2aa     ntoskrnl:ntoskrnl.exe
