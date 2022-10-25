@@ -4,6 +4,9 @@
 #include <iostream>
 #include "security.h"
 
+// FortniteClient-Win64-Shipping.exe
+
+
 extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_raw, const char* entrypoint_name)
 {
 	if (*(int32_t*)dll_raw != INJECTOR_PASSWORD)
@@ -15,7 +18,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 		*(int32_t*)dll_raw = 0x5A4D;
 	}
 
-	auto present = Driver::GetModuleBase(L"dxgi.dll", pid) + 0x5270;
+	auto present = Driver::GetModuleBase(L"loader.dll", pid) + 0x5270;
 	char bufffer[1];
 
 	Driver::ProtectMemory(pid, present, 100, PAGE_EXECUTE_READWRITE);
