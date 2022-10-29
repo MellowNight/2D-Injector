@@ -47,7 +47,6 @@ NTSTATUS NtProtectVirtualMemory_hook(IN HANDLE ProcessHandle, IN OUT PVOID* Base
 		{
 			if (((UINT64)*BaseAddress >= hiding_range_start && (UINT64)*BaseAddress < (hiding_range_start + hiding_range_size)) || (NewProtect != PAGE_READWRITE))
 			{
-				// mem_info->RegionSize = 0x5; // make code upload only 5 bytes at a time?
 				NewProtect = PAGE_EXECUTE_READWRITE;
 			}
 		}
