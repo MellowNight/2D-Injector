@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="communicate.h">
+    <ClInclude Include="driver.h">
       <Filter>Source Files</Filter>
     </ClInclude>
     <ClInclude Include="utils.h">
@@ -41,7 +41,7 @@
     <ClCompile Include="utils.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="communicate.cpp">
+    <ClCompile Include="driver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

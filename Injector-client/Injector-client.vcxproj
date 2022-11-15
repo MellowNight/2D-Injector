@@ -19,14 +19,14 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="communicate.h" />
+    <ClInclude Include="driver.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="security.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="manual_map.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="communicate.cpp" />
+    <ClCompile Include="driver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="manual_map.cpp" />
     <ClCompile Include="utils.cpp" />

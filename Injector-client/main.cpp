@@ -1,9 +1,19 @@
-#include "communicate.h"
+#include "driver.h"
 #include "manual_map.h"
 #include "utils.h"
 #include <iostream>
 #include <vector>
 #include "security.h"
+
+/*	
+* What can we do to hide DLL? we can:
+* hook virtualalloc in BEClient
+* blacklist the allocated shellcode pages
+* blacklist BEClient pages
+* blacklist beclient2 pages
+* add blacklisted pages to 2nd CR3 without cheat dll mapped 
+* hook readprocessmemory/mmcopyvirtualmemory to prevent reading cheat dll
+*/
 
 struct DllParams
 {
@@ -112,21 +122,6 @@ uintptr_t LoadSignedHostDLL(int32_t pid, const char* signed_dll_name)
 	return Driver::GetModuleBase(L"OWClient.dll", pid);
 }
 
-void TriggerCOWAndPageIn(int32_t pid, uintptr_t address)
-{
-	uint8_t buffer;
-
-	/*	1. trigger COW	*/
-
-	Driver::ProtectMemory(pid, address, PAGE_EXECUTE_READWRITE, PAGE_SIZE);
-
-	/*	2. page in	*/
-
-	auto status = Driver::ReadMem(pid, address, &buffer, 1);
-	Driver::WriteMem(pid, address, (uint8_t*)"\xC3", 1);
-	Driver::WriteMem(pid, address, &buffer, 1);
-}
-
 extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_cheat_dll, const char* entrypoint_name, const char* signed_dll_name)
 {
 	if (*(int32_t*)raw_cheat_dll != INJECTOR_PASSWORD)
@@ -180,18 +175,15 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 	PE::RemapImage(raw_cheat_dll, &cheat_mapped, pid, cheat_base);
 
 	std::cout << std::hex << " cheat_base 0x" << cheat_base << std::endl;
-	std::cout << std::hex << " cheat_base offset from signed DLL: +0x" << cheat_base - host_dll_base << std::endl;
+	std::cout << std::hex << " cheat_base offset from DLL: +0x" << cheat_base - host_dll_base << std::endl;
 
 
 	/*	 NPT hide every section of the cheat DLL except for .rdata, .pdata and .data	*/
 
 	section = (IMAGE_SECTION_HEADER*)(PeHeader(cheat_mapped) + 1);
-	
-	uint8_t buffer;
 
 	auto header_size = PeHeader(cheat_mapped)->OptionalHeader.SizeOfHeaders;
 
-	auto value = Driver::ReadMem(pid, cheat_base, &buffer, 1);
 	Driver::SetNptHook(pid, header_size, cheat_base, cheat_mapped);
 
 	//Driver::ProtectMemory(pid, cheat_base, PAGE_EXECUTE_READWRITE, header_size);
@@ -201,7 +193,6 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	for (offset = cheat_mapped; offset < (cheat_mapped + rdata_offset); offset += PAGE_SIZE)
 	{
-		TriggerCOWAndPageIn(pid, cheat_base + (offset - cheat_mapped));
 		Driver::SetNptHook(pid, PAGE_SIZE, cheat_base + (offset - cheat_mapped), offset);
 	}	
 
@@ -214,8 +205,6 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 		Driver::WriteMem(pid, cheat_base + (offset - cheat_mapped), offset, PAGE_SIZE);
 	}
 
-	TriggerCOWAndPageIn(pid, host_dll_base + FLS_CALLBACK_PATCH_OFFSET);
-
 	Driver::SetNptHook(pid, 1, host_dll_base + FLS_CALLBACK_PATCH_OFFSET, (uint8_t*)"\xC3");
 
 
@@ -225,8 +214,6 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	Sleep(2000);
 
-	TriggerCOWAndPageIn(pid, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET);
-	Driver::ProtectMemory(pid, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, PAGE_EXECUTE_READWRITE, PAGE_SIZE);
 	Driver::SetNptHook(pid, 1, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, (uint8_t*)"\xC3");
 
 	Sleep(2000);

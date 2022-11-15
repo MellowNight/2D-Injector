@@ -1,5 +1,5 @@
 #pragma once
-#include "communicate.h"
+#include "driver.h"
 
 #define COMMAND_KEY 0xDEADBEEF
 
@@ -62,6 +62,19 @@ namespace Driver
 
 	bool SetNptHook(int32_t proc_id, size_t size, uintptr_t hook_address, uint8_t* shellcode)
 	{
+		uint8_t buffer;
+
+		/*	1. trigger COW	*/
+
+		Driver::ProtectMemory(proc_id, hook_address, PAGE_EXECUTE_READWRITE, 0x1000);
+
+		/*	2. page in	*/
+
+		auto status = Driver::ReadMem(proc_id, hook_address, &buffer, 1);
+		Driver::WriteMem(proc_id, hook_address, (uint8_t*)"\xC3", 1);
+		Driver::WriteMem(proc_id, hook_address, &buffer, 1);
+
+
 		NptHookMsg msg = {};
 
 		msg.command_key = COMMAND_KEY;
