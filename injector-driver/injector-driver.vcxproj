@@ -156,7 +156,7 @@
       <EntryPointSymbol>MapperEntry</EntryPointSymbol>
       <GenerateMapFile>true</GenerateMapFile>
       <AdditionalDependencies>Zycore.lib;Zydis.lib;ForteVisorKernelApi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\Zydis\lib\ReleaseKernel\;$(SolutionDir)dependencies\ForteVisor\lib\Kernel\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\Zydis\lib\ReleaseKernel\;$(SolutionDir)dependencies\ForteVisor\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
     </Link>
   </ItemDefinitionGroup>
@@ -165,7 +165,7 @@
       <GenerateMapFile>true</GenerateMapFile>
       <EntryPointSymbol>MapperEntry</EntryPointSymbol>
       <AdditionalDependencies>Zycore.lib;Zydis.lib;ForteVisorKernelApi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\ForteVisor\lib\Kernel\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\ForteVisor\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
     </Link>
     <ClCompile>

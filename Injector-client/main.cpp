@@ -15,16 +15,6 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 		*(int32_t*)dll_raw = 0x5A4D;
 	}
 
-	auto present = Driver::GetModuleBase(L"dxgi.dll", pid) + 0x5270;
-	char bufffer[1];
-
-	Driver::ProtectMemory(pid, present, 100, PAGE_EXECUTE_READWRITE);
-	
-	Driver::ReadMem(pid, present, (uint8_t*)bufffer, 1);
-
-	//Driver::WriteMem(pid, present, (uint8_t*)"\xC3", 1);
-	//Driver::WriteMem(pid, present, (uint8_t*)bufffer, 1);
-
 	Driver::Init();
 
 	auto image_real_size = PeHeader(dll_raw)->OptionalHeader.SizeOfImage;
