@@ -64,6 +64,8 @@ extern "C" __declspec(dllexport) HRESULT __fastcall HookEntryPoint(IDXGISwapChai
 			memcpy((void*)present_address, Global::dll_params->original_present_bytes, Global::dll_params->o_present_bytes_size);
 		}
 
+		PE::ResolveImports((uint8_t*)Global::dll_params->dll_base);
+
 		StartBELogger();
 	}
 
@@ -77,12 +79,14 @@ extern "C" __declspec(dllexport) void __fastcall CreateUserThreadEntry()
 		if (*(uint32_t*)address == INJECTOR_CONSTANTS::mapped_dll_header)
 		{
 			Global::dll_params = (DllParams*)address;
-			Global::dll_params->dll_base = (uintptr_t)Global::dll_params;
+			Global::dll_params->dll_base = (uintptr_t)Global::dll_params + PAGE_SIZE;
 			Global::dll_params->dll_size = PeHeader(address)->OptionalHeader.SizeOfImage;
 
 			break;
 		}
 	}
+
+	PE::ResolveImports((uint8_t*)Global::dll_params->dll_base);
 
 	StartBELogger();
 }

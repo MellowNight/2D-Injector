@@ -5,16 +5,15 @@
 #include "forte_api_kernel.h"
 #include "util.h"
 #include "memory_hiding.h"
-
 struct DllParams
 {
 	uint32_t header;
-	size_t dll_size;
-	uintptr_t swapchain_present_address;
-	uintptr_t original_function_address;
-	uintptr_t module_base;
+	uintptr_t dll_base;
+	uint32_t dll_size;
 	int o_present_bytes_size;
 	uint8_t original_present_bytes[20];
+	uint8_t* cheat_dll;
+	wchar_t host_dll_name[120];
 };
 
 enum INJECTOR_CONSTANTS
@@ -95,13 +94,13 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			//auto present_hk = Hooks::JmpRipCode{ present_address, msg.address };
 
-			//auto dll_params = (DllParams*)msg.map_base;
+			auto dll_params = (DllParams*)msg.map_base;
 
-			//dll_params->o_present_bytes_size = present_hk.orig_bytes_size - 14;
+			// dll_params->o_present_bytes_size = present_hk.orig_bytes_size - 14;
 			//memcpy((void*)dll_params->original_present_bytes, present_hk.original_bytes, present_hk.orig_bytes_size);
 
-			//dll_params->dll_size = msg.image_size;
-			//dll_params->header = mapped_dll_header;
+			dll_params->dll_size = msg.image_size;
+			dll_params->header = mapped_dll_header;
 			//dll_params->swapchain_present_address = present_address;
 
 			////// NPT hook on dxgi.dll!CDXGISwapChain::Present
@@ -111,7 +110,9 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			HANDLE thandle;
 
-			RtlCreateUserThread((HANDLE) - 1, NULL, false, 0, 0, 0, (PVOID)msg.address, NULL, &thandle, NULL);
+			auto ststaus = RtlCreateUserThread((HANDLE) - 1, NULL, false, 0, 0, 0, (PVOID)msg.address, NULL, &thandle, NULL);
+
+			DbgPrint("ststaus 0x%p \n", ststaus);
 
 			KeUnstackDetachProcess(&apc);
 

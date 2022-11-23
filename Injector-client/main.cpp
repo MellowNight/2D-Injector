@@ -54,7 +54,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 	return 0;
 }
 
-#define ENTRYPOINT_NAME "HookEntryPoint"
+#define ENTRYPOINT_NAME "CreateUserThreadEntry"
 
 extern "C" int main()
 {

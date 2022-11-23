@@ -30,6 +30,7 @@ namespace Utils
 		{
 			return;
 		}
+
 		char buffer[256] = { 0 };
 
 		va_list args;
