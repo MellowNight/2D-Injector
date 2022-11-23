@@ -3,6 +3,7 @@
 
 class Logger
 {
+
     void CreateConsole()
     {
         if (!AllocConsole()) {
@@ -32,5 +33,7 @@ class Logger
         std::wcerr.clear();
         std::wcin.clear();
     }
+
+
 };
 
