@@ -4,14 +4,14 @@
 
 #define LOG_FILE "C:\\Users\\user123\\Desktop\\testing_drivers\\test_logs.txt"
 
-void ExecuteAccessHandler(void* registers, void* return_address)
+void ReadWriteExecuteHook(void* registers, void* return_address)
 {
 	Logger::Get()->Print(COLOR_ID::magenta, "return_address 0x%p \n", return_address);
 }
 
 void SandboxRegion(uintptr_t base, uintptr_t size)
 {
-	ForteVisor::RegisterSandboxHandler(ExecuteAccessHandler);
+	ForteVisor::RegisterSandboxHandler(ReadWriteExecuteHook);
 
 	for (auto offset = base; offset < base + size; offset += PAGE_SIZE)
 	{
@@ -19,7 +19,6 @@ void SandboxRegion(uintptr_t base, uintptr_t size)
 
 		ForteVisor::SandboxPage((uintptr_t)offset, (uint8_t*)offset, PAGE_SIZE);
 	}
-
 }
 
 void StartBELogger()
