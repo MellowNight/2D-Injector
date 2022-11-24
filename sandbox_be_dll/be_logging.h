@@ -5,4 +5,3 @@
 #include "forte_api.h"
 
 void StartBELogger();
-void SandboxRegion();

@@ -4,9 +4,10 @@
 
 #define LOG_FILE "C:\\Users\\user123\\Desktop\\testing_drivers\\test_logs.txt"
 
-void ReadWriteExecuteHook(void* registers, void* return_address)
+void ReadWriteExecuteHook(GeneralRegisters* registers, void* return_address, void* o_guest_rip)
 {
 	Logger::Get()->Print(COLOR_ID::magenta, "return_address 0x%p \n", return_address);
+	Logger::Get()->Print(COLOR_ID::magenta, "o_guest_rip 0x%p \n", o_guest_rip);
 }
 
 void SandboxRegion(uintptr_t base, uintptr_t size)
@@ -17,14 +18,13 @@ void SandboxRegion(uintptr_t base, uintptr_t size)
 	{
 		Utils::TriggerCOWAndPageIn((uint8_t*)offset);
 
-		ForteVisor::SandboxPage((uintptr_t)offset, (uint8_t*)offset, PAGE_SIZE);
+		ForteVisor::SandboxPage((uintptr_t)offset, NULL);
 	}
 }
 
 void StartBELogger()
 {
 	Logger::Get()->Print(COLOR_ID::magenta, "StartBELogger() \n");
-	Sleep(500000);
 
 	/*	Only allow BEClient pages to execute in 3rd NCR3 	*/
 
