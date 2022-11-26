@@ -15,13 +15,6 @@ enum VMMCALL_ID : uintptr_t
     register_sandbox = 0x8F36FE,
 };
 
-enum NCR3_DIRECTORIES
-{
-    primary,
-    noexecute,
-    sandbox,
-};
-
 struct GeneralRegisters
 {
     UINT64  r15;
@@ -42,15 +35,32 @@ struct GeneralRegisters
     UINT64  rax;
 };
 
-extern "C" void (*sandbox_handler)(GeneralRegisters * registers, void* return_address, void* o_guest_rip);
+extern "C" void (*sandbox_execute_handler)(GeneralRegisters * registers, void* return_address, void* o_guest_rip);
+extern "C" void (*sandbox_rw_handler)(GeneralRegisters * registers, void* o_guest_rip);
 
 
 extern "C" int __stdcall svm_vmmcall(VMMCALL_ID vmmcall_id, ...);
-extern "C" int __stdcall sandbox_handler_wrap();
+extern "C" void __stdcall execute_handler_wrap();
+extern "C" void __stdcall rw_handler_wrap();
 
 namespace ForteVisor
 {
-    extern "C"     void SandboxHandler(GeneralRegisters * registers, void* return_address, void* o_guest_rip);
+
+    enum NCR3_DIRECTORIES
+    {
+        primary,
+        noexecute,
+        sandbox,
+        sandbox_single_step
+    };
+
+    enum SandboxHookId
+    {
+        readwrite_handler = 0,
+        execute_handler = 1,
+    };
+
+    extern "C"  void SandboxHandler(GeneralRegisters * registers, void* return_address, void* o_guest_rip);
 
     int RemapPageSingleNcr3(uintptr_t old_page, uintptr_t new_page, int32_t core_id);
 
@@ -58,7 +68,7 @@ namespace ForteVisor
 
     int SandboxPage(uintptr_t address, uintptr_t tag);
 
-    void RegisterSandboxHandler(decltype(sandbox_handler) address);
+    void RegisterSandboxHandler(SandboxHookId handler_id, void* address);
 
     int RemoveNptHook(int32_t tag);
 

@@ -32,6 +32,6 @@ public:
         va_start(args, format);
         vsprintf(buffer, format, args);
         va_end(args);
-        colorprintf(4, buffer);
+        colorprintf(color, buffer);
     }
 };

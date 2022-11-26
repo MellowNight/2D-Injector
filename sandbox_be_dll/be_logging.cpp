@@ -4,15 +4,25 @@
 
 #define LOG_FILE "C:\\Users\\user123\\Desktop\\testing_drivers\\test_logs.txt"
 
-void ReadWriteExecuteHook(GeneralRegisters* registers, void* return_address, void* o_guest_rip)
+void ExecuteHook(GeneralRegisters* registers, void* return_address, void* o_guest_rip)
 {
-	Logger::Get()->Print(COLOR_ID::magenta, "return_address 0x%p \n", return_address);
-	Logger::Get()->Print(COLOR_ID::magenta, "o_guest_rip 0x%p \n", o_guest_rip);
+	Logger::Get()->Print(COLOR_ID::green, "[EXECUTE] ");  
+	Logger::Get()->Print(COLOR_ID::none, "return_address 0x%p \n", return_address);
+
+	Logger::Get()->Print(COLOR_ID::green, "[EXECUTE]  ");
+	Logger::Get()->Print(COLOR_ID::none, "rip = 0x%p \n", o_guest_rip);
+}
+
+void ReadWriteHook(GeneralRegisters* registers, void* o_guest_rip)
+{
+	Logger::Get()->Print(COLOR_ID::magenta, "[READ/WRITE]  ");
+	Logger::Get()->Print(COLOR_ID::none, "rip = 0x%p \n", o_guest_rip);
 }
 
 void SandboxRegion(uintptr_t base, uintptr_t size)
 {
-	ForteVisor::RegisterSandboxHandler(ReadWriteExecuteHook);
+	ForteVisor::RegisterSandboxHandler(ForteVisor::readwrite_handler, ReadWriteHook);
+	ForteVisor::RegisterSandboxHandler(ForteVisor::execute_handler, ExecuteHook);
 
 	for (auto offset = base; offset < base + size; offset += PAGE_SIZE)
 	{
