@@ -4,6 +4,8 @@
 
 namespace Utils
 {
+	PVOID ModuleFromAddress(uintptr_t address, PUNICODE_STRING out_name);
+
 	void TriggerCOWAndPageIn(void* address);
 
 	void LogToFile(const char* file_name, const char* format, ...);

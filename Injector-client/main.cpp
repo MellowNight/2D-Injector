@@ -76,5 +76,6 @@ extern "C" int main()
 	auto image_size = Util::LoadFileIntoMemory(cheat_dll_name.c_str(), &cheat_dll_raw);
 
 	InjectDLLBytes(target_pid, cheat_dll_raw, ENTRYPOINT_NAME);
+
 	std::cin.get();
 }

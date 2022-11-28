@@ -5,38 +5,37 @@
 
 enum VMMCALL_ID : uintptr_t
 {
-    set_mpk_hook = 0x22FFAA1166,
-    disable_hv = 0xFFAA221166,
-    set_npt_hook = 0x6611AAFF22,
-    remove_npt_hook = 0x1166AAFF22,
-    is_hv_present = 0xEEFF,
-    remap_page_ncr3_specific = 0x8236FF,
-    sandbox_page = 0x8236FE,
-    register_sandbox = 0x8F36FE,
+    disable_hv = 0x11111111,
+    set_npt_hook = 0x11111112,
+    remove_npt_hook = 0x11111113,
+    is_hv_present = 0x11111114,
+    sandbox_page = 0x11111116,
+    register_sandbox = 0x11111117,
+    deny_sandbox_reads = 0x11111118
 };
 
 struct GeneralRegisters
 {
-    UINT64  r15;
-    UINT64  r14;
-    UINT64  r13;
-    UINT64  r12;
-    UINT64  r11;
-    UINT64  r10;
-    UINT64  r9;
-    UINT64  r8;
-    UINT64  rdi;
-    UINT64  rsi;
-    UINT64  rbp;
-    UINT64  rsp;
-    UINT64  rbx;
-    UINT64  rdx;
-    UINT64  rcx;
-    UINT64  rax;
+    uintptr_t  r15;
+    uintptr_t  r14;
+    uintptr_t  r13;
+    uintptr_t  r12;
+    uintptr_t  r11;
+    uintptr_t  r10;
+    uintptr_t  r9;
+    uintptr_t  r8;
+    uintptr_t  rdi;
+    uintptr_t  rsi;
+    uintptr_t  rbp;
+    uintptr_t  rsp;
+    uintptr_t  rbx;
+    uintptr_t  rdx;
+    uintptr_t  rcx;
+    uintptr_t  rax;
 };
 
 extern "C" void (*sandbox_execute_handler)(GeneralRegisters * registers, void* return_address, void* o_guest_rip);
-extern "C" void (*sandbox_rw_handler)(GeneralRegisters * registers, void* o_guest_rip);
+extern "C" void (*sandbox_mem_access_handler)(GeneralRegisters * registers, void* o_guest_rip);
 
 
 extern "C" int __stdcall svm_vmmcall(VMMCALL_ID vmmcall_id, ...);
@@ -45,7 +44,6 @@ extern "C" void __stdcall rw_handler_wrap();
 
 namespace ForteVisor
 {
-
     enum NCR3_DIRECTORIES
     {
         primary,
@@ -60,13 +58,14 @@ namespace ForteVisor
         execute_handler = 1,
     };
 
-    extern "C"  void SandboxHandler(GeneralRegisters * registers, void* return_address, void* o_guest_rip);
-
-    int RemapPageSingleNcr3(uintptr_t old_page, uintptr_t new_page, int32_t core_id);
+    extern "C"  void SandboxMemAccessHandler(GeneralRegisters * registers, void* o_guest_rip);
+    extern "C"  void SandboxExecuteHandler(GeneralRegisters * registers, void* return_address, void* o_guest_rip);
 
     int SetNptHook(uintptr_t address, uint8_t* patch, size_t patch_len, int32_t noexecute_cr3_id, uintptr_t tag);
 
     int SandboxPage(uintptr_t address, uintptr_t tag);
+
+    void DenySandboxMemAccess(void* page_addr);
 
     void RegisterSandboxHandler(SandboxHookId handler_id, void* address);
 

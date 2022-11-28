@@ -48,6 +48,12 @@
     <ClInclude Include="colorprintf.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="disassembly.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="dbg_symbols.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dllmain.cpp">
@@ -66,6 +72,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="logging.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="disassembly.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="dbg_symbols.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

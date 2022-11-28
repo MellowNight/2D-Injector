@@ -3,6 +3,33 @@
 
 namespace Utils
 {
+	PVOID ModuleFromAddress(uintptr_t address, PUNICODE_STRING out_name)
+	{
+		#define LDR_IMAGESIZE 0x40
+
+		auto peb = (PPEB)__readgsqword(0x60);
+
+		LIST_ENTRY head = peb->Ldr->InMemoryOrderModuleList;
+
+		LIST_ENTRY curr = head;
+
+		while (curr.Flink != head.Blink)
+		{
+			_LDR_DATA_TABLE_ENTRY* mod = (_LDR_DATA_TABLE_ENTRY*)CONTAINING_RECORD(curr.Flink, _LDR_DATA_TABLE_ENTRY, InMemoryOrderLinks);
+
+			if ((uintptr_t)mod->DllBase <= address &&
+				address <= ((uintptr_t)mod->DllBase + *(uintptr_t*)((uintptr_t)mod + LDR_IMAGESIZE))
+				)
+			{
+				*out_name = mod->FullDllName;
+				return mod->DllBase;
+			}
+
+			curr = *curr.Flink;
+		}
+		return NULL;
+	}
+
 	void TriggerCOWAndPageIn(void* address)
 	{
 		uint8_t buffer;
