@@ -20,16 +20,16 @@ struct AddressInfo
 		if (!symbol.empty())
 		{
 			Logger::Get()->Print(
-				COLOR_ID::none, "%wZ!%s (0x%08x) \n", &dll_name_address.first, symbol.c_str(), address);
+				COLOR_ID::none, "%wZ!%s (0x%02x) \n", &dll_name_address.first, symbol.c_str(), address);
 		}
 		else if (dll_name_address.second)
 		{
-			Logger::Get()->Print(COLOR_ID::none, "%wZ + 0x%08x \n", 
+			Logger::Get()->Print(COLOR_ID::none, "%wZ+0x%02x \n", 
 				&dll_name_address.first, (uintptr_t)address - (uintptr_t)dll_name_address.second);
 		}
 		else
 		{
-			Logger::Get()->Print(COLOR_ID::none, "0x%08x \n", address);
+			Logger::Get()->Print(COLOR_ID::none, "0x%02x \n", address);
 		}
 	}
 
@@ -46,12 +46,11 @@ void ExecuteHook(GeneralRegisters* registers, void* return_address, void* o_gues
 	AddressInfo retaddr_info = { return_address };
 	AddressInfo rip_info = { o_guest_rip };
 
-	Logger::Get()->Print(COLOR_ID::green, "[EXECUTE]	");  
+	Logger::Get()->Print(COLOR_ID::green, "[EXECUTE]\n");  
 	Logger::Get()->Print(COLOR_ID::none, "return address = ");
 
 	retaddr_info.Print();
 
-	Logger::Get()->Print(COLOR_ID::green, "[EXECUTE]	");
 	Logger::Get()->Print(COLOR_ID::none, "RIP = ", o_guest_rip);
 
 	rip_info.Print();
@@ -70,8 +69,8 @@ void ReadWriteHook(GeneralRegisters* registers, void* o_guest_rip)
 
 	auto instruction = Disasm::Disassemble((uint8_t*)o_guest_rip, operands);
 
-	Logger::Get()->Print(COLOR_ID::magenta, "[READ/WRITE]	");
-	Logger::Get()->Print(COLOR_ID::none, "RIP = ", o_guest_rip);
+	Logger::Get()->Print(COLOR_ID::magenta, "[READ/WRITE]\n");
+	Logger::Get()->Print(COLOR_ID::none, "RIP = ");
 
 	rip_info.Print();
 
@@ -85,15 +84,15 @@ void ReadWriteHook(GeneralRegisters* registers, void* o_guest_rip)
 
 		if (operands[i].actions & ZYDIS_OPERAND_ACTION_MASK_WRITE)
 		{
-			Logger::Get()->Print(COLOR_ID::none, " write - ", mem_target);
+			Logger::Get()->Print(COLOR_ID::none, "[write => 0x%02x]\n", mem_target);
 		}
 		else if (operands[i].actions & ZYDIS_OPERAND_ACTION_MASK_READ)
 		{
-			Logger::Get()->Print(COLOR_ID::none, " read - ", mem_target);
+			Logger::Get()->Print(COLOR_ID::none, "[read => 0x%02x]\n", mem_target);
 		}
 	}
 
-	Logger::Get()->Print(COLOR_ID::none, "\n");
+	Logger::Get()->Print(COLOR_ID::none, "\n\n");
 }
 
 void SandboxRegion(uintptr_t base, uintptr_t size)
@@ -110,7 +109,7 @@ void SandboxRegion(uintptr_t base, uintptr_t size)
 
 	auto kernel32 = (uint8_t*)GetModuleHandleA("kernel32.dll");
 
-	ForteVisor::DenySandboxMemAccess(kernel32 + 0x1000);
+	ForteVisor::DenySandboxMemAccess(kernel32 + 0x1005);
 }
 
 void StartBELogger()
@@ -118,7 +117,7 @@ void StartBELogger()
 	Disasm::Init();
 	Symbols::Init();
 
-	Logger::Get()->Print(COLOR_ID::magenta, "StartBELogger() \n");
+	Logger::Get()->Print(COLOR_ID::magenta, "Symbols::GetSymFromAddr((uintptr_t)GetProcAddress); %s \n", Symbols::GetSymFromAddr((uintptr_t)GetProcAddress).c_str());
 
 	/*	Only allow BEClient pages to execute in 3rd NCR3 	*/
 

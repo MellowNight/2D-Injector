@@ -50,6 +50,8 @@ namespace Symbols
 
         if (!result)
         {
+            printf("SymFromAddr GetLastError %i \n", GetLastError());
+
             return std::string("");
         }
 

@@ -5,7 +5,8 @@ namespace Utils
 {
 	PVOID ModuleFromAddress(uintptr_t address, PUNICODE_STRING out_name)
 	{
-		#define LDR_IMAGESIZE 0x40
+#define LDR_IMAGESIZE 0x40
+#define BASE_DLL_NAME 0x58
 
 		auto peb = (PPEB)__readgsqword(0x60);
 
@@ -21,7 +22,7 @@ namespace Utils
 				address <= ((uintptr_t)mod->DllBase + *(uintptr_t*)((uintptr_t)mod + LDR_IMAGESIZE))
 				)
 			{
-				*out_name = mod->FullDllName;
+				*out_name = *(PUNICODE_STRING)((uintptr_t)mod + BASE_DLL_NAME);
 				return mod->DllBase;
 			}
 
