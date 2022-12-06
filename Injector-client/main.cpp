@@ -47,7 +47,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* dll_ra
 
 	auto entry_point = (uintptr_t)PE::GetExport((uintptr_t)cheat_mapped, entrypoint_name);
 
-	std::cout << std::hex << " entry_point 0x" << entry_point + cheat_base << std::endl;
+	std::cout << std::hex << "> entry_point 0x" << entry_point + cheat_base << std::endl;
 
 	Driver::InvokeRemoteFunc(entry_point + cheat_base, pid, alloc_base, image_real_size);
 

@@ -2,6 +2,7 @@
 #include "colorprintf.h"
 #include "includes.h"
 
+#define LOG_FILE "C:\\Users\\user123\\Desktop\\testing_drivers\\test_logs.txt"
 #define LOG_MAX_LEN 256
 
 /*  Singleton for the Logger    */

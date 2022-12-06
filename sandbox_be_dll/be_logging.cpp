@@ -4,8 +4,6 @@
 #include "disassembly.h"
 #include "dbg_symbols.h"
 
-#define LOG_FILE "C:\\Users\\user123\\Desktop\\testing_drivers\\test_logs.txt"
-
 struct AddressInfo
 {
 	AddressInfo(void* _address) : address(_address)
@@ -24,7 +22,7 @@ struct AddressInfo
 		}
 		else if (dll_name_address.second)
 		{
-			Logger::Get()->Print(COLOR_ID::none, "%wZ+0x%02x \n", 
+			Logger::Get()->Print(COLOR_ID::none, "%wZ+0x%02x \n",
 				&dll_name_address.first, (uintptr_t)address - (uintptr_t)dll_name_address.second);
 		}
 		else
@@ -59,7 +57,7 @@ void ExecuteHook(GeneralRegisters* registers, void* return_address, void* o_gues
 }
 
 
-/*	log reads and writes		*/
+/*	log specific reads and writes		*/
 
 void ReadWriteHook(GeneralRegisters* registers, void* o_guest_rip)
 {
@@ -100,16 +98,13 @@ void SandboxRegion(uintptr_t base, uintptr_t size)
 	ForteVisor::RegisterSandboxHandler(ForteVisor::readwrite_handler, ReadWriteHook);
 	ForteVisor::RegisterSandboxHandler(ForteVisor::execute_handler, ExecuteHook);
 
-	for (auto offset = base; offset < base + size; offset += PAGE_SIZE)
-	{
-		Utils::TriggerCOWAndPageIn((uint8_t*)offset);
-
-		ForteVisor::SandboxPage((uintptr_t)offset, NULL);
-	}
+	ForteVisor::SandboxRegion(base, size);
 
 	auto kernel32 = (uint8_t*)GetModuleHandleA("kernel32.dll");
 
 	ForteVisor::DenySandboxMemAccess(kernel32 + 0x1005);
+
+	ForteVisor::TraceFunction()
 }
 
 void StartBELogger()
