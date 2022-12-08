@@ -93,20 +93,6 @@ void ReadWriteHook(GeneralRegisters* registers, void* o_guest_rip)
 	Logger::Get()->Print(COLOR_ID::none, "\n\n");
 }
 
-void SandboxRegion(uintptr_t base, uintptr_t size)
-{
-	ForteVisor::RegisterSandboxHandler(ForteVisor::readwrite_handler, ReadWriteHook);
-	ForteVisor::RegisterSandboxHandler(ForteVisor::execute_handler, ExecuteHook);
-
-	ForteVisor::SandboxRegion(base, size);
-
-	auto kernel32 = (uint8_t*)GetModuleHandleA("kernel32.dll");
-
-	ForteVisor::DenySandboxMemAccess(kernel32 + 0x1005);
-
-	ForteVisor::TraceFunction()
-}
-
 void StartBELogger()
 {
 	Disasm::Init();
@@ -124,5 +110,14 @@ void StartBELogger()
 		beclient = (uintptr_t)GetModuleHandle(L"BEService.exe");
 	}
 
-	SandboxRegion(beclient, PeHeader(beclient)->OptionalHeader.SizeOfImage);
+	BVM::RegisterSandboxHandler(BVM::readwrite_handler, ReadWriteHook);
+	BVM::RegisterSandboxHandler(BVM::execute_handler, ExecuteHook);
+
+	BVM::SandboxRegion(beclient, PeHeader(beclient)->OptionalHeader.SizeOfImage);
+
+	auto kernel32 = (uint8_t*)GetModuleHandleA("kernel32.dll");
+
+	BVM::DenySandboxMemAccess(kernel32 + 0x1005);
+
+	BVM::TraceFunction((uint8_t*)GetModuleHandleA(NULL) + 0x1080);
 }

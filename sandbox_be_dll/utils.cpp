@@ -31,20 +31,6 @@ namespace Utils
 		return NULL;
 	}
 
-	void TriggerCOWAndPageIn(void* address)
-	{
-		uint8_t buffer;
-
-		/*	1. page in	*/
-
-		buffer = *(uint8_t*)address;
-
-		/*	2. trigger COW	*/
-
-		WriteToReadOnly(address, (uint8_t*)"\xC3", 1);
-		WriteToReadOnly(address, &buffer, 1);
-	}
-
 	void LogToFile(const char* file_name, const char* format, ...)
 	{
 		auto file_handle = CreateFileA(
