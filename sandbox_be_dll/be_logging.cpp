@@ -110,8 +110,11 @@ void StartBELogger()
 		beclient = (uintptr_t)GetModuleHandle(L"BEService.exe");
 	}
 
+	__debugbreak();
+
 	BVM::RegisterSandboxHandler(BVM::readwrite_handler, ReadWriteHook);
 	BVM::RegisterSandboxHandler(BVM::execute_handler, ExecuteHook);
+	__debugbreak();
 
 	BVM::SandboxRegion(beclient, PeHeader(beclient)->OptionalHeader.SizeOfImage);
 
