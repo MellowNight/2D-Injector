@@ -31,6 +31,30 @@ struct AddressInfo
 		}
 	}
 
+	std::string Format()
+	{
+		char buffer[256];
+
+		if (!symbol.empty())
+		{
+			Logger::Get()->Format(
+				buffer, "%wZ!%s (0x%02x) \n", &dll_name_address.first, symbol.c_str(), address);
+		}
+		else if (dll_name_address.second)
+		{
+			Logger::Get()->Format(buffer, 
+				"%wZ+0x%02x \n", &dll_name_address.first, (uintptr_t)address - (uintptr_t)dll_name_address.second);
+		}
+		else
+		{
+			Logger::Get()->Format(buffer, "0x%02x \n", address);
+		}
+
+		return std::string{ buffer };
+	}
+
+
+
 	void* address;
 	std::pair<UNICODE_STRING, void*> dll_name_address;
 	std::string	symbol;
@@ -39,7 +63,7 @@ struct AddressInfo
 
 /*	log out-of-module function calls and jmps		*/
 
-void ExecuteHook(GeneralRegisters* registers, void* return_address, void* o_guest_rip)
+void ExecuteHook(GuestRegisters* registers, void* return_address, void* o_guest_rip)
 {
 	AddressInfo retaddr_info = { return_address };
 	AddressInfo rip_info = { o_guest_rip };
@@ -59,7 +83,7 @@ void ExecuteHook(GeneralRegisters* registers, void* return_address, void* o_gues
 
 /*	log specific reads and writes		*/
 
-void ReadWriteHook(GeneralRegisters* registers, void* o_guest_rip)
+void ReadWriteHook(GuestRegisters* registers, void* o_guest_rip)
 {
 	AddressInfo rip_info = { o_guest_rip };
 
@@ -78,7 +102,8 @@ void ReadWriteHook(GeneralRegisters* registers, void* o_guest_rip)
 
 	for (int i = 0; i < instruction.operand_count_visible; ++i)
 	{
-		auto mem_target = Disasm::GetMemoryAccessTarget(instruction, &operands[i], (ZyanU64)o_guest_rip, &context);
+		auto mem_target = Disasm::GetMemoryAccessTarget(
+			instruction, &operands[i], (ZyanU64)o_guest_rip, &context);
 
 		if (operands[i].actions & ZYDIS_OPERAND_ACTION_MASK_WRITE)
 		{
@@ -93,12 +118,32 @@ void ReadWriteHook(GeneralRegisters* registers, void* o_guest_rip)
 	Logger::Get()->Print(COLOR_ID::none, "\n\n");
 }
 
+std::vector<BranchLog::LogEntry> traced_branches;
+
+void BranchLogFullHook()
+{
+	traced_branches.insert(traced_branches.end(),
+		BVM::log_buffer->info.buffer, BVM::log_buffer->info.buffer + BVM::log_buffer->info.buffer_idx);
+}
+
+void BranchTraceFinished()
+{
+	for (auto entry : traced_branches)
+	{
+		Utils::LogToFile(LOG_FILE, "branch %s -> %s", 
+			AddressInfo{ (void*)entry.branch_address }.Format().c_str(),
+			AddressInfo{ (void*)entry.branch_address }.Format().c_str()
+		);
+	}
+}
+
 void StartBELogger()
 {
 	Disasm::Init();
 	Symbols::Init();
 
-	Logger::Get()->Print(COLOR_ID::magenta, "Symbols::GetSymFromAddr((uintptr_t)GetProcAddress); %s \n", Symbols::GetSymFromAddr((uintptr_t)GetProcAddress).c_str());
+	Logger::Get()->Print(COLOR_ID::magenta, 
+		"Symbols::GetSymFromAddr((uintptr_t)GetProcAddress); %s \n", Symbols::GetSymFromAddr((uintptr_t)GetProcAddress).c_str());
 
 	/*	Only allow BEClient pages to execute in 3rd NCR3 	*/
 
@@ -110,10 +155,11 @@ void StartBELogger()
 		beclient = (uintptr_t)GetModuleHandle(L"BEService.exe");
 	}
 
-	__debugbreak();
+	BVM::InstrumentationHook(BVM::sandbox_readwrite, ReadWriteHook);
+	BVM::InstrumentationHook(BVM::sandbox_execute, ExecuteHook);
+	BVM::InstrumentationHook(BVM::branch_log_full, BranchLogFullHook);
+	BVM::InstrumentationHook(BVM::branch_trace_finished, BranchTraceFinished);
 
-	BVM::RegisterSandboxHandler(BVM::readwrite_handler, ReadWriteHook);
-	BVM::RegisterSandboxHandler(BVM::execute_handler, ExecuteHook);
 	__debugbreak();
 
 	BVM::SandboxRegion(beclient, PeHeader(beclient)->OptionalHeader.SizeOfImage);
@@ -122,5 +168,6 @@ void StartBELogger()
 
 	BVM::DenySandboxMemAccess(kernel32 + 0x1005);
 
-	BVM::TraceFunction((uint8_t*)GetModuleHandleA(NULL) + 0x1080);
+	BVM::TraceFunction(
+		(uint8_t*)GetModuleHandleA(NULL) + 0x1080, beclient, PeHeader(beclient)->OptionalHeader.SizeOfImage);
 }

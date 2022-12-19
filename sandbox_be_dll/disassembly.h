@@ -17,7 +17,7 @@ namespace Disasm
 	);
 
 	void MyRegContextToZydisRegContext(
-		GeneralRegisters* guest_regs,
+		GuestRegisters* guest_regs,
 		ZydisRegisterContext* context,
 		void* o_guest_rip
 	);

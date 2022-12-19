@@ -3,7 +3,7 @@
 
 namespace Disasm
 {
-	void MyRegContextToZydisRegContext(GeneralRegisters* guest_regs, ZydisRegisterContext* context, void* o_guest_rip)
+	void MyRegContextToZydisRegContext(GuestRegisters* guest_regs, ZydisRegisterContext* context, void* o_guest_rip)
 	{
 		context->values[ZYDIS_REGISTER_RAX] = guest_regs->rax;
 		context->values[ZYDIS_REGISTER_RSP] = guest_regs->rsp;
