@@ -38,16 +38,16 @@ struct AddressInfo
 		if (!symbol.empty())
 		{
 			Logger::Get()->Format(
-				buffer, "%wZ!%s (0x%02x) \n", &dll_name_address.first, symbol.c_str(), address);
+				buffer, "%wZ!%s (0x%02x)", &dll_name_address.first, symbol.c_str(), address);
 		}
 		else if (dll_name_address.second)
 		{
 			Logger::Get()->Format(buffer, 
-				"%wZ+0x%02x \n", &dll_name_address.first, (uintptr_t)address - (uintptr_t)dll_name_address.second);
+				"%wZ + 0x%02x", &dll_name_address.first, (uintptr_t)address - (uintptr_t)dll_name_address.second);
 		}
 		else
 		{
-			Logger::Get()->Format(buffer, "0x%02x \n", address);
+			Logger::Get()->Format(buffer, "0x%02xn", address);
 		}
 
 		return std::string{ buffer };
@@ -122,18 +122,24 @@ std::vector<BranchLog::LogEntry> traced_branches;
 
 void BranchLogFullHook()
 {
+	Logger::Get()->Print(COLOR_ID::blue, "BranchLogFullHook(), BVM::log_buffer->info.buffer 0x%p, BVM::log_buffer->info.buffer_idx %i \n", BVM::log_buffer->info.buffer, BVM::log_buffer->info.buffer_idx);
+
 	traced_branches.insert(traced_branches.end(),
 		BVM::log_buffer->info.buffer, BVM::log_buffer->info.buffer + BVM::log_buffer->info.buffer_idx);
 }
 
 void BranchTraceFinished()
 {
+	Logger::Get()->Print(COLOR_ID::blue, "BranchTraceFinished(), dumping branch trace to file! \n");
+
 	for (auto entry : traced_branches)
 	{
 		Utils::LogToFile(LOG_FILE, "branch %s -> %s", 
 			AddressInfo{ (void*)entry.branch_address }.Format().c_str(),
-			AddressInfo{ (void*)entry.branch_address }.Format().c_str()
+			AddressInfo{ (void*)entry.branch_target }.Format().c_str()
 		);
+
+		Utils::LogToFile(LOG_FILE, "\n");
 	}
 }
 
@@ -152,7 +158,7 @@ void StartBELogger()
 	while (!beclient)
 	{
 		Sleep(500);
-		beclient = (uintptr_t)GetModuleHandle(L"BEService.exe");
+		beclient = (uintptr_t)GetModuleHandle(L"ReverseMe.vmp.exe");
 	}
 
 	BVM::InstrumentationHook(BVM::sandbox_readwrite, ReadWriteHook);
@@ -169,5 +175,5 @@ void StartBELogger()
 	BVM::DenySandboxMemAccess(kernel32 + 0x1005);
 
 	BVM::TraceFunction(
-		(uint8_t*)GetModuleHandleA(NULL) + 0x1080, beclient, PeHeader(beclient)->OptionalHeader.SizeOfImage);
+		(uint8_t*)GetModuleHandleA(NULL) + 0x1100, beclient, PeHeader(beclient)->OptionalHeader.SizeOfImage);
 }
