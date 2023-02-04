@@ -30,11 +30,11 @@ typedef struct _IDSECTOR
 	USHORT  wNumCurrentCyls;
 	USHORT  wNumCurrentHeads;
 	USHORT  wNumCurrentSectorsPerTrack;
-	ULONG   ulCurrentSectorCapacity;
+	uint32_t   ulCurrentSectorCapacity;
 	USHORT  wMultSectorStuff;
-	ULONG   ulTotalAddressableSectors;
+	uint32_t   ulTotalAddressableSectors;
 	USHORT  wSingleWordDMA;
 	USHORT  wMultiWordDMA;
-	BYTE    bReserved[128];
+	uint32_t    bReserved[128];
 } IDSECTOR, * PIDSECTOR;
 

@@ -3,17 +3,6 @@
 #include "utils.h"
 #include <iostream>
 #include <vector>
-#include "security.h"
-
-/*	
-* What can we do to hide DLL? we can:
-* hook virtualalloc in BEClient
-* blacklist the allocated shellcode pages
-* blacklist BEClient pages
-* blacklist beclient2 pages
-* add blacklisted pages to 2nd CR3 without cheat dll mapped 
-* hook readprocessmemory/mmcopyvirtualmemory to prevent reading cheat dll
-*/
 
 struct DllParams
 {
@@ -51,7 +40,7 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 
 			auto thread_id = GetWindowThreadProcessId(hwnd, &process_id);
 
-			if (parameter->pid != process_id || !(GetWindow(hwnd, GW_OWNER) == NULL)
+			if (parameter->pid != process_id || !(GetWindow(hwnd, GW_OWNER) == NULL) 
 				|| !IsWindowVisible(hwnd))
 			{
 				return TRUE;
@@ -60,7 +49,8 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 			{
 				/*	we found main window for setwindowshookex injection	*/
 
-				auto hook = SetWindowsHookExA(WH_GETMESSAGE, (HOOKPROC)parameter->entry_address, (HINSTANCE)parameter->host_dll_handle, thread_id);
+				auto hook = SetWindowsHookExA(WH_GETMESSAGE, 
+					(HOOKPROC)parameter->entry_address, (HINSTANCE)parameter->host_dll_handle, thread_id);
 
 				if (GetLastError() == 0)
 				{
@@ -95,7 +85,7 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 
 		auto dll_entrypoint = PeHeader(host_dll_handle)->OptionalHeader.AddressOfEntryPoint + host_dll_handle;
 
-		Driver::SetNptHook(pid, 3, (uintptr_t)dll_entrypoint, (BYTE*)"\xb0\x01\xC3");
+		Driver::SetNptHook(pid, 3, (uintptr_t)dll_entrypoint, (uint32_t*)"\xb0\x01\xC3");
 
 		entrypoint_patched = true;
 	}
@@ -103,9 +93,10 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 
 uintptr_t LoadSignedHostDLL(int32_t pid, const char* signed_dll_name)
 {
-	/*	use Overwolf's DLL to carry our cheat	*/
+	/*	use Overwolf's DLL to host our payload	*/
 
-	auto host_dll = (uintptr_t)LoadLibraryExA(signed_dll_name, nullptr, DONT_RESOLVE_DLL_REFERENCES);
+	auto host_dll = (uintptr_t)LoadLibraryExA(
+		signed_dll_name, nullptr, DONT_RESOLVE_DLL_REFERENCES);
 
 	/*	Find ret (0xC3) instruction	*/
 
@@ -122,32 +113,26 @@ uintptr_t LoadSignedHostDLL(int32_t pid, const char* signed_dll_name)
 	return Driver::GetModuleBase(L"OWClient.dll", pid);
 }
 
-extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_cheat_dll, const char* entrypoint_name, const char* signed_dll_name)
+extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_payload_dll, const char* entrypoint_name, const char* signed_dll_name)
 {
-	if (*(int32_t*)raw_cheat_dll != INJECTOR_PASSWORD)
-	{
-		SecurityViolation();
-	}
-	else
-	{
-		*(int32_t*)raw_cheat_dll = 0x5A4D;
-	}
-
 	Driver::Init();
 
-	/* We will be stealthily mapping our cheat on top of a signed DLL */
+	/* We will be stealthily mapping our payload inside the NPT shadow pages of a signed DLL */
 
-	auto cheat_base = LoadSignedHostDLL(pid, signed_dll_name);
+	auto payload_base = LoadSignedHostDLL(pid, signed_dll_name);
 
-	auto host_dll_base = cheat_base;
+	auto host_dll_base = payload_base;
 
-	/*	align .rdata section of our own DLL with the .data section of the host DLL, because we can't hide .rdata strings	*/
+	/*	align .rdata section of our own DLL with the .data section of the host DLL, because we can't hide .rdata strings
+	* 
+	*	All data after the beginning of .rdata will be normally written to the .data section of host DLL.
+	*/
 
 	uintptr_t rdata_offset = 0;
 
-	auto section = (IMAGE_SECTION_HEADER*)(PeHeader(raw_cheat_dll) + 1);
+	auto section = (IMAGE_SECTION_HEADER*)(PeHeader(raw_payload_dll) + 1);
 
-	for (int i = 0; i < PeHeader(raw_cheat_dll)->FileHeader.NumberOfSections; ++i)
+	for (int i = 0; i < PeHeader(raw_payload_dll)->FileHeader.NumberOfSections; ++i)
 	{
 		if (!strcmp(".rdata", (char*)section[i].Name))
 		{
@@ -157,64 +142,66 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	section = (IMAGE_SECTION_HEADER*)(PeHeader(host_dll_base) + 1);
 
-	auto pe_header = PeHeader(raw_cheat_dll);
+	auto pe_header = PeHeader(raw_payload_dll);
 
 	for (int i = 0; i < PeHeader(host_dll_base)->FileHeader.NumberOfSections; ++i)
 	{
 		if (!strcmp(".data", (char*)section[i].Name))
 		{
-			cheat_base += section[i].VirtualAddress;			
-			cheat_base -= rdata_offset;
+			payload_base += section[i].VirtualAddress;			
+			payload_base -= rdata_offset;
 		}
 	}
 
-	/*	prepare the cheat for manual mapping	*/
+	/*	Prepare the payload DLL for manual mapping	*/
 
-	uint8_t* cheat_mapped = NULL;
+	uint8_t* payload_mapped = NULL;
 
-	PE::RemapImage(raw_cheat_dll, &cheat_mapped, pid, cheat_base);
+	PE::RemapImage(
+		raw_payload_dll, &payload_mapped, pid, payload_base);
 
-	std::cout << std::hex << " cheat_base 0x" << cheat_base << std::endl;
-	std::cout << std::hex << " cheat_base offset from DLL: +0x" << cheat_base - host_dll_base << std::endl;
+	std::cout << std::hex << " payload_base 0x" << payload_base << std::endl;
+	std::cout << std::hex << " payload_base offset from DLL: +0x" << payload_base - host_dll_base << std::endl;
 
 
-	/*	 NPT hide every section of the cheat DLL except for .rdata, .pdata and .data	*/
+	/*	 NPT hide every section of the payload DLL except for .rdata, .pdata and .data	*/
 
-	section = (IMAGE_SECTION_HEADER*)(PeHeader(cheat_mapped) + 1);
+	section = (IMAGE_SECTION_HEADER*)(PeHeader(payload_mapped) + 1);
 
-	auto header_size = PeHeader(cheat_mapped)->OptionalHeader.SizeOfHeaders;
+	auto header_size = PeHeader(payload_mapped)->OptionalHeader.SizeOfHeaders;
+	auto payload_size = PeHeader(payload_mapped)->OptionalHeader.SizeOfImage;
 
-	Driver::SetNptHook(pid, header_size, cheat_base, cheat_mapped);
+	Driver::SetNptHook(pid, 
+		header_size, payload_base, payload_mapped);
 
-	//Driver::ProtectMemory(pid, cheat_base, PAGE_EXECUTE_READWRITE, header_size);
-	//Driver::WriteMem(pid, cheat_base, cheat_mapped, header_size);
+	//Driver::ProtectMemory(pid, payload_base, PAGE_EXECUTE_READWRITE, header_size);
+	//Driver::WriteMem(pid, payload_base, payload_mapped, header_size);
 
 	uint8_t* offset = 0;
 
-	for (offset = cheat_mapped; offset < (cheat_mapped + rdata_offset); offset += PAGE_SIZE)
+	for (offset = payload_mapped; offset < (payload_mapped + rdata_offset); offset += PAGE_SIZE)
 	{
-		Driver::SetNptHook(pid, PAGE_SIZE, cheat_base + (offset - cheat_mapped), offset);
+		Driver::SetNptHook(pid, 
+			PAGE_SIZE, payload_base + (offset - payload_mapped), offset);
 	}	
 
 	/*	hide the RWX memory protection	in the host signed	DLL	*/
 
-	Driver::HideMemory(pid, cheat_base, rdata_offset);
+	Driver::HideMemory(pid, payload_base, rdata_offset);
 
-	for (offset; offset < (cheat_mapped + PeHeader(cheat_mapped)->OptionalHeader.SizeOfImage); offset += PAGE_SIZE)
+	for (offset; offset < (payload_mapped + payload_size); offset += PAGE_SIZE)
 	{
-		Driver::WriteMem(pid, cheat_base + (offset - cheat_mapped), offset, PAGE_SIZE);
+		Driver::WriteMem(
+			pid, payload_base + (offset - payload_mapped), offset, PAGE_SIZE);
 	}
 
-	Driver::SetNptHook(pid, 1, host_dll_base + FLS_CALLBACK_PATCH_OFFSET, (uint8_t*)"\xC3");
+	/*	Some random callbacks in the host DLL get called, so let's patch them out	*/
 
+	Driver::SetNptHook(pid, 1,
+		host_dll_base + FLS_CALLBACK_PATCH_OFFSET, (uint8_t*)"\xC3");
 
-	/*	a lot of crashes when trying to patch out this second callback	*/
-
-	std::cout << "please wait for something... " << std::endl;
-
-	Sleep(2000);
-
-	Driver::SetNptHook(pid, 1, host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, (uint8_t*)"\xC3");
+	Driver::SetNptHook(pid, 1, 
+		host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, (uint8_t*)"\xC3");
 
 	Sleep(2000);
 
@@ -222,45 +209,55 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_ch
 
 	DllParams params;
 
-	params.module_base = cheat_base;
+	params.module_base = payload_base;
 
 	auto params_location = Driver::AllocateMemory(pid, sizeof(DllParams));
 
-	auto params_export = (uintptr_t)PE::GetExport((uintptr_t)cheat_mapped, "dll_params");
+	auto params_export = (uintptr_t)PE::GetExport(
+		(uintptr_t)payload_mapped, "dll_params");
 
-	Driver::WriteMem(pid, params_location, (BYTE*)&params, sizeof(params));
-	Driver::WriteMem(pid, cheat_base + params_export, (BYTE*)&params_location, sizeof(DllParams*));
+	Driver::WriteMem(pid, 
+		params_location, (uint32_t*)&params, sizeof(params));
+
+	Driver::WriteMem(pid, 
+		payload_base + params_export, (uint32_t*)&params_location, sizeof(DllParams*));
 
 
 	/*	invoke the entry point	*/
 
-	auto entry_point = (uintptr_t)PE::GetExport((uintptr_t)cheat_mapped, entrypoint_name);
+	auto entry_point = (uintptr_t)PE::GetExport(
+		(uintptr_t)payload_mapped, entrypoint_name);
 
-	std::cout << std::hex << " entry_point 0x" << entry_point + cheat_base << std::endl;
+	std::cout << std::hex << " entry_point 0x" << entry_point + payload_base << std::endl;
 
-	InvokeSignedDllRemoteFunction(pid, host_dll_base, (uint8_t*)entry_point + cheat_base);
+	InvokeSignedDllRemoteFunction(
+		pid, host_dll_base, (uint8_t*)entry_point + payload_base);
 
 	return 0;
 }
 
 extern "C" int main()
 {
-	std::string cheat_dll_name;
+	std::string payload_dll_name;
 
 	std::cout << "Enter the name of the DLL to inject: " << std::endl;
-	std::cin >> cheat_dll_name;
+
+	std::cin >> payload_dll_name;
 
 
 	int32_t target_pid;
 
 	std::cout << "Enter the pid of the target process: " << std::endl;
+
 	std::cin >> target_pid;
 
-	uint8_t* cheat_dll_raw = NULL;
+	uint8_t* payload_dll_raw = NULL;
 
-	auto image_size = Util::LoadFileIntoMemory(cheat_dll_name.c_str(), &cheat_dll_raw);
+	auto image_size = Util::LoadFile(
+		payload_dll_name.c_str(), &payload_dll_raw);
 
-	InjectDLLBytes(target_pid, cheat_dll_raw, ENTRYPOINT_NAME, HOST_DLL_PATH);
+	InjectDLLBytes(target_pid,
+		payload_dll_raw, ENTRYPOINT_NAME, HOST_DLL_PATH);
 
 	std::cin.get();
 }

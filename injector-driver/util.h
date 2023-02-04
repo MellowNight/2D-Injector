@@ -2,7 +2,7 @@
 #include "includes.h"
 #include "kernel_structs.h"
 
-#define	RELATIVE_ADDR(insn, operand_offset, size) (ULONG64)(*(int*)((BYTE*)insn + operand_offset) + (BYTE*)insn + (int)size)
+#define	RELATIVE_ADDR(insn, operand_offset, size) (ULONG64)(*(int*)((uint32_t*)insn + operand_offset) + (uint32_t*)insn + (int)size)
 
 namespace Utils
 {
@@ -50,31 +50,13 @@ namespace Utils
 		UNICODE_STRING DriverName
 	);
 
-	PVOID CreateFile(
-		PVOID buffer, 
-		const wchar_t* FileName, ULONG64 size
-	);
-
 	PVOID GetUserModule(
 		IN PEPROCESS pProcess, 
 		IN PUNICODE_STRING ModuleName
 	);
 
-	int ZwGetRunningSystemProcess(
+	int GetProcessIdFromname(
 		LPWSTR ProcessName
-	);
-
-	PVOID ReadFile(
-		PVOID buffer, 
-		const wchar_t* FileName, 
-		ULONG64 size, HANDLE* 
-		hFile
-	);
-
-	KIRQL DisableWP();
-
-	void EnableWP(
-		KIRQL tempirql
 	);
 
 	inline PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation, int size = PAGE_SIZE)
@@ -85,8 +67,6 @@ namespace Utils
 
 		return mdl;
 	}
-
-	NTSTATUS UnlockPages(PMDL mdl);
 	
 	KAPC_STATE AttachToProcess(int32_t pid);
 }

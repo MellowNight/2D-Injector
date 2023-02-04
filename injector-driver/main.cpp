@@ -6,24 +6,14 @@
 #include "util.h"
 #include "memory_hiding.h"
 
-struct DllParams
-{
-	uint32_t header;
-	size_t dll_size;
-	uintptr_t swapchain_present_address;
-	uintptr_t original_function_address;
-	uintptr_t RtlAddFunctionTable_fn;
-};
-
 enum INJECTOR_CONSTANTS
 {
 	mapped_dll_header = 0x12345678,
-	entrypoint_npt_hook = 0xAAAA
 };
 
-using namespace Interface;
+using namespace Command;
 
-void CommandHandler(void* system_buffer, void* output_buffer)
+void CommandHandler(Msg* system_buffer, void* output_buffer)
 {
 	auto request = (Msg*)system_buffer;
 
@@ -33,7 +23,7 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 	switch (request->message_id)
 	{
-		case Interface::HIDE_MEMORY:
+		case Command::hide_memory:
 		{	
 			auto msg = *(HideMemoryCmd*)system_buffer;
 
@@ -43,94 +33,34 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 			hiding_range_size = msg.hiding_range_size;
 
 			HANDLE hthread;
-			PsCreateSystemThread(&hthread, THREAD_ALL_ACCESS, NULL, NULL, NULL, (PKSTART_ROUTINE)HookNTQVM, NULL);
+
+			PsCreateSystemThread(&hthread, THREAD_ALL_ACCESS,
+				NULL, NULL, NULL, (PKSTART_ROUTINE)HookNTQVM, NULL);
 
 			break;
 		}
-		case Interface::PROTECT_MEMORY:
+		case Command::protect_memory:
 		{
 			auto msg = *(ProtectMemory*)system_buffer;
 
 			auto apc = Utils::AttachToProcess(msg.proc_id);
 
 			DWORD old_protection = 0;
+
 			SIZE_T size = msg.size;
 
-			auto status = ZwProtectVirtualMemory(
-				ZwCurrentProcess(),
-				(void**)&msg.address,
-				&size,
-				msg.memory_protection,
-				&old_protection
+			auto status = ZwProtectVirtualMemory(ZwCurrentProcess(), 
+				(void**)&msg.address, &size, msg.memory_protection, &old_protection);
+
+			KeUnstackDetachProcess(&apc);
+
+			DbgPrint("msg_id %i msg.address 0x%p msg.size %p, msg.memory_protection %d status 0x%p \n",
+				msg_id, msg.address, size, msg.memory_protection, status
 			);
 
-			KeUnstackDetachProcess(&apc);
-
-			DbgPrint("msg_id %i msg.address 0x%p msg.size %p, msg.memory_protection %d status 0x%p \n", msg_id, msg.address, size, msg.memory_protection, status);
-
 			break;
 		}
-		case Interface::START_THREAD:
-		{
-			auto msg = *(InvokeRemoteFunctionCmd*)request;
-
-			DbgPrint("receieved request %i start thread ProcessID %i msg.map_base %p \n", msg_id, msg.proc_id, msg.map_base);
-
-			auto apc = Utils::AttachToProcess(msg.proc_id);
-
-			UNICODE_STRING dxgi_name = RTL_CONSTANT_STRING(L"dxgi.dll");
-
-			auto dxgi = (uintptr_t)Utils::GetUserModule(PsGetCurrentProcess(), &dxgi_name);
-
-			auto present_address = Utils::FindPattern(
-				dxgi, PeHeader(dxgi)->OptionalHeader.SizeOfImage,
-				"\x48\x89\x74\x24\x00\x55\x57\x41\x56\x48\x8D\x6C\x24\x00\x48\x81\xEC\x00\x00\x00\x00\x48\x8B\x05\x00\x00\x00\x00\x48\x33\xC4\x48\x89\x45\x60", 35, 0x00
-			) - 5;
-
-			auto present_hk = Hooks::JmpRipCode{ present_address, msg.address };
-
-			auto dll_params = (DllParams*)msg.map_base;
-
-			dll_params->dll_size = msg.image_size;
-			dll_params->header = mapped_dll_header;
-			dll_params->swapchain_present_address = present_address;
-			dll_params->RtlAddFunctionTable_fn = msg.RtlAddFunctionTable_address;
-
-			// NPT hook on dxgi.dll!CDXGISwapChain::Present
-			ForteVisor::SetNptHook(present_address, present_hk.hook_code, present_hk.hook_size, entrypoint_npt_hook);
-
-			KeUnstackDetachProcess(&apc);
-
-			break;
-		}
-		case Interface::ALLOC_MEM:
-		{
-			auto msg = *(AllocMemCmd*)request;
-
-			DbgPrint("receieved request %i, process id %i size 0x%p \n", msg_id, msg.proc_id, msg.size);
-
-			uintptr_t address = NULL;
-
-			auto apc = Utils::AttachToProcess(msg.proc_id);
-
-			auto status = ZwAllocateVirtualMemory(
-				NtCurrentProcess(),
-				(void**)&address,
-				0,
-				(size_t*)&msg.size,
-				MEM_COMMIT | MEM_RESERVE,
-				PAGE_READWRITE
-			);
-
-			memset((void*)address, 0x00, msg.size);
-	
-			KeUnstackDetachProcess(&apc);
-
-			*(uintptr_t*)output_buffer = address;
-
-			break;
-		}
-		case Interface::MODULE_BASE:
+		case Command::module_base:
 		{
 			auto msg = *(GetModuleMsg*)request;
 
@@ -138,10 +68,12 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			auto apcstate = Utils::AttachToProcess(msg.proc_id);
 
-			UNICODE_STRING mod_name;
-			RtlInitUnicodeString(&mod_name, msg.module);
+			UNICODE_STRING module_name;
+
+			RtlInitUnicodeString(&module_name, msg.module);
 				
-			auto module_base = (void*)Utils::GetUserModule(IoGetCurrentProcess(), &mod_name);
+			auto module_base = (void*)Utils::GetUserModule(
+				IoGetCurrentProcess(), &module_name);
 
 			KeUnstackDetachProcess(&apcstate);
 
@@ -151,7 +83,7 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			break;
 		}
-		case Interface::SET_NPT_HOOK:
+		case Command::remote_npt_hook:
 		{
 			auto hook_cmd = *(NptHookMsg*)request;
 
@@ -165,28 +97,32 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			break;
 		}
-		case Interface::WRITE_MEM:
+		case Command::write_mem:
 		{
 			auto msg = (WriteCmd*)request;
 
-			auto status = Utils::WriteMem(msg->proc_id, msg->address, msg->buffer, msg->size);
+			auto status = Utils::WriteMem(
+				msg->proc_id, msg->address, msg->buffer, msg->size);
 
 			break;
 		}
-		case Interface::READ_MEM:
+		case Command::read_mem:
 		{
 			auto msg = (WriteCmd*)request;
 
-			auto status = Utils::ReadMem(msg->proc_id, msg->address, msg->buffer, msg->size);
-			DbgPrint("receieved request %i target_pid %i msg.address %p msg->buffer %p \n", msg_id, msg->proc_id, msg->address, msg->buffer);
+			auto status = Utils::ReadMem(
+				msg->proc_id, msg->address, msg->buffer, msg->size);
+
+			DbgPrint("receieved request %i target_pid %i msg.address %p msg->buffer %p \n", 
+				msg_id, msg->proc_id, msg->address, msg->buffer);
 
 			break;
 		}
-		case Interface::PROCESS_ID:
+		case Command::process_id:
 		{
 			auto msg = *(GetProcessIdMsg*)request;
 
-			int processid = Utils::ZwGetRunningSystemProcess(msg.process_name);
+			int processid = Utils::GetProcessIdFromname(msg.process_name);
 
 			*(int*)output_buffer = processid;
 
@@ -206,11 +142,8 @@ NTSTATUS DriverEntry(uintptr_t driver_base, uintptr_t driver_size)
 	Disasm::Init();
 	HANDLE thread_handle;
 
-	PsCreateSystemThread(
-		&thread_handle,
-		GENERIC_ALL, NULL, NULL, NULL,
-		(PKSTART_ROUTINE)Interface::Init,
-		NULL
+	PsCreateSystemThread(&thread_handle, GENERIC_ALL,
+		NULL, NULL, NULL, (PKSTART_ROUTINE)Command::Init, NULL
 	);
 
     return STATUS_SUCCESS;

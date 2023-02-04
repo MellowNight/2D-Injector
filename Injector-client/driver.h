@@ -11,19 +11,16 @@ namespace Driver
 {
 	extern HANDLE driver_handle;
 
-	enum messages : __int64
+	enum DRIVER_CMD : uint32_t
 	{
-		NONE,
-		START_THREAD,
-		ALLOC_MEM,
-		WRITE_MEM,
-		READ_MEM,
-		MODULE_BASE,
-		EXIT_CLEANUP,
-		SET_NPT_HOOK,
-		PROCESS_ID,
-		HIDE_MEMORY,
-		PROTECT_MEMORY
+		none,
+		write_mem,
+		read_mem,
+		module_base,
+		remote_npt_hook,
+		process_id,
+		hide_memory,
+		protect_memory
 	};
 
 	struct Msg
@@ -71,7 +68,7 @@ namespace Driver
 	{
 		int proc_id;
 		uintptr_t address;
-		BYTE* buffer;
+		uint8_t* buffer;
 		int size;
 	};
 
@@ -79,7 +76,7 @@ namespace Driver
 	{
 		int proc_id;
 		uintptr_t address;
-		BYTE* buffer;
+		uint8_t* buffer;
 		int size;
 	};
 
@@ -87,8 +84,8 @@ namespace Driver
 	{
 		int proc_id;
 		uintptr_t address;
-		ULONG memory_protection;
-		ULONG size;
+		uint32_t memory_protection;
+		uint32_t size;
 	};
 
 	struct HideMemoryCmd : Msg
@@ -102,11 +99,11 @@ namespace Driver
 
 	bool SetNptHook(int32_t proc_id, size_t size, uintptr_t hook_address, uint8_t* shellcode);
 
-	uintptr_t AllocateMemory(DWORD proc_id, DWORD size);
+	uintptr_t AllocateMemory(uint32_t proc_id, uint32_t size);
 
-	BOOL InvokeRemoteFunc(ULONG64 start_addr, int proc_id, uintptr_t params_addr, uintptr_t real_image_size);
+	BOOL InvokeRemoteFunc(uint64_t start_addr, int proc_id, uintptr_t params_addr, uintptr_t real_image_size);
 
-	bool WriteMem(int process_id, ULONG64 address, BYTE* buffer, int size);
+	bool WriteMem(int process_id, uint64_t address, uint8_t* buffer, int size);
 
 	uint64_t GetModuleBase(std::wstring module, int pid);
 
@@ -114,7 +111,7 @@ namespace Driver
 
 	void Init();
 
-	void ProtectMemory(int pid, uintptr_t address, DWORD memory_protection, ULONG size);
+	void ProtectMemory(int pid, uintptr_t address, uint32_t memory_protection, uint32_t size);
 
-	bool ReadMem(int process_id, ULONG64 address, uint8_t* buffer, int size);
+	bool ReadMem(int process_id, uint64_t address, uint8_t* buffer, int size);
 }

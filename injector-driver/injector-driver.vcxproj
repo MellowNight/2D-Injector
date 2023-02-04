@@ -181,13 +181,18 @@
   <ItemGroup>
     <ClInclude Include="communicate.h" />
     <ClInclude Include="disassembly.h" />
+    <ClInclude Include="hooking.h" />
     <ClInclude Include="hwid_spoof.h" />
     <ClInclude Include="hwid_structs.h" />
     <ClInclude Include="ia32.h" />
+    <ClInclude Include="ia32_define.h" />
     <ClInclude Include="includes.h" />
+    <ClInclude Include="kernel_exports.h" />
     <ClInclude Include="kernel_structs.h" />
     <ClInclude Include="memory_hiding.h" />
+    <ClInclude Include="offsets.h" />
     <ClInclude Include="pe_header.h" />
+    <ClInclude Include="spoofer_structs.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <ItemGroup>

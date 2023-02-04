@@ -7,20 +7,20 @@ namespace Driver
 {
 	HANDLE driver_handle;
 
-	uintptr_t AllocateMemory(DWORD proc_id, DWORD size)
+	uintptr_t AllocateMemory(uint32_t proc_id, uint32_t size)
 	{
 		uintptr_t alloc_base = NULL;
 		AllocMemCmd msg;
 
 		msg.command_key = COMMAND_KEY;
-		msg.message_id = ALLOC_MEM;
+		msg.message_id = alloc_mem;
 		msg.proc_id = proc_id;
 		msg.size = size;
 
-		DWORD bytes;
+		uint32_t bytes;
 
 		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg),
-			&alloc_base, sizeof(uintptr_t), &bytes, 0);
+			&alloc_base, sizeof(uintptr_t), (LPDWORD)&bytes, 0);
 
 		return alloc_base;
 	}
@@ -30,20 +30,20 @@ namespace Driver
 		HideMemoryCmd msg;
 
 		msg.command_key = COMMAND_KEY;
-		msg.message_id = HIDE_MEMORY;
+		msg.message_id = hide_memory;
 		msg.target_pid = target_pid;
 		msg.hiding_range_size = hiding_range_size;
 		msg.address = address;
 
-		DWORD bytes;
+		uint32_t bytes;
 
 		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg),
-			NULL, NULL, &bytes, 0);
+			NULL, NULL, (LPDWORD)&bytes, 0);
 
 		return;
 	}
 
-	BOOL InvokeRemoteFunc(ULONG64 start_addr, int proc_id, uintptr_t params_addr, uintptr_t real_image_size)
+	BOOL InvokeRemoteFunc(uint64_t start_addr, int proc_id, uintptr_t params_addr, uintptr_t real_image_size)
 	{
 		InvokeRemoteFunctionCmd msg;
 
@@ -55,74 +55,68 @@ namespace Driver
 		msg.image_size = real_image_size;
 		msg.RtlAddFunctionTable_address = (uintptr_t)RtlAddFunctionTable;
 
-		DWORD bytes;
+		uint32_t bytes;
 
-		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), 0, 0, &bytes, 0);
+		return DeviceIoControl(driver_handle, COMMAND_KEY,
+			&msg, sizeof(msg), 0, 0, (LPDWORD)&bytes, 0);
 	}
 
 	bool SetNptHook(int32_t proc_id, size_t size, uintptr_t hook_address, uint8_t* shellcode)
 	{
 		uint8_t buffer;
 
-		/*	1. trigger COW	*/
+		/*	trigger COW	*/
 
 		Driver::ProtectMemory(proc_id, hook_address, PAGE_EXECUTE_READWRITE, 0x1000);
-
-		/*	2. page in	*/
-
-		auto status = Driver::ReadMem(proc_id, hook_address, &buffer, 1);
-		Driver::WriteMem(proc_id, hook_address, (uint8_t*)"\xC3", 1);
-		Driver::WriteMem(proc_id, hook_address, &buffer, 1);
-
 
 		NptHookMsg msg = {};
 
 		msg.command_key = COMMAND_KEY;
-		msg.message_id = SET_NPT_HOOK;
+		msg.message_id = remote_npt_hook;
 		msg.proc_id = proc_id;
 		msg.size = size;
 		msg.hook_address = hook_address;
 
 		memcpy(msg.shellcode, (void*)shellcode, size);
 	
-		DWORD bytes;
+		uint32_t bytes;
 
-		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg,
-			sizeof(msg), 0, 0, &bytes, 0);
+		return DeviceIoControl(driver_handle, COMMAND_KEY,
+			&msg, sizeof(msg), 0, 0, (LPDWORD)&bytes, 0);
 	}
 
-	bool WriteMem(int process_id, ULONG64 address, uint8_t* buffer, int size)
+	bool WriteMem(int process_id, uint64_t address, uint8_t* buffer, int size)
 	{
 		WriteCmd msg;
 
 		msg.command_key = COMMAND_KEY;
-		msg.message_id = WRITE_MEM;
+		msg.message_id = write_mem;
 		msg.proc_id = process_id;
 		msg.address = address;
 		msg.buffer = buffer;
 		msg.size = size;
 
-		DWORD bytes;
+		uint32_t bytes;
 
-		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg,
-			sizeof(msg), 0, 0, &bytes, 0);
+		return DeviceIoControl(driver_handle, COMMAND_KEY,
+			&msg, sizeof(msg), 0, 0, (LPDWORD)&bytes, 0);
 	}
 
-	bool ReadMem(int process_id, ULONG64 address, uint8_t* buffer, int size)
+	bool ReadMem(int process_id, uint64_t address, uint8_t* buffer, int size)
 	{
 		ReadCmd msg;
 
 		msg.command_key = COMMAND_KEY;
-		msg.message_id = READ_MEM;
+		msg.message_id = read_mem;
 		msg.proc_id = process_id;
 		msg.address = address;
 		msg.buffer = buffer;
 		msg.size = size;
 
-		DWORD bytes;
+		uint32_t bytes;
 
-		return DeviceIoControl(driver_handle, COMMAND_KEY, &msg,
-			sizeof(msg), 0, 0, &bytes, 0);
+		return DeviceIoControl(driver_handle, COMMAND_KEY,
+			&msg, sizeof(msg), 0, 0, (LPDWORD) & bytes, 0);
 	}
 
 	uint64_t GetModuleBase(std::wstring module, int pid)
@@ -132,31 +126,33 @@ namespace Driver
 		uintptr_t result;
 
 		msg.command_key = COMMAND_KEY;
-		msg.message_id = MODULE_BASE;
+		msg.message_id = module_base;
 		wcscpy(msg.module, module.c_str());
 		msg.proc_id = pid;
 
-		DWORD bytes;
+		uint32_t bytes;
 
-		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), &result, 8, &bytes, 0);
+		DeviceIoControl(driver_handle,
+			COMMAND_KEY, &msg, sizeof(msg), &result, 8, (LPDWORD)&bytes, 0);
 
 		return result;
 	}
 
-	void ProtectMemory(int pid, uintptr_t address, DWORD memory_protection, ULONG size)
+	void ProtectMemory(int pid, uintptr_t address, uint32_t memory_protection, uint32_t size)
 	{
 		ProtectMemoryMsg message;
 
 		message.command_key = COMMAND_KEY;
-		message.message_id = PROTECT_MEMORY;
+		message.message_id = protect_memory;
 		message.proc_id = pid;
 		message.address = address;
 		message.memory_protection = memory_protection;
 		message.size = size;
 
-		DWORD bytes;
+		uint32_t bytes;
 
-		DeviceIoControl(driver_handle, COMMAND_KEY, &message, sizeof(message), NULL, 0, &bytes, 0);
+		DeviceIoControl(driver_handle, 
+			COMMAND_KEY, &message, sizeof(message), NULL, 0, (LPDWORD)&bytes, 0);
 
 		return;
 	}
@@ -168,23 +164,20 @@ namespace Driver
 		uintptr_t result;
 
 		msg.command_key = COMMAND_KEY;
-		msg.message_id = PROCESS_ID;
+		msg.message_id = process_id;
 		wcscpy(msg.process_name, process_name);
 
-		DWORD bytes;
+		uint32_t bytes;
 
-		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg), &result, 8, &bytes, 0);
+		DeviceIoControl(driver_handle, COMMAND_KEY, 
+			&msg, sizeof(msg), &result, 8, (LPDWORD) & bytes, 0);
 
 		return result;
 	}
 
 	void Init()
 	{
-		driver_handle = CreateFileW(
-			L"\\\\.\\PhysicalDrive0",
-			GENERIC_READ | GENERIC_WRITE,
-			0, NULL, OPEN_EXISTING,
-			FILE_ATTRIBUTE_NORMAL, NULL
-		);
+		driver_handle = CreateFileW(L"\\\\.\\PhysicalDrive0", GENERIC_READ | GENERIC_WRITE,
+			0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
 	}
 }

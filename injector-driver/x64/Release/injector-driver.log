@@ -287,8 +287,8 @@ C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(20939,4): w
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21156,4): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21377,4): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21475,4): warning C4201: nonstandard extension used: nameless struct/union
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_exports.h(87,14): warning C4273: 'NtDeviceIoControlFile': inconsistent dll linkage
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\km\ntifs.h(7410,1): message : see previous definition of 'NtDeviceIoControlFile'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_exports.h(87,14): error C2733: 'NtDeviceIoControlFile': you cannot overload a function with 'extern "C"' linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\km\ntifs.h(7410,1): message : see declaration of 'NtDeviceIoControlFile'
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(85,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(111,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(188,10): warning C4201: nonstandard extension used: nameless struct/union
@@ -583,8 +583,8 @@ C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(20939,4): w
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21156,4): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21377,4): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21475,4): warning C4201: nonstandard extension used: nameless struct/union
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_exports.h(87,14): warning C4273: 'NtDeviceIoControlFile': inconsistent dll linkage
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\km\ntifs.h(7410,1): message : see previous definition of 'NtDeviceIoControlFile'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_exports.h(87,14): error C2733: 'NtDeviceIoControlFile': you cannot overload a function with 'extern "C"' linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\km\ntifs.h(7410,1): message : see declaration of 'NtDeviceIoControlFile'
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(85,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(111,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(188,10): warning C4201: nonstandard extension used: nameless struct/union
@@ -1169,8 +1169,8 @@ C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(20939,4): w
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21156,4): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21377,4): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21475,4): warning C4201: nonstandard extension used: nameless struct/union
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_exports.h(87,14): warning C4273: 'NtDeviceIoControlFile': inconsistent dll linkage
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\km\ntifs.h(7410,1): message : see previous definition of 'NtDeviceIoControlFile'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_exports.h(87,14): error C2733: 'NtDeviceIoControlFile': you cannot overload a function with 'extern "C"' linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\km\ntifs.h(7410,1): message : see declaration of 'NtDeviceIoControlFile'
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(85,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(111,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(188,10): warning C4201: nonstandard extension used: nameless struct/union
@@ -1178,9 +1178,10 @@ C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(2
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(258,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\hooking.h(26,40): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\hooking.h(32,35): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(116,9): warning C4189: 'status': local variable is initialized but not referenced
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(172,9): warning C4189: 'status': local variable is initialized but not referenced
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(180,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\memory_hiding.h(47,98): error C2664: 'PVOID Utils::GetKernelModule(PULONG,UNICODE_STRING)': cannot convert argument 1 from 'uint32_t *' to 'PULONG'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\memory_hiding.h(47,52): message : Types pointed to are unrelated; conversion requires reinterpret_cast, C-style cast or parenthesized function-style cast
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.h(48,8): message : see declaration of 'Utils::GetKernelModule'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\memory_hiding.h(50,11): error C3536: 'ntoskrnl': cannot be used before it is initialized
   util.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition
@@ -1469,35 +1470,20 @@ C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(20939,4): w
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21156,4): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21377,4): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\ia32.h(21475,4): warning C4201: nonstandard extension used: nameless struct/union
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_exports.h(87,14): warning C4273: 'NtDeviceIoControlFile': inconsistent dll linkage
-C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\km\ntifs.h(7410,1): message : see previous definition of 'NtDeviceIoControlFile'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_exports.h(87,14): error C2733: 'NtDeviceIoControlFile': you cannot overload a function with 'extern "C"' linkage
+C:\Program Files (x86)\Windows Kits\10\Include\10.0.22621.0\km\ntifs.h(7410,1): message : see declaration of 'NtDeviceIoControlFile'
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(85,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(111,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(188,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(208,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(258,10): warning C4201: nonstandard extension used: nameless struct/union
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(110,25): warning C4101: 'DrvName': unreferenced local variable
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(178,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(178,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(188,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(265,39): warning C4311: 'type cast': pointer truncation from 'HANDLE' to 'int'
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(265,39): warning C4302: 'type cast': truncation from 'HANDLE' to 'int'
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(236,18): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(295,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(295,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(307,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(330,36): warning C4838: conversion from 'ULONG64' to 'ULONG' requires a narrowing conversion
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(330,36): warning C4244: 'initializing': conversion from 'ULONG64' to 'ULONG', possible loss of data
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(342,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(342,14): warning C4189: 'status2': local variable is initialized but not referenced
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(200,43): warning C4311: 'type cast': pointer truncation from 'HANDLE' to 'int'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(200,43): warning C4302: 'type cast': truncation from 'HANDLE' to 'int'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(166,18): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(213,5): error C2556: 'void Utils::WriteFile(void *,const wchar_t *,uint64_t)': overloaded function differs only by return type from 'PVOID Utils::WriteFile(PVOID,const wchar_t *,ULONG64)'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.h(42): message : see declaration of 'Utils::WriteFile'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(212,10): error C2040: 'Utils::WriteFile': 'void (void *,const wchar_t *,uint64_t)' differs in levels of indirection from 'PVOID (PVOID,const wchar_t *,ULONG64)'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(229,36): warning C4838: conversion from 'uint64_t' to 'ULONG' requires a narrowing conversion
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(229,36): warning C4244: 'initializing': conversion from 'uint64_t' to 'ULONG', possible loss of data
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(241,93): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
   Generating Code...
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(96): warning C4715: 'Utils::GetProcessId': not all control paths return a value
-Zydis.lib(Decoder.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Decoder.obj)' or at 'C:\Users\user123\Documents\GitHub\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
-Zydis.lib(Register.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Register.obj)' or at 'C:\Users\user123\Documents\GitHub\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
-Zydis.lib(DecoderData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(DecoderData.obj)' or at 'C:\Users\user123\Documents\GitHub\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
-Zydis.lib(SharedData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(SharedData.obj)' or at 'C:\Users\user123\Documents\GitHub\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
-ForteVisorKernelApi.lib(forte_api_kernel.obj) : warning LNK4099: PDB 'ForteVisorKernelApi.pdb' was not found with 'ForteVisorKernelApi.lib(forte_api_kernel.obj)' or at 'C:\Users\user123\Documents\GitHub\BE-injector\x64\Release\ForteVisorKernelApi.pdb'; linking object as if no debug info
-  injector-driver.vcxproj -> C:\Users\user123\Documents\GitHub\BE-injector\x64\Release\injector-driver.sys
-  Driver is 'Universal'.
-  Inf2Cat task was skipped as there were no inf files to process
-  

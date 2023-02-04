@@ -1,2 +1,0 @@
-﻿  Building 'injector-driver' with toolset 'WindowsKernelModeDriver10.0' and the 'Universal' target platform.
-C:\Program Files (x86)\Microsoft Visual Studio\2019\Community\MSBuild\Microsoft\VC\v160\Microsoft.CppBuild.targets(486,5): error MSB8040: Spectre-mitigated libraries are required for this project. Install them from the Visual Studio installer (Individual components tab) for any toolsets and architectures being used. Learn more: https://aka.ms/Ofhn4c

@@ -3,9 +3,7 @@
 #include "hooking.h"
 #include "hwid_spoof.h"
 
-void CommandHandler(void* system_buffer, void* output_buffer);
-
-namespace Interface
+namespace Command
 {
     Hooks::JmpRipCode ioctl_hk;
 
@@ -15,11 +13,11 @@ namespace Interface
             _In_opt_ PIO_APC_ROUTINE ApcRoutine,
             _In_opt_ PVOID ApcContext,
             _Out_ PIO_STATUS_BLOCK IoStatusBlock,
-            _In_ ULONG IoControlCode,
+            _In_ uint32_t IoControlCode,
             _In_reads_bytes_opt_(InputBufferLength) PVOID InputBuffer,
-            _In_ ULONG InputBufferLength,
+            _In_ uint32_t InputBufferLength,
             _Out_writes_bytes_opt_(OutputBufferLength) PVOID OutputBuffer,
-            _In_ ULONG OutputBufferLength
+            _In_ uint32_t OutputBufferLength
     )
     {
         auto msg_buffer = (Msg*)InputBuffer;
@@ -49,7 +47,7 @@ namespace Interface
         {
             DbgPrint("NtDeviceIoControlFile called from injector client! command_key %p \n", msg_buffer->command_key);
 
-            CommandHandler(InputBuffer, OutputBuffer);
+            CommandHandler((Msg*)InputBuffer, OutputBuffer);
         }
 
         return status;

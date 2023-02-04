@@ -37,7 +37,7 @@ typedef struct _IMAGE_DOS_HEADER {      // DOS .EXE header
 
 
 typedef struct _IMAGE_SECTION_HEADER {
-    BYTE  Name[8];
+    uint32_t  Name[8];
     union {
         DWORD PhysicalAddress;
         DWORD VirtualSize;
@@ -57,17 +57,17 @@ typedef struct _IMAGE_FILE_HEADER // Size=20
 {
     USHORT Machine;
     USHORT NumberOfSections;
-    ULONG TimeDateStamp;
-    ULONG PointerToSymbolTable;
-    ULONG NumberOfSymbols;
+    uint32_t TimeDateStamp;
+    uint32_t PointerToSymbolTable;
+    uint32_t NumberOfSymbols;
     USHORT SizeOfOptionalHeader;
     USHORT Characteristics;
 } IMAGE_FILE_HEADER, * PIMAGE_FILE_HEADER;
 
 typedef struct _IMAGE_DATA_DIRECTORY
 {
-    ULONG VirtualAddress;
-    ULONG Size;
+    uint32_t VirtualAddress;
+    uint32_t Size;
 } IMAGE_DATA_DIRECTORY, * PIMAGE_DATA_DIRECTORY;
 
 typedef struct _IMAGE_OPTIONAL_HEADER64
@@ -75,32 +75,32 @@ typedef struct _IMAGE_OPTIONAL_HEADER64
     USHORT Magic;
     UCHAR MajorLinkerVersion;
     UCHAR MinorLinkerVersion;
-    ULONG SizeOfCode;
-    ULONG SizeOfInitializedData;
-    ULONG SizeOfUninitializedData;
-    ULONG AddressOfEntryPoint;
-    ULONG BaseOfCode;
+    uint32_t SizeOfCode;
+    uint32_t SizeOfInitializedData;
+    uint32_t SizeOfUninitializedData;
+    uint32_t AddressOfEntryPoint;
+    uint32_t BaseOfCode;
     ULONGLONG ImageBase;
-    ULONG SectionAlignment;
-    ULONG FileAlignment;
+    uint32_t SectionAlignment;
+    uint32_t FileAlignment;
     USHORT MajorOperatingSystemVersion;
     USHORT MinorOperatingSystemVersion;
     USHORT MajorImageVersion;
     USHORT MinorImageVersion;
     USHORT MajorSubsystemVersion;
     USHORT MinorSubsystemVersion;
-    ULONG Win32VersionValue;
-    ULONG SizeOfImage;
-    ULONG SizeOfHeaders;
-    ULONG CheckSum;
+    uint32_t Win32VersionValue;
+    uint32_t SizeOfImage;
+    uint32_t SizeOfHeaders;
+    uint32_t CheckSum;
     USHORT Subsystem;
     USHORT DllCharacteristics;
     ULONGLONG SizeOfStackReserve;
     ULONGLONG SizeOfStackCommit;
     ULONGLONG SizeOfHeapReserve;
     ULONGLONG SizeOfHeapCommit;
-    ULONG LoaderFlags;
-    ULONG NumberOfRvaAndSizes;
+    uint32_t LoaderFlags;
+    uint32_t NumberOfRvaAndSizes;
     struct _IMAGE_DATA_DIRECTORY DataDirectory[IMAGE_NUMBEROF_DIRECTORY_ENTRIES];
 } IMAGE_OPTIONAL_HEADER64, * PIMAGE_OPTIONAL_HEADER64;
 
@@ -168,19 +168,19 @@ struct IMAGE_THUNK_DATA
 };
 
 typedef struct _SYSTEM_PROCESS_INFORMATION {
-	ULONG NextEntryOffset;
-	ULONG NumberOfThreads;
-	BYTE Reserved1[48];
+	uint32_t NextEntryOffset;
+	uint32_t NumberOfThreads;
+	uint32_t Reserved1[48];
 	UNICODE_STRING ImageName;
 	KPRIORITY BasePriority;
 	HANDLE UniqueProcessId;
 	PVOID Reserved2;
-	ULONG HandleCount;
-	ULONG SessionId;
+	uint32_t HandleCount;
+	uint32_t SessionId;
 	PVOID Reserved3;
 	SIZE_T PeakVirtualSize;
 	SIZE_T VirtualSize;
-	ULONG Reserved4;
+	uint32_t Reserved4;
 	SIZE_T PeakWorkingSetSize;
 	SIZE_T WorkingSetSize;
 	PVOID Reserved5;

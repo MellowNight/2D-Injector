@@ -7,7 +7,7 @@ extern "C"
             IN HANDLE ProcessHandle,
             IN OUT PVOID* BaseAddress,
             IN OUT SIZE_T* NumberOfBytesToProtect,
-            IN ULONG NewAccessProtection,
+            IN uint32_t NewAccessProtection,
             OUT PULONG OldAccessProtection
         );
 
@@ -20,8 +20,8 @@ extern "C"
         PLARGE_INTEGER SectionOffset, 
         PSIZE_T ViewSize,
         DWORD InheritDisposition, 
-        ULONG AllocationType, 
-        ULONG Win32Protect
+        uint32_t AllocationType, 
+        uint32_t Win32Protect
     );
 
     NTKERNELAPI  PPEB NTAPI PsGetProcessPeb(IN PEPROCESS Process);
@@ -34,13 +34,13 @@ extern "C"
         _In_ HANDLE ProcessHandle,
         _In_ PROCESSINFOCLASS ProcessInformationClass,
         _In_ PVOID ProcessInformation,
-        _In_ ULONG ProcessInformationLength
+        _In_ uint32_t ProcessInformationLength
     );
 
     NTSTATUS WINAPI ZwQuerySystemInformation(
         _In_      int SystemInformationClass,
         _Inout_   PVOID SystemInformation,
-        _In_      ULONG SystemInformationLength,
+        _In_      uint32_t SystemInformationLength,
         _Out_opt_ PULONG    ReturnLength
     );
 
@@ -66,7 +66,7 @@ extern "C"
             IN HANDLE ThreadHandle,
             IN THREADINFOCLASS ThreadInformationClass,
             OUT PVOID ThreadInformation,
-            IN ULONG ThreadInformationLength,
+            IN uint32_t ThreadInformationLength,
             OUT PULONG ReturnLength OPTIONAL
         );
 
@@ -75,7 +75,7 @@ extern "C"
         IN HANDLE ProcessHandle,
         IN PSECURITY_DESCRIPTOR SecurityDescriptor OPTIONAL,
         IN BOOLEAN CreateSuspended,
-        IN ULONG StackZeroBits OPTIONAL,
+        IN uint32_t StackZeroBits OPTIONAL,
         IN SIZE_T StackReserve OPTIONAL,
         IN SIZE_T StackCommit OPTIONAL,
         IN PVOID StartAddress,
@@ -90,11 +90,11 @@ extern "C"
         PIO_APC_ROUTINE  ApcRoutine,
         PVOID            ApcContext,
         PIO_STATUS_BLOCK IoStatusBlock,
-        ULONG            IoControlCode,
+        uint32_t            IoControlCode,
         PVOID            InputBuffer,
-        ULONG            InputBufferLength,
+        uint32_t            InputBufferLength,
         PVOID            OutputBuffer,
-        ULONG            OutputBufferLength
+        uint32_t            OutputBufferLength
     );
 
     const char* PsGetProcessImageFileName(PEPROCESS Process);

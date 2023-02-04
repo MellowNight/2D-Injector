@@ -95,103 +95,29 @@ namespace Utils
         }
     }
 
-    NTSTATUS UnlockPages(PMDL mdl)
+    void* GetKernelModule(size_t* out_size, UNICODE_STRING driver_name)
     {
-        MmUnlockPages(mdl);
-        IoFreeMdl(mdl);
+        auto module_list = (PLIST_ENTRY)PsLoadedModuleList;
 
-        return STATUS_SUCCESS;
-    }
-
-    PVOID GetKernelModule(OUT PULONG pSize, UNICODE_STRING DriverName)
-    {
-        PLIST_ENTRY moduleList = (PLIST_ENTRY)PsLoadedModuleList;
-
-        UNICODE_STRING  DrvName;
-
-        for (PLIST_ENTRY link = moduleList;
-            link != moduleList->Blink;
-            link = link->Flink)
+        for (auto link = module_list; link != module_list->Blink; link = link->Flink)
         {
             LDR_DATA_TABLE_ENTRY* entry = CONTAINING_RECORD(link, LDR_DATA_TABLE_ENTRY, InLoadOrderLinks);
 
-            if (RtlCompareUnicodeString(&DriverName, &entry->BaseDllName, false) == 0)
+            if (RtlCompareUnicodeString(
+                &driver_name, &entry->BaseDllName, false) == 0)
             {
-                DbgPrint("found module! %wZ at %p \n", &entry->BaseDllName, entry->DllBase);
-                if (pSize && MmIsAddressValid(pSize))
-                {
-                    *pSize = entry->SizeOfImage;
-                }
+                // DbgPrint("found module! %wZ at %p \n", &entry->BaseDllName, entry->DllBase);
 
+                if (out_size && MmIsAddressValid(out_size))
+                {
+                    *out_size = entry->SizeOfImage;
+                }
                 return entry->DllBase;
             }
         }
-
-        return 0;
     }
 
-    KIRQL DisableWP()
-    {
-        KIRQL	tempirql = KeRaiseIrqlToDpcLevel();
-
-        ULONG64  cr0 = __readcr0();
-
-        cr0 &= 0xfffffffffffeffff;
-
-        __writecr0(cr0);
-
-        _disable();
-
-        return tempirql;
-
-    }
-
-    void EnableWP(KIRQL	tempirql)
-    {
-        ULONG64	cr0 = __readcr0();
-
-        cr0 |= 0x10000;
-
-        _enable();
-
-        __writecr0(cr0);
-
-        KeLowerIrql(tempirql);
-    }
-
-    PVOID ReadFile(PVOID buffer, const wchar_t* FileName, ULONG64 size, HANDLE* hFile)
-    {
-        UNICODE_STRING     uniName;
-        OBJECT_ATTRIBUTES  objAttr;
-        IO_STATUS_BLOCK    ioStatusBlock;
-
-        RtlInitUnicodeString(&uniName, FileName);
-
-        InitializeObjectAttributes(
-            &objAttr, &uniName,
-            OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE,
-            NULL, NULL
-        );
-
-        NTSTATUS status = STATUS_SUCCESS;
-
-        LARGE_INTEGER FileSize = { size };
-
-        status = ZwOpenFile(hFile,
-            GENERIC_ALL, &objAttr,
-            &ioStatusBlock, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
-            FILE_NON_DIRECTORY_FILE
-        );
-        DbgPrint("status %p \n", status);
-        LARGE_INTEGER FileOffset = { 0 };
-
-        auto status2 = ZwReadFile(*hFile, NULL, NULL, NULL, &ioStatusBlock, buffer, FileSize.QuadPart, &FileOffset, 0);
-        DbgPrint("status2 %p \n", status2);
-
-        return buffer;
-    }
-
-    PVOID GetUserModule(IN PEPROCESS pProcess, IN PUNICODE_STRING ModuleName)
+    void* GetUserModule(PEPROCESS pProcess, PUNICODE_STRING ModuleName)
     {
         PPEB pPeb = PsGetProcessPeb(pProcess);
 
@@ -200,13 +126,13 @@ namespace Utils
             return NULL;
         }
 
-        // Still no loader
         if (!pPeb->Ldr)
         {
             return NULL;
         }
 
         // Search in InLoadOrderModuleList
+
         for (PLIST_ENTRY pListEntry = pPeb->Ldr->InLoadOrderModuleList.Flink;
             pListEntry != &pPeb->Ldr->InLoadOrderModuleList;
             pListEntry = pListEntry->Flink)
@@ -224,122 +150,95 @@ namespace Utils
         return NULL;
     }
 
-	int ZwGetRunningSystemProcess(LPWSTR ProcessName)
+    int32_t GetProcessIdFromName(const wchar_t* ProcessName)
 	{
-		ULONG cbBuffer = 0x8000; //32k
-		PVOID pSystemInfo;
+		uint32_t buffer_size = 0x8000; //32k
+
+		void* system_info;
+
 		NTSTATUS status;
-		PSYSTEM_PROCESS_INFORMATION pInfo;
+
 		//Allocate enough space for the search process
+
 		do
 		{
-			pSystemInfo = ExAllocatePool(NonPagedPool, cbBuffer);
-			if (pSystemInfo == NULL) //Failed to apply for space, return
+			system_info = ExAllocatePool(NonPagedPool, buffer_size);
+
+			if (system_info == NULL) //Failed to apply for space, return
 			{
 				return 1;
 			}
-			status = ZwQuerySystemInformation(SystemProcessInformation, pSystemInfo, cbBuffer, NULL);
+
+			status = ZwQuerySystemInformation(SystemProcessInformation, system_info, buffer_size, NULL);
+
 			if (status == STATUS_INFO_LENGTH_MISMATCH) //Insufficient space
 			{
-				ExFreePool(pSystemInfo);
-				cbBuffer *= 2;
+				ExFreePool(system_info);
+				buffer_size *= 2;
 			}
+
 			else if (!NT_SUCCESS(status))
 			{
-				ExFreePool(pSystemInfo);
+				ExFreePool(system_info);
 				return 1;
 			}
-		} while (status == STATUS_INFO_LENGTH_MISMATCH); //If there is not enough space, keep looping
-		pInfo = (PSYSTEM_PROCESS_INFORMATION)pSystemInfo; //Put the obtained information into pInfo
+		} 
+        while (status == STATUS_INFO_LENGTH_MISMATCH); //If there is not enough space, keep looping
+
+		auto proc_info = (PSYSTEM_PROCESS_INFORMATION)system_info; //Put the obtained information into pInfo
+
 		for (;;)
 		{
-			LPWSTR pszProcessName = pInfo->ImageName.Buffer;
-			if (pszProcessName == NULL)
+			wchar_t* process_name = proc_info->ImageName.Buffer;
+
+			if (process_name == NULL)
 			{
-				pszProcessName = L"NULL";
+				process_name = L"NULL";
 			}
 
-			if (wcscmp(pszProcessName, ProcessName) == 0)
+			if (wcscmp(process_name, ProcessName) == 0)
 			{
-				//DbgMessage("PID:%d, process name:%S\n", pInfo->UniqueProcessId, pszProcessName);
-				return (int)pInfo->UniqueProcessId;
+				return (int32_t)proc_info->UniqueProcessId;
 			}
 
-			if (pInfo->NextEntryOffset == 0) //== 0, indicating that the end of the process chain has been reached
+			if (proc_info->NextEntryOffset == 0) //== 0, indicating that the end of the process chain has been reached
 			{
 				break;
 			}
-			pInfo = (PSYSTEM_PROCESS_INFORMATION)(((PUCHAR)pInfo) + pInfo->NextEntryOffset); //Traversal
+
+			proc_info = (PSYSTEM_PROCESS_INFORMATION)((uint8_t*)proc_info + proc_info->NextEntryOffset); //Traversal
 		}
 		return 0;
 	}
 
-
-    PVOID WriteFile(PVOID buffer, const wchar_t* FileName, ULONG64 size)
+    void* WriteFile(void* buffer, const wchar_t* file_name, uint64_t size)
     {
-        UNICODE_STRING     uniName;
-        OBJECT_ATTRIBUTES  objAttr;
-        IO_STATUS_BLOCK    ioStatusBlock;
+        UNICODE_STRING unicode_name;
 
-        RtlInitUnicodeString(&uniName, FileName);
+        RtlInitUnicodeString(&unicode_name, file_name);
 
-        InitializeObjectAttributes(
-            &objAttr, &uniName,
-            OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE,
-            NULL, NULL
-        );
+        OBJECT_ATTRIBUTES  object_attrib;
 
-        NTSTATUS status = STATUS_SUCCESS;
-        HANDLE hFile;
+        InitializeObjectAttributes(&object_attrib,
+            &unicode_name, OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE, NULL, NULL);
 
-        LARGE_INTEGER FileSize = { size };
+        HANDLE hfile;
 
-        status = ZwOpenFile(&hFile,
-            GENERIC_ALL, &objAttr,
-            &ioStatusBlock, 
-            FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE,
-            FILE_NON_DIRECTORY_FILE
-        );
+        LARGE_INTEGER file_size = { size };
+
+        IO_STATUS_BLOCK    iosb;
+
+        auto status = ZwOpenFile(&hfile, GENERIC_ALL, 
+            &object_attrib, &iosb, FILE_SHARE_READ | FILE_SHARE_WRITE | FILE_SHARE_DELETE, FILE_NON_DIRECTORY_FILE);
+
         DbgPrint("status %p \n", status);
 
-        LARGE_INTEGER FileOffset = { 0 };
+        LARGE_INTEGER file_offset = { 0 };
 
-        auto status2 = ZwWriteFile(hFile, NULL, NULL, NULL, &ioStatusBlock, buffer, FileSize.QuadPart, &FileOffset, 0);
+        auto status2 = ZwWriteFile(hfile, 
+            NULL, NULL, NULL, &iosb, buffer, file_size.QuadPart, &file_offset, 0);
+
         DbgPrint("status2 %p \n", status2);
-
-        return buffer;
-    }
-
-    PVOID CreateFile(PVOID buffer, const wchar_t* FileName, ULONG64 size)
-    {
-        UNICODE_STRING     uniName;
-        OBJECT_ATTRIBUTES  objAttr;
-        IO_STATUS_BLOCK    ioStatusBlock;
-
-        RtlInitUnicodeString(&uniName, FileName);
-
-        InitializeObjectAttributes(
-            &objAttr, &uniName,
-            OBJ_CASE_INSENSITIVE | OBJ_KERNEL_HANDLE,
-            NULL, NULL
-        );
-
-        NTSTATUS status = STATUS_SUCCESS;
-        HANDLE hFile;
-
-        LARGE_INTEGER FileSize = { size };
-
-        status = ZwCreateFile(&hFile,
-            GENERIC_ALL, &objAttr,
-            &ioStatusBlock, &FileSize,
-            FILE_ATTRIBUTE_NORMAL, FILE_SHARE_WRITE | FILE_SHARE_READ,
-            FILE_SUPERSEDE, FILE_NON_DIRECTORY_FILE,
-            NULL, 0
-        );
-
-        LARGE_INTEGER FileOffset = { 0 };
-
-        auto status2 = ZwWriteFile(hFile, NULL, NULL, NULL, &ioStatusBlock, buffer, FileSize.QuadPart, &FileOffset, 0);
 
         return buffer;
     }
@@ -347,9 +246,11 @@ namespace Utils
     KAPC_STATE AttachToProcess(int32_t pid)
     {
         PEPROCESS process;
-        KAPC_STATE apc;
 
         PsLookupProcessByProcessId((HANDLE)pid, &process);
+
+        KAPC_STATE apc;
+
         KeStackAttachProcess(process, &apc);
 
         return apc;

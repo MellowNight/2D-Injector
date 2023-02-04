@@ -3,23 +3,20 @@
 
 #define COMMAND_KEY 0xDEADBEEF
 
-namespace Interface
+namespace Command
 {
 	extern PEPROCESS client;
 
-	enum messages : __int64
+	enum DRIVER_CMD : uint32_t
 	{
-		NONE,
-		START_THREAD,
-		ALLOC_MEM,
-		WRITE_MEM,
-		READ_MEM,
-		MODULE_BASE,
-		EXIT_CLEANUP,
-		SET_NPT_HOOK,
-		PROCESS_ID,
-		HIDE_MEMORY,
-		PROTECT_MEMORY
+		none,
+		write_mem,
+		read_mem,
+		module_base,
+		remote_npt_hook,
+		process_id,
+		hide_memory,
+		protect_memory
 	};
 
 	struct Msg
@@ -68,8 +65,8 @@ namespace Interface
 	{
 		int proc_id;
 		uintptr_t address;
-		ULONG memory_protection;
-		ULONG size;
+		uint32_t memory_protection;
+		uint32_t size;
 	};
 
 	struct WriteCmd : Msg
@@ -84,7 +81,7 @@ namespace Interface
 	{
 		int proc_id;
 		uintptr_t address;
-		BYTE* buffer;
+		uint32_t* buffer;
 		int size;
 	};
 
@@ -96,4 +93,6 @@ namespace Interface
 	};
 
 	bool Init();
+
+	void CommandHandler(Msg* system_buffer, void* output_buffer);
 }
