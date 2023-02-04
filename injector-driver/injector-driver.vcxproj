@@ -185,7 +185,6 @@
     <ClInclude Include="hwid_spoof.h" />
     <ClInclude Include="hwid_structs.h" />
     <ClInclude Include="ia32.h" />
-    <ClInclude Include="ia32_define.h" />
     <ClInclude Include="includes.h" />
     <ClInclude Include="kernel_exports.h" />
     <ClInclude Include="kernel_structs.h" />
