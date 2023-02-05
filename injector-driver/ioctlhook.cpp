@@ -1,5 +1,5 @@
 #include "communicate.h"
-#include "forte_api_kernel.h"
+#include "aethervisor_kernel.h"
 #include "hooking.h"
 #include "hwid_spoof.h"
 
@@ -56,11 +56,13 @@ namespace Command
 	bool Init()
 	{
         UNICODE_STRING NtDeviceIoControlFile_name = RTL_CONSTANT_STRING(L"NtDeviceIoControlFile");
+
         auto NtDeviceIoControl = MmGetSystemRoutineAddress(&NtDeviceIoControlFile_name);
 
         ioctl_hk = Hooks::JmpRipCode{ (uintptr_t)NtDeviceIoControl, (uintptr_t)NtDeviceIoControlFile_handler };
 
-        ForteVisor::SetNptHook((uintptr_t)NtDeviceIoControl, (uint8_t*)ioctl_hk.hook_code, ioctl_hk.hook_size, NULL);
+        AetherVisor::NptHook::Set(
+            (uintptr_t)NtDeviceIoControl, (uint8_t*)ioctl_hk.hook_code, ioctl_hk.hook_size);
 
         return true;
 	}

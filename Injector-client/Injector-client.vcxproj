@@ -21,6 +21,7 @@
   <ItemGroup>
     <ClInclude Include="driver.h" />
     <ClInclude Include="includes.h" />
+    <ClInclude Include="injection_info.h" />
     <ClInclude Include="utils.h" />
     <ClInclude Include="manual_map.h" />
   </ItemGroup>

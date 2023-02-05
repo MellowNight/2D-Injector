@@ -99,10 +99,6 @@ namespace Driver
 
 	bool SetNptHook(int32_t proc_id, size_t size, uintptr_t hook_address, uint8_t* shellcode);
 
-	uintptr_t AllocateMemory(uint32_t proc_id, uint32_t size);
-
-	BOOL InvokeRemoteFunc(uint64_t start_addr, int proc_id, uintptr_t params_addr, uintptr_t real_image_size);
-
 	bool WriteMem(int process_id, uint64_t address, uint8_t* buffer, int size);
 
 	uint64_t GetModuleBase(std::wstring module, int pid);

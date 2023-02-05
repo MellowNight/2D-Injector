@@ -146,7 +146,7 @@
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
       <TreatWarningAsError>false</TreatWarningAsError>
-      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\Zydis\include;$(SolutionDir)dependencies\ForteVisor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(SolutionDir)dependencies\Zydis\include;$(SolutionDir)dependencies\AetherVisor\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>ZYCORE_STATIC_BUILD;ZYDIS_STATIC_BUILD;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <BufferSecurityCheck>false</BufferSecurityCheck>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -155,8 +155,8 @@
     <Link>
       <EntryPointSymbol>MapperEntry</EntryPointSymbol>
       <GenerateMapFile>true</GenerateMapFile>
-      <AdditionalDependencies>Zycore.lib;Zydis.lib;ForteVisorKernelApi.lib;%(AdditionalDependencies)</AdditionalDependencies>
-      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\Zydis\lib\ReleaseKernel\;$(SolutionDir)dependencies\ForteVisor\lib\Kernel\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>Zycore.lib;Zydis.lib;AetherVisor-lib-kernel.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>$(SolutionDir)dependencies\Zydis\lib\ReleaseKernel\;$(SolutionDir)dependencies\AetherVisor\lib\$(Configuration);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <TreatLinkerWarningAsErrors>false</TreatLinkerWarningAsErrors>
     </Link>
   </ItemDefinitionGroup>

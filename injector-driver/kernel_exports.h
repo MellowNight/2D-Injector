@@ -84,18 +84,19 @@ extern "C"
         PCLIENT_ID ClientId OPTIONAL
     );
 
-    NTSTATUS NtDeviceIoControlFile(
-        HANDLE           FileHandle,
-        HANDLE           Event,
-        PIO_APC_ROUTINE  ApcRoutine,
-        PVOID            ApcContext,
-        PIO_STATUS_BLOCK IoStatusBlock,
-        uint32_t            IoControlCode,
-        PVOID            InputBuffer,
-        uint32_t            InputBufferLength,
-        PVOID            OutputBuffer,
-        uint32_t            OutputBufferLength
-    );
+    //NTSTATUS NtDeviceIoControlFile (
+    //    HANDLE           FileHandle,
+    //    HANDLE           Event,
+    //    PIO_APC_ROUTINE  ApcRoutine,
+    //    PVOID            ApcContext,
+    //    PIO_STATUS_BLOCK IoStatusBlock,
+    //    uint32_t            IoControlCode,
+    //    PVOID            InputBuffer,
+    //    uint32_t            InputBufferLength,
+    //    PVOID            OutputBuffer,
+    //    uint32_t            OutputBufferLength
+    //);
+    //
 
     const char* PsGetProcessImageFileName(PEPROCESS Process);
 

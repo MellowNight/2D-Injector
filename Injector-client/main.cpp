@@ -1,20 +1,9 @@
 #include "driver.h"
 #include "manual_map.h"
 #include "utils.h"
+#include "injection_info.h"
 #include <iostream>
 #include <vector>
-
-struct DllParams
-{
-	uintptr_t module_base;
-};
-
-#define HOST_DLL_PATH	"C:\\Program Files (x86)\\Overwolf\\0.204.0.1\\OWClient.dll"
-#define HOST_DLL_NAME	"OWClient.dll"
-#define ENTRYPOINT_NAME	"HookEntryPoint"
-
-#define FLS_CALLBACK_PATCH_OFFSET 0x1B7C10
-#define ACRT_LOCALE_RELEASE_OFFSET 0x1C47BC
 
 void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8_t* entry_address)
 {
@@ -85,7 +74,7 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 
 		auto dll_entrypoint = PeHeader(host_dll_handle)->OptionalHeader.AddressOfEntryPoint + host_dll_handle;
 
-		Driver::SetNptHook(pid, 3, (uintptr_t)dll_entrypoint, (uint32_t*)"\xb0\x01\xC3");
+		Driver::SetNptHook(pid, 3, (uintptr_t)dll_entrypoint, (uint8_t*)"\xb0\x01\xC3");
 
 		entrypoint_patched = true;
 	}
@@ -93,7 +82,7 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 
 uintptr_t LoadSignedHostDLL(int32_t pid, const char* signed_dll_name)
 {
-	/*	use Overwolf's DLL to host our payload	*/
+	/*	First, Load the host DLL (OWClient.dll) in our process 	*/
 
 	auto host_dll = (uintptr_t)LoadLibraryExA(
 		signed_dll_name, nullptr, DONT_RESOLVE_DLL_REFERENCES);
@@ -106,18 +95,22 @@ uintptr_t LoadSignedHostDLL(int32_t pid, const char* signed_dll_name)
 	{
 	}
 
-	/*	Spam execute a ret using SetWindowsHookEx in target process to load the signed DLL in the target process	*/
+	/*	Execute a ret using SetWindowsHookEx in target process to load the signed DLL in the target process	*/
 
 	InvokeSignedDllRemoteFunction(pid, host_dll, (uint8_t*)ret_byte);
 
-	return Driver::GetModuleBase(L"OWClient.dll", pid);
+	auto s2ws = std::string(HOST_DLL_NAME);
+
+	return Driver::GetModuleBase(std::wstring(s2ws.begin(), s2ws.end()), pid);
 }
 
 extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_payload_dll, const char* entrypoint_name, const char* signed_dll_name)
 {
 	Driver::Init();
 
-	/* We will be stealthily mapping our payload inside the NPT shadow pages of a signed DLL */
+	/* We will be stealthily mapping our payload inside the NPT shadow pages of a signed DLL. 
+	*  payload_base will be changed later ofc	
+	*/
 
 	auto payload_base = LoadSignedHostDLL(pid, signed_dll_name);
 
@@ -157,8 +150,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_pa
 
 	uint8_t* payload_mapped = NULL;
 
-	PE::RemapImage(
-		raw_payload_dll, &payload_mapped, pid, payload_base);
+	PE::RemapImage(raw_payload_dll, &payload_mapped, pid, payload_base);
 
 	std::cout << std::hex << " payload_base 0x" << payload_base << std::endl;
 	std::cout << std::hex << " payload_base offset from DLL: +0x" << payload_base - host_dll_base << std::endl;
@@ -207,20 +199,29 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_pa
 
 	/*	write DLL parameters	*/
 
-	DllParams params;
+	DllParams params = {
 
-	params.module_base = payload_base;
+		params.header = INJECTOR_CONSTANTS::mapped_dll_header,
+		params.dll_base = host_dll_base,
+		params.dll_size = PeHeader(host_dll_base)->OptionalHeader.SizeOfImage,
+		params.payload_dll_base = payload_base,
+		params.payload_dll_size = payload_size,
 
-	auto params_location = Driver::AllocateMemory(pid, sizeof(DllParams));
+		params.o_present_bytes_size = 0,
+	};
+
+	/*	Pass the DLL parameters to the end of the payload DLL, in the .data section of the host DLL	*/
+
+	auto params_location = params.payload_dll_base + params.payload_dll_size;
 
 	auto params_export = (uintptr_t)PE::GetExport(
 		(uintptr_t)payload_mapped, "dll_params");
 
 	Driver::WriteMem(pid, 
-		params_location, (uint32_t*)&params, sizeof(params));
+		params_location, (uint8_t*)&params, sizeof(params));
 
 	Driver::WriteMem(pid, 
-		payload_base + params_export, (uint32_t*)&params_location, sizeof(DllParams*));
+		payload_base + params_export, (uint8_t*)&params_location, sizeof(DllParams*));
 
 
 	/*	invoke the entry point	*/

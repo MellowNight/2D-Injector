@@ -39,24 +39,20 @@ namespace Utils
 		const char* process_name
 	);
 
-	PVOID WriteFile(
-		PVOID buffer, 
-		const wchar_t* FileName, 
-		ULONG64 size
+	void* WriteFile(
+		void* buffer,
+		const wchar_t* file_name,
+		uint64_t size
 	);
 
-	PVOID GetKernelModule(
-		OUT PULONG pSize, 
-		UNICODE_STRING DriverName
+	void* GetKernelModule(
+		size_t* out_size,
+		UNICODE_STRING driver_name
 	);
 
-	PVOID GetUserModule(
-		IN PEPROCESS pProcess, 
-		IN PUNICODE_STRING ModuleName
-	);
-
-	int GetProcessIdFromname(
-		LPWSTR ProcessName
+	void* GetUserModule(
+		PEPROCESS pProcess,
+		PUNICODE_STRING ModuleName
 	);
 
 	inline PMDL LockPages(PVOID VirtualAddress, LOCK_OPERATION  operation, int size = PAGE_SIZE)

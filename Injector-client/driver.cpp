@@ -6,25 +6,7 @@
 namespace Driver
 {
 	HANDLE driver_handle;
-
-	uintptr_t AllocateMemory(uint32_t proc_id, uint32_t size)
-	{
-		uintptr_t alloc_base = NULL;
-		AllocMemCmd msg;
-
-		msg.command_key = COMMAND_KEY;
-		msg.message_id = alloc_mem;
-		msg.proc_id = proc_id;
-		msg.size = size;
-
-		uint32_t bytes;
-
-		DeviceIoControl(driver_handle, COMMAND_KEY, &msg, sizeof(msg),
-			&alloc_base, sizeof(uintptr_t), (LPDWORD)&bytes, 0);
-
-		return alloc_base;
-	}
-
+	
 	void HideMemory(int32_t target_pid, uintptr_t address, uintptr_t hiding_range_size)
 	{
 		HideMemoryCmd msg;
@@ -41,24 +23,6 @@ namespace Driver
 			NULL, NULL, (LPDWORD)&bytes, 0);
 
 		return;
-	}
-
-	BOOL InvokeRemoteFunc(uint64_t start_addr, int proc_id, uintptr_t params_addr, uintptr_t real_image_size)
-	{
-		InvokeRemoteFunctionCmd msg;
-
-		msg.command_key = COMMAND_KEY;
-		msg.message_id = START_THREAD;
-		msg.proc_id = proc_id;
-		msg.address = start_addr;	// thread addr
-		msg.map_base = params_addr;	// to pass custom parameters to mapped DLL
-		msg.image_size = real_image_size;
-		msg.RtlAddFunctionTable_address = (uintptr_t)RtlAddFunctionTable;
-
-		uint32_t bytes;
-
-		return DeviceIoControl(driver_handle, COMMAND_KEY,
-			&msg, sizeof(msg), 0, 0, (LPDWORD)&bytes, 0);
 	}
 
 	bool SetNptHook(int32_t proc_id, size_t size, uintptr_t hook_address, uint8_t* shellcode)

@@ -1,6 +1,6 @@
 #pragma once
 #include "includes.h"
-#include "forte_api_kernel.h"
+#include "aethervisor_kernel.h"
 #include "hooking.h"
 #include "util.h"
 
@@ -42,7 +42,7 @@ NTSTATUS NTAPI NtQueryVirtualMemory_Hook(
 
 void HookNTQVM()
 {
-	uint32_t nt_size = 0;
+	size_t nt_size = 0;
 
 	auto ntoskrnl = (uintptr_t)Utils::GetKernelModule(&nt_size, RTL_CONSTANT_STRING(L"ntoskrnl.exe"));
 
@@ -53,6 +53,6 @@ void HookNTQVM()
 
 	ntqvm_hook = Hooks::JmpRipCode{ ntqvm, (uintptr_t)NtQueryVirtualMemory_Hook };
 
-	ForteVisor::SetNptHook(
-		(uintptr_t)ntqvm, (uint8_t*)ntqvm_hook.hook_code, ntqvm_hook.hook_size, NULL);
+	AetherVisor::NptHook::Set(
+		(uintptr_t)ntqvm, (uint8_t*)ntqvm_hook.hook_code, ntqvm_hook.hook_size);
 }

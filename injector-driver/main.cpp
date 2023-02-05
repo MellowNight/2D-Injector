@@ -2,7 +2,6 @@
 #include "disassembly.h"
 #include "kernel_structs.h"
 #include "hooking.h"
-#include "forte_api_kernel.h"
 #include "util.h"
 #include "memory_hiding.h"
 
@@ -72,8 +71,8 @@ void CommandHandler(Msg* system_buffer, void* output_buffer)
 
 			RtlInitUnicodeString(&module_name, msg.module);
 				
-			auto module_base = (void*)Utils::GetUserModule(
-				IoGetCurrentProcess(), &module_name);
+			auto module_base = 
+				(void*)Utils::GetUserModule(IoGetCurrentProcess(), &module_name);
 
 			KeUnstackDetachProcess(&apcstate);
 
@@ -87,11 +86,13 @@ void CommandHandler(Msg* system_buffer, void* output_buffer)
 		{
 			auto hook_cmd = *(NptHookMsg*)request;
 
-			DbgPrint("receieved request %i hook_cmd.shellcode 0x%p hook_cmd.size %i \n", hook_cmd.message_id, hook_cmd.shellcode, hook_cmd.size);
+			DbgPrint(
+				"receieved request %i hook_cmd.shellcode 0x%p hook_cmd.size %i \n", hook_cmd.message_id, hook_cmd.shellcode, hook_cmd.size);
 
 			auto apcstate = Utils::AttachToProcess(hook_cmd.proc_id);
 
-			ForteVisor::SetNptHook(hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size, NULL);
+			AetherVisor::NptHook::Set(
+				hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size);
 
 			KeUnstackDetachProcess(&apcstate);
 
@@ -122,7 +123,16 @@ void CommandHandler(Msg* system_buffer, void* output_buffer)
 		{
 			auto msg = *(GetProcessIdMsg*)request;
 
-			int processid = Utils::GetProcessIdFromname(msg.process_name);
+			UNICODE_STRING uni_name;
+
+			ANSI_STRING	ansi_name;
+
+			RtlInitUnicodeString(&uni_name, msg.process_name);
+
+			RtlUnicodeStringToAnsiString(&ansi_name, &uni_name, TRUE);
+
+
+			auto processid = (int)Utils::GetProcessId(ansi_name.Buffer);
 
 			*(int*)output_buffer = processid;
 
