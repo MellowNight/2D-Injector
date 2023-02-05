@@ -95,7 +95,7 @@ void CommandHandler(Msg* system_buffer, void* output_buffer)
 				hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size);
 
 			KeUnstackDetachProcess(&apcstate);
-			r
+			rtt
 			break;
 		}
 		case Command::write_mem:
