@@ -47,7 +47,7 @@ namespace Command
         {
             DbgPrint("NtDeviceIoControlFile called from injector client! command_key %p \n", msg_buffer->command_key);
 
-            CommandHandler((Msg*)InputBuffer, OutputBuffer);
+            Handler((Msg*)InputBuffer, OutputBuffer);
         }
 
         return status;

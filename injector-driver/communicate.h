@@ -94,5 +94,5 @@ namespace Command
 
 	bool Init();
 
-	void CommandHandler(Msg* system_buffer, void* output_buffer);
+	void Handler(Msg* system_buffer, void* output_buffer);
 }

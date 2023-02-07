@@ -12,15 +12,13 @@ enum INJECTOR_CONSTANTS
 
 using namespace Command;
 
-void CommandHandler(Msg* system_buffer, void* output_buffer)
+void Command::Handler(Msg* system_buffer, void* output_buffer)
 {
-	auto request = (Msg*)system_buffer;
-
-	auto msg_id = request->message_id;
+	auto msg_id = system_buffer->message_id;
 
 	DbgPrint("msg_id %i \n", msg_id);
 
-	switch (request->message_id)
+	switch (system_buffer->message_id)
 	{
 		case Command::hide_memory:
 		{	
@@ -61,7 +59,7 @@ void CommandHandler(Msg* system_buffer, void* output_buffer)
 		}
 		case Command::module_base:
 		{
-			auto msg = *(GetModuleMsg*)request;
+			auto msg = *(GetModuleMsg*)system_buffer;
 
 			DbgPrint("receieved request %i module name %ws\n", msg_id, msg.module);
 
@@ -84,7 +82,7 @@ void CommandHandler(Msg* system_buffer, void* output_buffer)
 		}
 		case Command::remote_npt_hook:
 		{
-			auto hook_cmd = *(NptHookMsg*)request;
+			auto hook_cmd = *(NptHookMsg*)system_buffer;
 
 			DbgPrint(
 				"receieved request %i hook_cmd.shellcode 0x%p hook_cmd.size %i \n", hook_cmd.message_id, hook_cmd.shellcode, hook_cmd.size);
@@ -95,12 +93,12 @@ void CommandHandler(Msg* system_buffer, void* output_buffer)
 				hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size);
 
 			KeUnstackDetachProcess(&apcstate);
-			rtt
+			
 			break;
 		}
 		case Command::write_mem:
 		{
-			auto msg = (WriteCmd*)request;
+			auto msg = (WriteCmd*)system_buffer;
 
 			auto status = Utils::WriteMem(
 				msg->proc_id, msg->address, msg->buffer, msg->size);
@@ -109,10 +107,10 @@ void CommandHandler(Msg* system_buffer, void* output_buffer)
 		}
 		case Command::read_mem:
 		{
-			auto msg = (WriteCmd*)request;
+			auto msg = (WriteCmd*)system_buffer;
 
-			auto status = Utils::ReadMem(
-				msg->proc_id, msg->address, msg->buffer, msg->size);
+			auto status = 
+				Utils::ReadMem(msg->proc_id, msg->address, msg->buffer, msg->size);
 
 			DbgPrint("receieved request %i target_pid %i msg.address %p msg->buffer %p \n", 
 				msg_id, msg->proc_id, msg->address, msg->buffer);
@@ -121,7 +119,7 @@ void CommandHandler(Msg* system_buffer, void* output_buffer)
 		}
 		case Command::process_id:
 		{
-			auto msg = *(GetProcessIdMsg*)request;
+			auto msg = *(GetProcessIdMsg*)system_buffer;
 
 			UNICODE_STRING uni_name;
 
@@ -130,7 +128,6 @@ void CommandHandler(Msg* system_buffer, void* output_buffer)
 			RtlInitUnicodeString(&uni_name, msg.process_name);
 
 			RtlUnicodeStringToAnsiString(&ansi_name, &uni_name, TRUE);
-
 
 			auto processid = (int)Utils::GetProcessId(ansi_name.Buffer);
 
@@ -150,6 +147,7 @@ NTSTATUS DriverEntry(uintptr_t driver_base, uintptr_t driver_size)
 	DbgPrint("hello, driver_base %p, driver_size %p \n", driver_base, driver_size);
 
 	Disasm::Init();
+
 	HANDLE thread_handle;
 
 	PsCreateSystemThread(&thread_handle, GENERIC_ALL,
