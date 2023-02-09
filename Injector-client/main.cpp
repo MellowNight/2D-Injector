@@ -182,7 +182,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(
 		(our .text section is probably NPT mapped into .rdata section of the host DLL)
 	*/
 
-	Driver::HideMemory(pid, payload_base, payload_rdata->VirtualAddress);
+	// Driver::HideMemory(pid, payload_base, payload_rdata->VirtualAddress);
 
 
 	/*	write the rest of the data after .rdata	*/
@@ -217,7 +217,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(
 	};
 
 	/*	Place the DLL parameters in the alignment of the .rdata section of the host DLL	*/
-
+	DLL PARAMS ARE INVISIBLE TO SHADOW NCR3 IF YOU WRITE THEM NORMALLY!!!!!!!!!!!!!!!!!!! MUST CHANGE ADDRESS
 	auto params_location = payload_base + payload_rdata->VirtualAddress - sizeof(DllParams);
 
 	auto params_export = (uintptr_t)PE::GetExport((uintptr_t)payload_mapped, "dll_params");
