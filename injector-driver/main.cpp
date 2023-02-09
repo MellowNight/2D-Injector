@@ -31,8 +31,8 @@ void Command::Handler(Msg* system_buffer, void* output_buffer)
 
 			HANDLE hthread;
 
-			PsCreateSystemThread(&hthread, THREAD_ALL_ACCESS,
-				NULL, NULL, NULL, (PKSTART_ROUTINE)HookNTQVM, NULL);
+			PsCreateSystemThread(&hthread,
+				THREAD_ALL_ACCESS, NULL, NULL, NULL, (PKSTART_ROUTINE)HookNTQVM, NULL);
 
 			break;
 		}
@@ -52,8 +52,7 @@ void Command::Handler(Msg* system_buffer, void* output_buffer)
 			KeUnstackDetachProcess(&apc);
 
 			DbgPrint("msg_id %i msg.address 0x%p msg.size %p, msg.memory_protection %d status 0x%p \n",
-				msg_id, msg.address, size, msg.memory_protection, status
-			);
+				msg_id, msg.address, size, msg.memory_protection, status);
 
 			break;
 		}
@@ -89,8 +88,7 @@ void Command::Handler(Msg* system_buffer, void* output_buffer)
 
 			auto apcstate = Utils::AttachToProcess(hook_cmd.proc_id);
 
-			AetherVisor::NptHook::Set(
-				hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size);
+			AetherVisor::NptHook::Set(hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size);
 
 			KeUnstackDetachProcess(&apcstate);
 			
@@ -100,8 +98,7 @@ void Command::Handler(Msg* system_buffer, void* output_buffer)
 		{
 			auto msg = (WriteCmd*)system_buffer;
 
-			auto status = Utils::WriteMem(
-				msg->proc_id, msg->address, msg->buffer, msg->size);
+			auto status = Utils::WriteMem(msg->proc_id, msg->address, msg->buffer, msg->size);
 
 			break;
 		}
@@ -150,9 +147,8 @@ NTSTATUS DriverEntry(uintptr_t driver_base, uintptr_t driver_size)
 
 	HANDLE thread_handle;
 
-	PsCreateSystemThread(&thread_handle, GENERIC_ALL,
-		NULL, NULL, NULL, (PKSTART_ROUTINE)Command::Init, NULL
-	);
+	PsCreateSystemThread(&thread_handle, 
+		GENERIC_ALL, NULL, NULL, NULL, (PKSTART_ROUTINE)Command::Init, NULL);
 
     return STATUS_SUCCESS;
 }

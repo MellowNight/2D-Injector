@@ -4,6 +4,7 @@
 #include "injection_info.h"
 #include <iostream>
 #include <vector>
+#include <assert.h>
 
 void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8_t* entry_address)
 {
@@ -104,7 +105,11 @@ uintptr_t LoadSignedHostDLL(int32_t pid, const char* signed_dll_name)
 	return Driver::GetModuleBase(std::wstring(s2ws.begin(), s2ws.end()), pid);
 }
 
-extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_payload_dll, const char* entrypoint_name, const char* signed_dll_name)
+extern "C" __declspec(dllexport) int InjectDLLBytes(
+	int32_t pid,
+	uint8_t* raw_payload_dll, 
+	const char* entrypoint_name,
+	const char* signed_dll_name)
 {
 	Driver::Init();
 
@@ -112,39 +117,37 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_pa
 	*  payload_base will be changed later ofc	
 	*/
 
-	auto payload_base = LoadSignedHostDLL(pid, signed_dll_name);
+	auto host_dll_base = LoadSignedHostDLL(pid, signed_dll_name);
 
-	auto host_dll_base = payload_base;
+	auto payload_base = host_dll_base;
 
-	/*	align .rdata section of our own DLL with the .data section of the host DLL, because we can't hide .rdata strings
+
+	/*	align .rdata section of our own DLL with the .data section of the host DLL, because can't hide .rdata strings
 	* 
 	*	All data after the beginning of .rdata will be normally written to the .data section of host DLL.
 	*/
 
-	uintptr_t rdata_offset = 0;
 
-	auto section = (IMAGE_SECTION_HEADER*)(PeHeader(raw_payload_dll) + 1);
+	auto host_data_section = PE::GetSection((uint8_t*)host_dll_base, ".data");
+	
+	payload_base += host_data_section->VirtualAddress;
 
-	for (int i = 0; i < PeHeader(raw_payload_dll)->FileHeader.NumberOfSections; ++i)
-	{
-		if (!strcmp(".rdata", (char*)section[i].Name))
-		{
-			rdata_offset = section[i].VirtualAddress;
-		}
-	}
+	auto payload_rdata = PE::GetSection(raw_payload_dll, ".rdata");
 
-	section = (IMAGE_SECTION_HEADER*)(PeHeader(host_dll_base) + 1);
+	payload_base -= payload_rdata->VirtualAddress;
 
-	auto pe_header = PeHeader(raw_payload_dll);
 
-	for (int i = 0; i < PeHeader(host_dll_base)->FileHeader.NumberOfSections; ++i)
-	{
-		if (!strcmp(".data", (char*)section[i].Name))
-		{
-			payload_base += section[i].VirtualAddress;			
-			payload_base -= rdata_offset;
-		}
-	}
+	/*	We will be putting our DLL parameters in section alignment of .data	*/
+
+	auto payload_data_section = PE::GetSection(raw_payload_dll, ".data");
+
+
+	/*	Make sure HOST .DATA SECTION is large enough to fit PAYLOAD .DATA + .RDATA!!!! (payload .pdata is actually not needed)	*/
+
+	assert((payload_base + payload_data_section->VirtualAddress + payload_data_section->Misc.VirtualSize) <=
+		(host_dll_base + host_data_section->VirtualAddress + host_data_section->Misc.VirtualSize) &&
+		"HOST DLL .data SECTION NOT LARGE ENOUGH!!!");
+
 
 	/*	Prepare the payload DLL for manual mapping	*/
 
@@ -158,28 +161,31 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_pa
 
 	/*	 NPT hide every section of the payload DLL except for .rdata, .pdata and .data	*/
 
-	section = (IMAGE_SECTION_HEADER*)(PeHeader(payload_mapped) + 1);
-
 	auto header_size = PeHeader(payload_mapped)->OptionalHeader.SizeOfHeaders;
 	auto payload_size = PeHeader(payload_mapped)->OptionalHeader.SizeOfImage;
 
-	Driver::SetNptHook(pid, 
-		header_size, payload_base, payload_mapped);
+	Driver::SetNptHook(pid, header_size, payload_base, payload_mapped);
 
 	//Driver::ProtectMemory(pid, payload_base, PAGE_EXECUTE_READWRITE, header_size);
 	//Driver::WriteMem(pid, payload_base, payload_mapped, header_size);
 
 	uint8_t* offset = 0;
 
-	for (offset = payload_mapped; offset < (payload_mapped + rdata_offset); offset += PAGE_SIZE)
+	for (offset = payload_mapped; offset < (payload_mapped + payload_rdata->VirtualAddress); offset += PAGE_SIZE)
 	{
-		Driver::SetNptHook(pid, 
-			PAGE_SIZE, payload_base + (offset - payload_mapped), offset);
+		Driver::SetNptHook(
+			pid, PAGE_SIZE, payload_base + (offset - payload_mapped), offset);
 	}	
 
-	/*	hide the RWX memory protection	in the host signed	DLL	*/
 
-	Driver::HideMemory(pid, payload_base, rdata_offset);
+	/*	Spoof the .text section memory permissions of our hidden payload DLL to read only
+		(our .text section is probably NPT mapped into .rdata section of the host DLL)
+	*/
+
+	Driver::HideMemory(pid, payload_base, payload_rdata->VirtualAddress);
+
+
+	/*	write the rest of the data after .rdata	*/
 
 	for (offset; offset < (payload_mapped + payload_size); offset += PAGE_SIZE)
 	{
@@ -187,13 +193,13 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_pa
 			pid, payload_base + (offset - payload_mapped), offset, PAGE_SIZE);
 	}
 
-	/*	Some random callbacks in the host DLL get called, so let's patch them out	*/
+	/*	Some random CRT/TLS/FLS callbacks in the host DLL get called, so let's patch them out	*/
 
-	Driver::SetNptHook(pid, 1,
-		host_dll_base + FLS_CALLBACK_PATCH_OFFSET, (uint8_t*)"\xC3");
+//	Driver::SetNptHook(pid, 1,
+//		host_dll_base + FLS_CALLBACK_PATCH_OFFSET, (uint8_t*)"\xC3");
 
-	Driver::SetNptHook(pid, 1, 
-		host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, (uint8_t*)"\xC3");
+//	Driver::SetNptHook(pid, 1, 
+//		host_dll_base + ACRT_LOCALE_RELEASE_OFFSET, (uint8_t*)"\xC3");
 
 	Sleep(2000);
 
@@ -210,12 +216,11 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_pa
 		params.o_present_bytes_size = 0,
 	};
 
-	/*	Pass the DLL parameters to the end of the payload DLL, in the .data section of the host DLL	*/
+	/*	Place the DLL parameters in the alignment of the .rdata section of the host DLL	*/
 
-	auto params_location = params.payload_dll_base + params.payload_dll_size;
+	auto params_location = payload_base + payload_rdata->VirtualAddress - sizeof(DllParams);
 
-	auto params_export = (uintptr_t)PE::GetExport(
-		(uintptr_t)payload_mapped, "dll_params");
+	auto params_export = (uintptr_t)PE::GetExport((uintptr_t)payload_mapped, "dll_params");
 
 	Driver::WriteMem(pid, 
 		params_location, (uint8_t*)&params, sizeof(params));
@@ -231,8 +236,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(int32_t pid, uint8_t* raw_pa
 
 	std::cout << std::hex << " entry_point 0x" << entry_point + payload_base << std::endl;
 
-	InvokeSignedDllRemoteFunction(
-		pid, host_dll_base, (uint8_t*)entry_point + payload_base);
+	InvokeSignedDllRemoteFunction(pid, host_dll_base, (uint8_t*)entry_point + payload_base);
 
 	return 0;
 }
@@ -254,11 +258,11 @@ extern "C" int main()
 
 	uint8_t* payload_dll_raw = NULL;
 
-	auto image_size = Util::LoadFile(
-		payload_dll_name.c_str(), &payload_dll_raw);
+	auto image_size = 
+		Util::LoadFile(payload_dll_name.c_str(), &payload_dll_raw);
 
-	InjectDLLBytes(target_pid,
-		payload_dll_raw, ENTRYPOINT_NAME, HOST_DLL_PATH);
+ 	InjectDLLBytes(
+		target_pid, payload_dll_raw, ENTRYPOINT_NAME, HOST_DLL_PATH);
 
 	std::cin.get();
 }

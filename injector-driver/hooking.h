@@ -5,10 +5,10 @@ namespace Hooks
 {
     struct JmpRipCode
     {
-        size_t hook_size;
-        size_t orig_bytes_size;
-        void* original_bytes;
-        uint8_t* hook_code;
+        size_t hook_size = NULL;
+        size_t orig_bytes_size = NULL;
+        void* original_bytes = NULL;
+        uint8_t* hook_code = NULL;
 
         JmpRipCode()
         {

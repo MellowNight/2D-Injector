@@ -138,7 +138,7 @@ namespace PE
 		return true;
 	}
 
-	void ForEachSection(uint8_t* image_base, void(*SectionCallback)(IMAGE_SECTION_HEADER*, uintptr_t base, void* callback_data), void* callback_data)
+	IMAGE_SECTION_HEADER* ForEachSection(uint8_t* image_base, bool(*SectionCallback)(IMAGE_SECTION_HEADER*, uintptr_t base, void* callback_data), void* callback_data)
 	{
 		auto pe_hdr = PeHeader(image_base);
 
@@ -146,10 +146,30 @@ namespace PE
 
 		for (int i = 0; i < pe_hdr->FileHeader.NumberOfSections; ++i)
 		{
-			SectionCallback(&section[i], (uintptr_t)image_base, callback_data);
+			if (!SectionCallback(&section[i], (uintptr_t)image_base, callback_data))
+			{
+				return &section[i];
+			}
 		}
+
+		return NULL;
 	}
 
+	IMAGE_SECTION_HEADER* GetSection(uint8_t* pe_file, const char* section_name)
+	{
+		return PE::ForEachSection(
+			pe_file,
+			[](IMAGE_SECTION_HEADER* section, uintptr_t base, void* callback_data) -> bool
+			{
+				if (!strcmp((char*)callback_data, (char*)section->Name))
+				{
+					return false;
+				}
+				return true;
+			},
+			(void*)section_name
+		);
+	}
 
 	void CopyHeaders(uint8_t* src, uint8_t* dest)
 	{
@@ -240,12 +260,12 @@ namespace PE
 		/*	SizeOfRawData & PointerToRawData are 0 in VMP packed bins	*/
 
 		PE::ForEachSection(unmapped_pe,
-			[](IMAGE_SECTION_HEADER* section, uintptr_t unmapped_bin, void* out_buffer) -> void {
+			[](IMAGE_SECTION_HEADER* section, uintptr_t unmapped_bin, void* out_buffer) -> bool {
 
 				memcpy(*(uint8_t**)out_buffer + section->VirtualAddress,
-					(char*)unmapped_bin + section->PointerToRawData,
-					section->SizeOfRawData
-				);
+					(char*)unmapped_bin + section->PointerToRawData, section->SizeOfRawData);
+
+				return true;
 			},
 			out_buffer
 		);

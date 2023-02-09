@@ -2,7 +2,7 @@
 #include "includes.h"
 #include "kernel_structs.h"
 
-#define	RELATIVE_ADDR(insn, operand_offset, size) (ULONG64)(*(int*)((uint32_t*)insn + operand_offset) + (uint32_t*)insn + (int)size)
+#define RELATIVE_ADDR(insn, operand_offset, size) (uint64_t)(*(int*)((uint8_t*)insn + operand_offset) + (uint8_t*)insn + (int)size)
 
 namespace Utils
 {

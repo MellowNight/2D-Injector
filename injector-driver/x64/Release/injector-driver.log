@@ -1172,10 +1172,10 @@ C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(2
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\kernel_structs.h(258,10): warning C4201: nonstandard extension used: nameless struct/union
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\hooking.h(26,40): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\hooking.h(32,35): warning C4996: 'ExAllocatePool': ExAllocatePool is deprecated, use ExAllocatePool2.
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(132,63): warning C4311: 'type cast': pointer truncation from 'HANDLE' to 'int'
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(132,63): warning C4302: 'type cast': truncation from 'HANDLE' to 'int'
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(103,9): warning C4189: 'status': local variable is initialized but not referenced
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(112,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(129,63): warning C4311: 'type cast': pointer truncation from 'HANDLE' to 'int'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(129,63): warning C4302: 'type cast': truncation from 'HANDLE' to 'int'
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(101,9): warning C4189: 'status': local variable is initialized but not referenced
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\main.cpp(109,9): warning C4189: 'status': local variable is initialized but not referenced
   util.cpp
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(61,26): warning C4083: expected ')'; found identifier '_VCRUNTIME_DISABLED_WARNINGS'
 C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.32.31326\include\vcruntime.h(111,1): warning C4005: '_CRT_STRINGIZE': macro redefinition

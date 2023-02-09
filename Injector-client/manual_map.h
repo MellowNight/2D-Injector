@@ -43,10 +43,15 @@ namespace PE
         return reinterpret_cast<T>(entry + (uintptr_t)base);
     }
 
-    void ForEachSection(
+    IMAGE_SECTION_HEADER* ForEachSection(
         uint8_t* image_base,
-        void(*SectionCallback)(IMAGE_SECTION_HEADER*, uintptr_t base, void* callback_data),
+        bool(*SectionCallback)(IMAGE_SECTION_HEADER*, uintptr_t base, void* callback_data),
         void* callback_data
+    );
+
+    IMAGE_SECTION_HEADER* GetSection(
+        uint8_t* pe_file,
+        const char* section_name
     );
 
     void ForEachImport(
