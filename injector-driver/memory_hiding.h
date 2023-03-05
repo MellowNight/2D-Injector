@@ -1,6 +1,6 @@
 #pragma once
 #include "includes.h"
-#include "forte_api_kernel.h"
+#include "aethervisor_kernel.h"
 #include "hooking.h"
 #include "util.h"
 
@@ -70,15 +70,15 @@ void HookMemoryProtectionFn()
 
 		ntqvm_hook = Hooks::JmpRipCode{ ntqvm, (uintptr_t)NtQueryVirtualMemory_Hook };
 
-		ForteVisor::SetNptHook((uintptr_t)ntqvm, (uint8_t*)ntqvm_hook.hook_code,
-			ntqvm_hook.hook_size, NCR3_DIRECTORIES::noexecute, NULL);
+		Aether::NptHook::Set((uintptr_t)ntqvm, (uint8_t*)ntqvm_hook.hook_code,
+			ntqvm_hook.hook_size);
 
 		auto ntprotect = ntoskrnl + 0x062BDB0;
 
 		ntprotect_hook = Hooks::JmpRipCode{ ntprotect, (uintptr_t)NtProtectVirtualMemory_hook };
 
-		ForteVisor::SetNptHook((uintptr_t)ntprotect, (uint8_t*)ntprotect_hook.hook_code,
-			ntprotect_hook.hook_size, NCR3_DIRECTORIES::noexecute, NULL);
+		Aether::NptHook::Set((uintptr_t)ntprotect, (uint8_t*)ntprotect_hook.hook_code,
+			ntprotect_hook.hook_size);
 
 		ntqvm_nothooked = false;
 	}

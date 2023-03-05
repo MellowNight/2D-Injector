@@ -2,9 +2,10 @@
 #include "disassembly.h"
 #include "kernel_structs.h"
 #include "hooking.h"
-#include "forte_api_kernel.h"
+#include "aethervisor_kernel.h"
 #include "util.h"
 #include "memory_hiding.h"
+
 struct DllParams
 {
 	uint32_t header;
@@ -174,8 +175,7 @@ void CommandHandler(void* system_buffer, void* output_buffer)
 
 			auto apcstate = Utils::AttachToProcess(hook_cmd.proc_id);
 
-			ForteVisor::SetNptHook(hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size,
-				NCR3_DIRECTORIES::noexecute, NULL);
+			Aether::NptHook::Set(hook_cmd.hook_address, hook_cmd.shellcode, hook_cmd.size);
 
 			KeUnstackDetachProcess(&apcstate);
 
