@@ -18,7 +18,7 @@ enum INJECTOR_CONSTANTS
 	mapped_dll_header = 0x12345678,
 };
 
-#define HOST_DLL_PATH	"C:\\Program Files (x86)\\Overwolf\\0.218.0.8\\OWClient.dll"
+#define HOST_DLL_PATH	"C:\\Program Files (x86)\\Overwolf\\0.220.0.1\\OWClient.dll"
 #define HOST_DLL_NAME	"OWClient.dll"
 #define ENTRYPOINT_NAME	"HookEntryPoint"
 
