@@ -1,5 +1,7 @@
 # 2D-injector
-2D Injector: An AetherVisor-based DLL manual mapper that I wanted to use on Battleye games. 
+2D Injector: An AetherVisor-based DLL manual mapper that I wanted to use on Battleye games. This was tested and is undetected on Fortnite and EFT, but the major caveat was that the cheat DLL's performance 
+
+I can see this being used for things other than cheating, such as debugging heavily protected apps or hiding from EDR. 
 
 <br>
 
