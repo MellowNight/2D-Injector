@@ -2,7 +2,7 @@
 #include "includes.h"
 
 #define PAGE_SIZE 0x1000
-#define PeHeader(image) ((IMAGE_NT_HEADERS64*)((uint64_t)image + ((IMAGE_DOS_HEADER*)image)->e_lfanew))
+#define PE_HEADER(image) ((IMAGE_NT_HEADERS64*)((uint64_t)image + ((IMAGE_DOS_HEADER*)image)->e_lfanew))
 
 namespace PE
 {
@@ -11,24 +11,11 @@ namespace PE
         uintptr_t rva
     );
 
-    void CopyHeaders(
-        IMAGE_DOS_HEADER* src,
-        char* dest
-    );
-
-    bool ResolveImports(
-        char* base
-    );
-
     size_t RemapImage(
         uint8_t* unmapped_pe,
         uint8_t** out_buffer,
         int32_t target_pid,
         uintptr_t load_destination
-    );
-
-    void ResolveRelocations(
-        char* mapped_base
     );
 
     void* GetExport(

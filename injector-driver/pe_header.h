@@ -1,7 +1,7 @@
 #pragma once
 #include "includes.h"
 
-#define	PeHeader(image) ((IMAGE_NT_HEADERS64*)((uintptr_t)image + ((IMAGE_DOS_HEADER*)image)->e_lfanew))
+#define	PE_HEADER(image) ((IMAGE_NT_HEADERS64*)((uintptr_t)image + ((IMAGE_DOS_HEADER*)image)->e_lfanew))
 
 #define IMAGE_SCN_CNT_INITIALIZED_DATA  0x00000040
 #define IMAGE_SCN_CNT_UNINITIALIZED_DATA    0x00000080

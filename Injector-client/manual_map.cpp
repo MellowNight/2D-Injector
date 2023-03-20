@@ -12,7 +12,7 @@ namespace PE
 
 	int64_t	RvaToOffset(IMAGE_DOS_HEADER* base, uintptr_t rva)
 	{
-		auto pe_hdr = PeHeader(base);
+		auto pe_hdr = PE_HEADER(base);
 
 		auto section_header = IMAGE_FIRST_SECTION(pe_hdr);
 		auto section_count = pe_hdr->FileHeader.NumberOfSections;
@@ -47,7 +47,7 @@ namespace PE
 		void* callback_data
 	)
 	{
-		auto nt_header = PeHeader(image_base);
+		auto nt_header = PE_HEADER(image_base);
 
 		auto import_dir = nt_header->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT];
 
@@ -78,7 +78,7 @@ namespace PE
 
 	bool ResolveImports(uint8_t* base, int32_t target_pid)
 	{
-		auto pe_hdr = PeHeader(base);
+		auto pe_hdr = PE_HEADER(base);
 
 		auto rva = pe_hdr->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_IMPORT].VirtualAddress;
 
@@ -140,7 +140,7 @@ namespace PE
 
 	IMAGE_SECTION_HEADER* ForEachSection(uint8_t* image_base, bool(*SectionCallback)(IMAGE_SECTION_HEADER*, uintptr_t base, void* callback_data), void* callback_data)
 	{
-		auto pe_hdr = PeHeader(image_base);
+		auto pe_hdr = PE_HEADER(image_base);
 
 		auto section = (IMAGE_SECTION_HEADER*)(pe_hdr + 1);
 
@@ -173,7 +173,7 @@ namespace PE
 
 	void CopyHeaders(uint8_t* src, uint8_t* dest)
 	{
-		auto pe_hdr = PeHeader(src);
+		auto pe_hdr = PE_HEADER(src);
 
 		auto section = (IMAGE_SECTION_HEADER*)(pe_hdr + 1);
 
@@ -182,7 +182,7 @@ namespace PE
 
 	void ResolveRelocations(uint8_t* image_buffer, uint8_t* load_destination)
 	{
-		auto pe_hdr = PeHeader(image_buffer);
+		auto pe_hdr = PE_HEADER(image_buffer);
 
 		auto& reloc_dir = pe_hdr->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_BASERELOC];
 
@@ -217,7 +217,7 @@ namespace PE
 
 	void* GetExport(uintptr_t base, const char* export_name)
 	{
-		auto pe_hdr = PeHeader(base);
+		auto pe_hdr = PE_HEADER(base);
 
 		IMAGE_DATA_DIRECTORY data_dir =
 			pe_hdr->OptionalHeader.DataDirectory[IMAGE_DIRECTORY_ENTRY_EXPORT];
@@ -247,7 +247,7 @@ namespace PE
 	size_t RemapImage(uint8_t* unmapped_pe, uint8_t** out_buffer, int32_t target_pid, uintptr_t map_destination)
 	{
 		std::cout << *(int*)unmapped_pe;
-		auto pe_header = PeHeader(unmapped_pe);
+		auto pe_header = PE_HEADER(unmapped_pe);
 
 		auto virtual_size = pe_header->OptionalHeader.SizeOfImage;
 

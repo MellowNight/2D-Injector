@@ -30,8 +30,7 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 
 			auto thread_id = GetWindowThreadProcessId(hwnd, &process_id);
 
-			if (parameter->pid != process_id || !(GetWindow(hwnd, GW_OWNER) == NULL) 
-				|| !IsWindowVisible(hwnd))
+			if (parameter->pid != process_id || GetWindow(hwnd, GW_OWNER) || !IsWindowVisible(hwnd))
 			{
 				return TRUE;
 			}
@@ -73,7 +72,7 @@ void InvokeSignedDllRemoteFunction(int32_t pid, uintptr_t host_dll_handle, uint8
 	{
 		Sleep(3500);
 
-		auto dll_entrypoint = PeHeader(host_dll_handle)->OptionalHeader.AddressOfEntryPoint + host_dll_handle;
+		auto dll_entrypoint = PE_HEADER(host_dll_handle)->OptionalHeader.AddressOfEntryPoint + host_dll_handle;
 
 		Driver::SetNptHook(pid, 3, (uintptr_t)dll_entrypoint, (uint8_t*)"\xb0\x01\xC3");
 
@@ -161,8 +160,8 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(
 
 	/*	 NPT hide every section of the payload DLL except for .rdata, .pdata and .data	*/
 
-	auto header_size = PeHeader(payload_mapped)->OptionalHeader.SizeOfHeaders;
-	auto payload_size = PeHeader(payload_mapped)->OptionalHeader.SizeOfImage;
+	auto header_size = PE_HEADER(payload_mapped)->OptionalHeader.SizeOfHeaders;
+	auto payload_size = PE_HEADER(payload_mapped)->OptionalHeader.SizeOfImage;
 
 	Driver::SetNptHook(pid, header_size, payload_base, payload_mapped);
 
@@ -209,7 +208,7 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(
 
 		params.header = INJECTOR_CONSTANTS::mapped_dll_header,
 		params.dll_base = host_dll_base,
-		params.dll_size = PeHeader(host_dll_base)->OptionalHeader.SizeOfImage,
+		params.dll_size = PE_HEADER(host_dll_base)->OptionalHeader.SizeOfImage,
 		params.payload_dll_base = payload_base,
 		params.payload_dll_size = payload_size,
 
@@ -217,8 +216,8 @@ extern "C" __declspec(dllexport) int InjectDLLBytes(
 	};
 
 	/*	Place the DLL parameters in the alignment of the .rdata section of the host DLL	*/
-	DLL PARAMS ARE INVISIBLE TO SHADOW NCR3 IF YOU WRITE THEM NORMALLY!!!!!!!!!!!!!!!!!!! MUST CHANGE ADDRESS
-	auto params_location = payload_base + payload_rdata->VirtualAddress - sizeof(DllParams);
+
+	auto params_location = payload_base + payload_data_section->VirtualAddress - sizeof(DllParams);
 
 	auto params_export = (uintptr_t)PE::GetExport((uintptr_t)payload_mapped, "dll_params");
 
