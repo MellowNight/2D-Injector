@@ -19,4 +19,4 @@ https://mellownight.github.io/2023/01/10/BEInjector.html
 
 # Acknowledgements:
 
-Thank you to @red0x0002 for helping me test the injector and giving me tips. 
+Thank you to [@red0x0002] (https://www.github.com/red0x0002) for helping me test the injector and giving me tips. 
