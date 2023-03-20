@@ -1476,8 +1476,8 @@ C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(227,37): 
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(227,37): warning C4244: 'initializing': conversion from 'uint64_t' to 'ULONG', possible loss of data
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(239,55): warning C4244: 'argument': conversion from 'LONGLONG' to 'ULONG', possible loss of data
   Generating Code...
-C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(118): warning C4715: 'Utils::GetKernelModule': not all control paths return a value
 C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(96): warning C4715: 'Utils::GetProcessId': not all control paths return a value
+C:\Users\user123\Documents\GitHub\BE-injector\injector-driver\util.cpp(118): warning C4715: 'Utils::GetKernelModule': not all control paths return a value
 Zydis.lib(Decoder.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Decoder.obj)' or at 'C:\Users\user123\Documents\GitHub\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
 Zydis.lib(Register.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(Register.obj)' or at 'C:\Users\user123\Documents\GitHub\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
 Zydis.lib(DecoderData.obj) : warning LNK4099: PDB 'Zydis.pdb' was not found with 'Zydis.lib(DecoderData.obj)' or at 'C:\Users\user123\Documents\GitHub\BE-injector\x64\Release\Zydis.pdb'; linking object as if no debug info
