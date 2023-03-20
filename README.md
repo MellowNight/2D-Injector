@@ -23,8 +23,9 @@ To red0x0002 https://www.github.com/red0x0002 : Thank you to  for helping me tes
 
 # USAGE:
 1. Compile AetherVisor.sys: https://github.com/MellowNight/AetherVisor
-2. Compile 2D-Injector driver
-3. Compile 2D-Injector client with three parameters: `HOST_DLL_NAME`, `PAYLOAD_DLL_NAME`, and TARGET_PID
+2. Compile Injector-driver
+3. Compile Injector-client with three parameters in `injection_info.h` : `HOST_DLL_PATH`, `HOST_DLL_NAME`, and `ENTRYPOINT_NAME`
 4. kdmapper.exe AetherVisor.sys
 5. kdmapper.exe injector-driver.sys
-6. Run 2D-Injector client as administrator
+6. Run Injector-client as administrator
+7. Follow the prompt, provide the target PID and path to your own cheat DLL
