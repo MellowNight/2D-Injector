@@ -20,3 +20,11 @@ https://mellownight.github.io/2023/01/10/BEInjector.html
 # Acknowledgements:
 
 To red0x0002 https://www.github.com/red0x0002 : Thank you to  for helping me test the injector and giving me tips. 
+
+# USAGE:
+1. Compile AetherVisor.sys: https://github.com/MellowNight/AetherVisor
+2. Compile 2D-Injector driver
+3. Compile 2D-Injector client with three parameters: `HOST_DLL_NAME`, `PAYLOAD_DLL_NAME`, and TARGET_PID
+4. kdmapper.exe AetherVisor.sys
+5. kdmapper.exe injector-driver.sys
+6. Run 2D-Injector client as administrator
