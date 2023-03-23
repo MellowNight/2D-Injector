@@ -15,7 +15,7 @@ I can see this being used for things other than cheating, such as debugging heav
 <br>
 
 **FULL INFORMATION HERE:**
-https://mellownight.github.io/2023/01/10/BEInjector.html
+https://mellownight.github.io/BEInjector.html
 
 # Acknowledgements:
 
